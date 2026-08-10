@@ -1,2 +1,1 @@
-created with large language models
-stolen index.html
+created with love using large language models and stolen index.html
