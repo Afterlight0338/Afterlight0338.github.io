@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afterlight | Roxy's Sanctuary</title>
+<meta name="description" content="Afterlight's personal sanctuary & system dashboard - Roxy Migurdia Enthusiast">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060b14;
+    --bg-gradient: radial-gradient(circle at 20% 20%, #0d1b3e 0%, #060b14 70%);
+    --card-bg: rgba(13, 23, 44, 0.65);
+    --card-border: rgba(56, 189, 248, 0.18);
+    --card-border-hover: rgba(56, 189, 248, 0.45);
+    --primary: #2563eb;
+    --accent-cyan: #38bdf8;
+    --accent-violet: #a78bfa;
+    --accent-glow: rgba(56, 189, 248, 0.25);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    background-image: var(--bg-gradient);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Background Ambient Water Orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.3;
+    animation: float 16s ease-in-out infinite alternate;
+  }
+  .orb-1 { width: 450px; height: 450px; background: #1d4ed8; top: -5%; left: 5%; }
+  .orb-2 { width: 400px; height: 400px; background: #0284c7; bottom: 0; right: 5%; animation-delay: -8s; }
+  .orb-3 { width: 320px; height: 320px; background: #7c3aed; top: 40%; right: 30%; animation-delay: -4s; }
+
+  @keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(35px, -25px) scale(1.08); }
+    100% { transform: translate(-25px, 35px) scale(0.95); }
+  }
+
+  #net {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Main Container - Modern Split Bento Layout */
+  .container {
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Shared Bento Card Style */
+  .bento-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45),
+                inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .bento-card:hover {
+    border-color: var(--card-border-hover);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55),
+                0 0 30px var(--accent-glow),
+                inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  }
+
+  /* --- LEFT PROFILE HERO --- */
+  .profile-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .avatar-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 20px;
+  }
+  .avatar-container::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--primary), var(--accent-violet));
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    filter: blur(6px);
+    opacity: 0.85;
+  }
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .avatar-img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+    border: 2px solid #0d1b3e;
+    z-index: 1;
+  }
+
+  .name-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 80%, var(--accent-violet) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .tagline-pill {
+    margin-top: 8px;
+    color: var(--accent-cyan);
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: rgba(56, 189, 248, 0.08);
+    padding: 6px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .heart { color: #f43f5e; display: inline-block; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+  /* Social Links Grid */
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-top: 24px;
+  }
+  .social-btn {
+    position: relative;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    color: var(--text-main);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .social-btn svg { width: 20px; height: 20px; }
+  .social-btn:hover {
+    background: linear-gradient(135deg, var(--primary), #0284c7);
+    color: #fff;
+    border-color: var(--accent-cyan);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(56, 189, 248, 0.3);
+  }
+
+  .social-btn::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid var(--card-border);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 10;
+  }
+  .social-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* --- RIGHT BENTO GRID --- */
+  .bento-right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  /* Full width card inside bento */
+  .span-2 { grid-column: span 2; }
+
+  .bento-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    margin-bottom: 16px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .bento-header svg { width: 18px; height: 18px; color: var(--accent-cyan); }
+
+  /* Specs Grid Tiles */
+  .specs-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .spec-tile {
+    background: rgba(10, 17, 32, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.12);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .spec-tile:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    transform: translateY(-2px);
+  }
+  .spec-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-family: 'Maple Mono', monospace;
+  }
+  .spec-val {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .spec-highlight { color: var(--accent-cyan); }
+  .spec-violet { color: var(--accent-violet); }
+
+  /* About / Roxy Card */
+  .roxy-shrine-content {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+  .roxy-shrine-content strong { color: var(--text-main); }
+  
+  .badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .badge-item {
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--accent-cyan);
+    font-size: 0.75rem;
+    font-family: 'Maple Mono', monospace;
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+
+  /* Interactive Water Magic Cast Box */
+  .cast-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(13, 27, 62, 0.8), rgba(29, 78, 216, 0.25));
+  }
+  .cast-btn {
+    margin-top: 14px;
+    background: linear-gradient(135deg, var(--primary), #0284c7);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+    transition: all 0.25s ease;
+  }
+  .cast-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+  }
+  .cast-btn:active { transform: scale(0.98); }
+
+  /* Footer */
+  footer {
+    grid-column: span 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    font-size: 0.78rem;
+    font-family: 'Maple Mono', monospace;
+    color: var(--text-muted);
+  }
+  footer a img { height: 20px; vertical-align: middle; }
+
+  /* Toast Notification */
+  #toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #0f172a;
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(56, 189, 248, 0.4);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 100;
+    pointer-events: none;
+  }
+  #toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* Responsive Breakdown */
+  @media (max-width: 900px) {
+    .container {
+      grid-template-columns: 1fr;
+    }
+    .bento-right {
+      grid-template-columns: 1fr;
+    }
+    .span-2 { grid-column: span 1; }
+    .specs-tiles {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .specs-tiles { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Ambient Glow Orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Water Magic Particle Canvas -->
+<canvas id="net" aria-hidden="true"></canvas>
+
+<div class="container">
+  
+  <!-- LEFT: Hero Profile Bento Card -->
+  <div class="bento-card profile-hero">
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span>Water Holy Class Mage</span>
+    </div>
+
+    <div class="avatar-container">
+      <img class="avatar-img" src="roxy-ff.png" alt="Afterlight Avatar">
+    </div>
+
+    <h1 class="name-title">Afterlight</h1>
+    <div class="tagline-pill">Roxy Migurdia my beloved <span class="heart">♥</span></div>
+
+    <div class="social-grid">
+      <!-- GitHub -->
+      <a class="social-btn" href="https://github.com/Afterlight0338" target="_blank" rel="noopener" aria-label="GitHub (@Afterlight0338)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.02-.01-1.86-2.78.62-3.37-1.22-3.37-1.22-.46-1.19-1.11-1.51-1.11-1.51-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.92 0 1.39-.01 2.51-.01 2.85 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+      </a>
+      <!-- Discord -->
+      <button class="social-btn" onclick="copyDiscord()" aria-label="Discord: afterlight_hd">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 5.4A17.5 17.5 0 0 0 15.9 4c-.2.4-.5.9-.6 1.3a16.5 16.5 0 0 0-4.8 0A9 9 0 0 0 9.8 4a17.6 17.6 0 0 0-4.4 1.4C2.6 9 1.9 12.5 2.2 16a17.7 17.7 0 0 0 5.3 2.7c.4-.6.8-1.2 1.1-1.9-.6-.2-1.2-.5-1.7-.9l.4-.3c3.3 1.5 6.9 1.5 10.2 0l.4.3c-.5.4-1.1.7-1.7.9.3.7.7 1.3 1.1 1.9a17.6 17.6 0 0 0 5.3-2.7c.4-4-.6-7.5-2.3-10.6ZM9.7 13.9c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm4.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
+      </button>
+      <!-- Twitch -->
+      <a class="social-btn" href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener" aria-label="Twitch (afterlight_)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+      </a>
+      <!-- TikTok -->
+      <a class="social-btn" href="https://www.tiktok.com/@afterlight_1337" target="_blank" rel="noopener" aria-label="TikTok (@afterlight_1337)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.36-1.5V4h-2.62v13.1a2.7 2.7 0 1 1-2.19-2.66V11.9a5.3 5.3 0 1 0 4.81 5.28V9.4a6.9 6.9 0 0 0 4.36 1.56V8.36c-.34 0-.68-.03-1-.09Z"/></svg>
+      </a>
+      <!-- osu! -->
+      <a class="social-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" aria-label="osu! Profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Bento Grid Dashboard -->
+  <div class="bento-right">
+    
+    <!-- Specs Grid Box (Span 2) -->
+    <div class="bento-card span-2">
+      <div class="bento-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+        <span>System Setup & Rig Specs</span>
+      </div>
+
+      <div class="specs-tiles">
+        <div class="spec-tile">
+          <span class="spec-label">Host Laptop</span>
+          <span class="spec-val spec-highlight">Acer Nitro V 15</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Processor</span>
+          <span class="spec-val">Ryzen 5 7535HS</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Graphics Card</span>
+          <span class="spec-val spec-violet">RTX 3050 6GB</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Memory</span>
+          <span class="spec-val">32GB DDR5</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Display</span>
+          <span class="spec-val spec-highlight">1080p @ 240Hz</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Operating System</span>
+          <span class="spec-val">NixOS 26.05</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Window Manager</span>
+          <span class="spec-val spec-violet">Hyprland</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Integrated GPU</span>
+          <span class="spec-val">Radeon 680M</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shrine / Fav Info Box -->
+    <div class="bento-card">
+      <div class="bento-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+        <span>Affiliation</span>
+      </div>
+      <div class="roxy-shrine-content">
+        Dedicated disciple of <strong>Roxy Migurdia</strong> from <em>Mushoku Tensei</em>. Master of water spellcrafting & Linux customization.
+        <div class="badge-list">
+          <span class="badge-item">💧 Water Holy Class</span>
+          <span class="badge-item">❄️ Ice Magic</span>
+          <span class="badge-item">⚙️ NixOS Rice</span>
+          <span class="badge-item">🎯 osu! Player</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Water Spell Cast Box -->
+    <div class="bento-card cast-box">
+      <div>
+        <div class="bento-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+          <span>Mana Reservoir</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+          Summon a water magic mana burst across your screen.
+        </p>
+      </div>
+
+      <button class="cast-btn" onclick="castSpell()">
+        <span>Cast Cumulonimbus 🌧️</span>
+      </button>
+    </div>
+
+    <!-- Footer inside Grid -->
+    <footer>
+      <span>© Afterlight • Roxy's Sanctuary</span>
+    </footer>
+
+  </div>
+
+</div>
+
+<div id="toast">Copied Discord tag: afterlight_hd</div>
+
+<script>
+// Copy Discord Tag
+function copyDiscord() {
+  const discordTag = "afterlight_hd";
+  navigator.clipboard.writeText(discordTag).then(() => {
+    const toast = document.getElementById("toast");
+    toast.innerText = "Copied Discord tag: " + discordTag;
+    toast.classList.add("show");
+    setTimeout(() => { toast.classList.remove("show"); }, 2800);
+  }).catch(() => {
+    alert("Discord: " + discordTag);
+  });
+}
+
+// Canvas & Particle Net
+var canvas = document.getElementById('net');
+var ctx = canvas.getContext('2d');
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+var dpr = Math.min(window.devicePixelRatio || 1, 2);
+var w, h, particles;
+var mouse = { x: null, y: null, active: false };
+
+var PALETTE = ['56, 189, 248', '96, 165, 250', '167, 139, 250'];
+var MAX_DIST = 140;
+var MOUSE_DIST = 220;
+
+function size(){
+  w = window.innerWidth;
+  h = window.innerHeight;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function makeParticles(){
+  var count = Math.round((w * h) / 16000);
+  count = Math.max(40, Math.min(count, 90));
+  particles = [];
+  for (var i = 0; i < count; i++){
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.6) * 0.4,
+      r: Math.random() * 1.8 + 0.8,
+      color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+      pulse: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function step(){
+  ctx.clearRect(0, 0, w, h);
+
+  for (var i = 0; i < particles.length; i++){
+    var p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.pulse += 0.03;
+
+    if (p.x < -10) p.x = w + 10;
+    if (p.x > w + 10) p.x = -10;
+    if (p.y < -10) p.y = h + 10;
+    if (p.y > h + 10) p.y = -10;
+
+    var currentRadius = p.r + Math.sin(p.pulse) * 0.4;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.max(0.5, currentRadius), 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(' + p.color + ', 0.65)';
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = 'rgba(' + p.color + ', 0.8)';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    for (var j = i + 1; j < particles.length; j++){
+      var q = particles[j];
+      var dx = p.x - q.x, dy = p.y - q.y;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < MAX_DIST){
+        var alpha = (1 - dist / MAX_DIST) * 0.28;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(q.x, q.y);
+        ctx.strokeStyle = 'rgba(' + p.color + ', ' + alpha + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+
+    if (mouse.active){
+      var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+      var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (mdist < MOUSE_DIST){
+        var malpha = (1 - mdist / MOUSE_DIST) * 0.75;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = 'rgba(56, 189, 248, ' + malpha + ')';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+      }
+    }
+  }
+
+  if (!reduceMotion) requestAnimationFrame(step);
+}
+
+// Cast Spell Shockwave Effect
+function castSpell() {
+  for (var i = 0; i < 40; i++) {
+    var angle = Math.random() * Math.PI * 2;
+    var speed = Math.random() * 6 + 2;
+    particles.push({
+      x: w / 2,
+      y: h / 2,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: Math.random() * 3 + 1.5,
+      color: '56, 189, 248',
+      pulse: 0
+    });
+  }
+
+  const toast = document.getElementById("toast");
+  toast.innerText = "🌧️ Water Magic Spelled: Cumulonimbus!";
+  toast.classList.add("show");
+  setTimeout(() => { toast.classList.remove("show"); }, 2800);
+}
+
+window.addEventListener('resize', function(){
+  size();
+  makeParticles();
+  if (reduceMotion) step();
+});
+
+window.addEventListener('mousemove', function(e){
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  mouse.active = true;
+});
+window.addEventListener('mouseleave', function(){ mouse.active = false; });
+
+size();
+makeParticles();
+step();
+</script>
+
+</body>
+</html>
