@@ -448,6 +448,63 @@
 <!-- Interactive Toast -->
 <div id="toast">Copied Discord tag: afterlight_hd</div>
 
+<!-- Desktop View Prompt Modal (Mobile Detection) -->
+<div id="desktop-prompt-modal" class="desktop-modal-backdrop" aria-hidden="true" style="display:none;">
+  <div class="desktop-modal-card">
+    <div class="desktop-modal-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+      </svg>
+      <span class="desktop-modal-badge">Desktop View Recommended</span>
+    </div>
+
+    <h2 class="desktop-modal-title">Switch to Desktop Mode</h2>
+    
+    <p class="desktop-modal-desc">
+      Roxy's Sanctuary is optimized for full <strong>1080p @ 240Hz</strong> multi-column bento layouts, live hardware telemetry, and 3D card physics.
+    </p>
+
+    <div class="desktop-guide-box" id="desktop-guide-box">
+      <div class="desktop-guide-header">
+        <span>How to enable Desktop Site:</span>
+      </div>
+      <div class="desktop-guide-steps">
+        <div class="guide-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Chrome / Android / Chromium</strong>
+            <span>Tap <strong>⋮</strong> (menu) → check <strong>Desktop site</strong></span>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Safari / iOS</strong>
+            <span>Tap <strong>aA</strong> in address bar → tap <strong>Request Desktop Website</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="desktop-modal-actions">
+      <button class="desktop-modal-btn primary" onclick="dismissDesktopPrompt()">
+        <span>Continue on Mobile</span>
+      </button>
+      <button class="desktop-modal-btn secondary" onclick="toggleDesktopGuide()">
+        <span>Toggle Instructions</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Switch to Desktop Pill (Shown after dismissal on small screens) -->
+<button id="mobile-switch-pill" class="mobile-switch-pill" onclick="reopenDesktopPrompt()" style="display:none;" aria-label="Desktop view recommended">
+  <span class="pill-dot"></span>
+  <span>🖥️ Desktop View Recommended</span>
+</button>
+
 <!-- Modular Scripts -->
 <script src="js/app.js" defer></script>
 <script src="js/canvas.js" defer></script>
