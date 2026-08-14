@@ -1,0 +1,359 @@
+/* --- LEFT PROFILE HERO --- */
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.profile-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Dynamic Live Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  max-width: 100%;
+}
+.status-badge.dnd {
+  background: rgba(244, 63, 94, 0.12);
+  color: var(--accent-rose);
+  border-color: rgba(244, 63, 94, 0.35);
+}
+.status-badge.idle {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--accent-amber);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.status-badge.offline {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-muted);
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+  animation: blink 2.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Avatar with Glowing Gradient Aura */
+.avatar-container {
+  position: relative;
+  width: clamp(100px, 14vw, 130px);
+  height: clamp(100px, 14vw, 130px);
+  margin-bottom: 12px;
+}
+.avatar-container::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--primary), var(--accent-violet));
+  background-size: 200% 200%;
+  animation: gradientMove 5s ease infinite;
+  filter: blur(8px);
+  opacity: 0.85;
+}
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.avatar-img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  border: 2px solid #0d1b3e;
+  z-index: 1;
+  display: block;
+}
+
+/* Discord Avatar Status Pip */
+.avatar-status-pip {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #060b14;
+  background: #64748b;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.3s ease;
+}
+.avatar-status-pip.online { background: #10b981; }
+.avatar-status-pip.idle { background: #f59e0b; }
+.avatar-status-pip.dnd { background: #f43f5e; }
+.avatar-status-pip.offline { background: #64748b; }
+
+.name-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 35%, var(--accent-cyan) 80%, var(--accent-violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.15;
+}
+
+.tagline-pill {
+  margin-top: 6px;
+  color: var(--accent-cyan);
+  font-size: clamp(0.76rem, 1.8vw, 0.86rem);
+  font-weight: 500;
+  background: rgba(56, 189, 248, 0.08);
+  padding: 5px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+}
+.heart { color: #f43f5e; display: inline-block; animation: heartPulse 1.6s infinite; }
+@keyframes heartPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+
+/* Live Clock Widget */
+.clock-widget {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.74rem;
+  color: var(--accent-cyan);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(10, 17, 32, 0.6);
+  padding: 5px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+/* --- LIVE DISCORD ACTIVITY WIDGET --- */
+.discord-activity-card {
+  width: 100%;
+  background: rgba(8, 15, 30, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 16px;
+  padding: 12px 14px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.discord-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-family: 'Maple Mono', monospace;
+  color: var(--text-muted);
+  gap: 8px;
+}
+.discord-user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--text-main);
+  flex: 1 1 auto;
+}
+.discord-tag-pill {
+  color: var(--accent-cyan);
+}
+.device-badges {
+  display: flex;
+  gap: 4px;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+/* Custom Status Box */
+.custom-status-text {
+  font-size: 0.76rem;
+  color: var(--text-main);
+  background: rgba(56, 189, 248, 0.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  word-break: break-word;
+}
+
+/* Rich Presence Activity Body */
+.activity-body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.activity-icon-wrap {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+.activity-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.activity-details {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.activity-type {
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  font-family: 'Maple Mono', monospace;
+  letter-spacing: 0.06em;
+  color: var(--accent-cyan);
+}
+.activity-name {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  line-height: 1.2;
+}
+.activity-state {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+.activity-time {
+  font-size: 0.68rem;
+  font-family: 'Maple Mono', monospace;
+  color: var(--accent-blue);
+  margin-top: 2px;
+}
+
+/* Spotify Progress */
+.spotify-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+.spotify-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.spotify-progress-fill {
+  height: 100%;
+  background: #1db954;
+  border-radius: 4px;
+  width: 0%;
+  transition: width 1s linear;
+}
+.spotify-timestamps {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-family: 'Maple Mono', monospace;
+  color: var(--text-dim);
+}
+
+/* Social Buttons Grid */
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(40px, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+.social-btn {
+  position: relative;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  color: var(--text-main);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.social-btn svg { width: 19px; height: 19px; flex-shrink: 0; }
+.social-btn:hover, .social-btn:active {
+  background: linear-gradient(135deg, var(--primary), #0284c7);
+  color: #fff;
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(56, 189, 248, 0.35);
+}
+
+.social-btn::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #0b1329;
+  color: #e2e8f0;
+  border: 1px solid var(--card-border);
+  padding: 5px 9px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-family: 'Maple Mono', monospace;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.social-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 480px) {
+  .social-btn { height: 42px; }
+  .social-btn svg { width: 17px; height: 17px; }
+}
+
+@media (max-width: 350px) {
+  .social-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

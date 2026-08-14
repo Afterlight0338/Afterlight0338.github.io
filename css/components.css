@@ -1,0 +1,456 @@
+/* =========================================================================
+   1. SYSTEM RIG & SPECS TILES
+   ========================================================================= */
+.specs-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.spec-tile {
+  background: rgba(10, 17, 32, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: border-color .2s ease, transform .2s ease;
+}
+
+.spec-tile:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+  background: rgba(14, 25, 48, 0.8);
+}
+
+.spec-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-family: 'Maple Mono', monospace;
+  line-height: 1.2;
+}
+
+.spec-val {
+  font-size: clamp(0.76rem, 1.2vw, 0.85rem);
+  font-weight: 700;
+  color: var(--text-main);
+  font-family: 'Space Grotesk', sans-serif;
+  line-height: 1.25;
+}
+
+.spec-highlight { color: var(--accent-cyan); }
+.spec-violet { color: var(--accent-violet); }
+.spec-emerald { color: var(--accent-emerald); }
+
+/* =========================================================================
+   2. PERIPHERALS & HARDWARE RHYTHM GEAR (SayoDevice, Wacom, AE68 Pro)
+   ========================================================================= */
+.gear-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.gear-tile {
+  background: rgba(8, 15, 30, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.gear-tile:hover {
+  border-color: rgba(56, 189, 248, 0.38);
+  transform: translateY(-2px);
+}
+
+.gear-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.gear-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #fff;
+  flex: 1 1 auto;
+}
+
+.gear-tag {
+  font-size: 0.64rem;
+  font-family: 'Maple Mono', monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  flex-shrink: 0;
+}
+
+.gear-desc {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Hall Effect Keypad Continuous Travel Box */
+.he-travel-box {
+  background: rgba(5, 10, 22, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.he-travel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.65rem;
+  font-family: 'Maple Mono', monospace;
+  color: var(--text-muted);
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.he-bar-track {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.he-bar-fill {
+  height: 100%;
+  width: 37.5%; /* 1.5mm / 4.0mm = 37.5% */
+  background: linear-gradient(90deg, #2563eb, #38bdf8);
+  border-radius: 6px;
+  position: relative;
+}
+
+.he-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #f43f5e;
+  box-shadow: 0 0 4px #f43f5e;
+}
+
+.he-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 110px), 1fr));
+  gap: 4px;
+  font-size: 0.66rem;
+  font-family: 'Maple Mono', monospace;
+  color: var(--text-muted);
+}
+
+.he-stat-item strong {
+  color: var(--accent-cyan);
+}
+
+/* Wacom Tablet Area Box */
+.tablet-area-box {
+  background: rgba(5, 10, 22, 0.85);
+  border: 1px dashed rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.tablet-dim-text {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--accent-violet);
+  font-weight: 600;
+}
+
+.tablet-ratio-pill {
+  font-size: 0.65rem;
+  font-family: 'Maple Mono', monospace;
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* Keyboard Row Box */
+.kb-row-box {
+  background: rgba(5, 10, 22, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* =========================================================================
+   3. FEATURED PROJECTS & DOTFILES
+   ========================================================================= */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.project-card {
+  background: rgba(10, 18, 36, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.13);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card:hover {
+  background: rgba(15, 27, 54, 0.85);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.project-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1 1 auto;
+}
+
+.project-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-cyan);
+  flex-shrink: 0;
+}
+
+.project-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.project-link-icon {
+  color: var(--text-dim);
+  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+.project-card:hover .project-link-icon {
+  color: var(--accent-cyan);
+  transform: translate(2px, -2px);
+}
+
+.project-desc {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.project-tag {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: var(--accent-cyan);
+  font-size: 0.66rem;
+  font-family: 'Maple Mono', monospace;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+.project-tag.nix {
+  background: rgba(126, 186, 228, 0.1);
+  color: #7ebae4;
+  border-color: rgba(126, 186, 228, 0.3);
+}
+.project-tag.osu {
+  background: rgba(244, 63, 94, 0.1);
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+/* =========================================================================
+   4. SHRINE & SPELLCASTING
+   ========================================================================= */
+.shrine-content {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.shrine-content strong { color: var(--text-main); }
+
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.badge-item {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: var(--accent-cyan);
+  font-size: 0.7rem;
+  font-family: 'Maple Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+.cast-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.cast-btn {
+  flex: 1 1 130px;
+  background: linear-gradient(135deg, var(--primary), #0284c7);
+  color: #fff;
+  border: none;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s ease;
+  min-height: 40px;
+}
+
+.cast-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.45);
+}
+.cast-btn:active {
+  transform: scale(0.98);
+}
+.cast-btn.secondary {
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: var(--accent-violet);
+  box-shadow: none;
+}
+.cast-btn.secondary:hover {
+  background: rgba(167, 139, 250, 0.25);
+  border-color: var(--accent-violet);
+}
+
+/* =========================================================================
+   5. OSU! PLAYER CARD
+   ========================================================================= */
+.osu-card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 30px);
+  gap: 10px;
+}
+
+.osu-profile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.osu-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+}
+
+.osu-username {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.osu-id-tag {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent-rose);
+}
+
+.osu-open-btn {
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #fb7185;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 38px;
+  flex-shrink: 0;
+}
+
+.osu-open-btn:hover {
+  background: #f43f5e;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.4);
+}
