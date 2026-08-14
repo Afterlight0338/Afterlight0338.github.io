@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>Afterlight | Roxy's Sanctuary</title>
 <meta name="description" content="Afterlight's personal sanctuary & system dashboard - Water Holy Class Mage & Roxy Migurdia Enthusiast">
-<meta name="theme-color" content="#0d1b3e">
+<meta name="theme-color" content="#060b14">
 <link rel="icon" type="image/png" href="roxy-ff.png">
 
 <!-- OpenGraph / Discord Preview -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://afterlight0338.github.io/">
 <meta property="og:title" content="Afterlight | Roxy's Sanctuary">
-<meta property="og:description" content="Water Holy Class Mage & NixOS / Hyprland Rice Setup • Roxy Migurdia Enthusiast">
+<meta property="og:description" content="Water Holy Class Mage & NixOS / Hyprland Rice Setup • Roxy Migurdia Enthusiast • Real-time Discord Presence">
 <meta property="og:image" content="https://afterlight0338.github.io/roxy-ff.png">
 
 <!-- Twitter / X Preview -->
@@ -22,59 +22,72 @@
 <meta property="twitter:description" content="Water Holy Class Mage & NixOS / Hyprland Rice Setup • Roxy Migurdia Enthusiast">
 <meta property="twitter:image" content="https://afterlight0338.github.io/roxy-ff.png">
 
+<!-- Google Fonts & Maple Mono -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
+
 <style>
   :root {
-    --bg: #060b14;
-    --bg-gradient: radial-gradient(circle at 20% 20%, #0d1b3e 0%, #060b14 70%);
-    --card-bg: rgba(13, 23, 44, 0.7);
-    --card-border: rgba(56, 189, 248, 0.18);
+    --bg: #050914;
+    --bg-gradient: radial-gradient(circle at 15% 15%, #0d1b3e 0%, #050914 75%);
+    --card-bg: rgba(11, 20, 39, 0.72);
+    --card-border: rgba(56, 189, 248, 0.16);
     --card-border-hover: rgba(56, 189, 248, 0.45);
     --primary: #2563eb;
     --accent-cyan: #38bdf8;
+    --accent-blue: #60a5fa;
     --accent-violet: #a78bfa;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-rose: #f43f5e;
     --accent-glow: rgba(56, 189, 248, 0.22);
-    --text-main: #f1f5f9;
+    --text-main: #f8fafc;
     --text-muted: #94a3b8;
+    --text-dim: #64748b;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    scroll-behavior: smooth;
+  }
 
   body {
     background: var(--bg);
     background-image: var(--bg-gradient);
     color: var(--text-main);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: clamp(16px, 4vw, 40px) clamp(12px, 3vw, 24px);
+    padding: clamp(16px, 3.5vw, 40px) clamp(12px, 2.5vw, 24px);
     position: relative;
     overflow-x: hidden;
+    perspective: 1200px;
   }
 
   /* Background Ambient Water Orbs */
   .orb {
     position: fixed;
     border-radius: 50%;
-    filter: blur(90px);
+    filter: blur(100px);
     z-index: 0;
     pointer-events: none;
-    opacity: 0.3;
-    animation: float 16s ease-in-out infinite alternate;
+    opacity: 0.28;
+    animation: orbFloat 18s ease-in-out infinite alternate;
   }
-  .orb-1 { width: clamp(280px, 40vw, 450px); height: clamp(280px, 40vw, 450px); background: #1d4ed8; top: -5%; left: 5%; }
-  .orb-2 { width: clamp(260px, 35vw, 400px); height: clamp(260px, 35vw, 400px); background: #0284c7; bottom: 0; right: 5%; animation-delay: -8s; }
-  .orb-3 { width: clamp(200px, 30vw, 320px); height: clamp(200px, 30vw, 320px); background: #7c3aed; top: 40%; right: 25%; animation-delay: -4s; }
+  .orb-1 { width: clamp(280px, 40vw, 480px); height: clamp(280px, 40vw, 480px); background: #1d4ed8; top: -10%; left: 5%; }
+  .orb-2 { width: clamp(260px, 35vw, 420px); height: clamp(260px, 35vw, 420px); background: #0284c7; bottom: -5%; right: 5%; animation-delay: -9s; }
+  .orb-3 { width: clamp(220px, 30vw, 340px); height: clamp(220px, 30vw, 340px); background: #7c3aed; top: 40%; right: 25%; animation-delay: -4.5s; }
 
-  @keyframes float {
+  @keyframes orbFloat {
     0% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(30px, -20px) scale(1.08); }
-    100% { transform: translate(-20px, 30px) scale(0.95); }
+    50% { transform: translate(35px, -25px) scale(1.08); }
+    100% { transform: translate(-25px, 35px) scale(0.94); }
   }
 
   #net {
@@ -84,37 +97,81 @@
     pointer-events: none;
   }
 
-  /* Main Responsive Container */
+  /* Main Container */
   .container {
     width: 100%;
-    max-width: 1080px;
+    max-width: 1140px;
     display: grid;
-    grid-template-columns: 340px 1fr;
-    gap: clamp(16px, 2.5vw, 24px);
+    grid-template-columns: 350px 1fr;
+    gap: clamp(16px, 2.2vw, 24px);
     position: relative;
     z-index: 1;
     margin: 0 auto;
   }
 
-  /* Shared Bento Card Style */
+  /* Bento Card Base & 3D Tilt Layer */
   .bento-card {
     background: var(--card-bg);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
     border: 1px solid var(--card-border);
-    border-radius: clamp(18px, 3vw, 24px);
-    padding: clamp(20px, 3vw, 28px);
+    border-radius: clamp(20px, 2.8vw, 26px);
+    padding: clamp(20px, 2.8vw, 28px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45),
                 inset 0 1px 1px rgba(255, 255, 255, 0.08);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.3s ease,
                 box-shadow 0.3s ease;
   }
+
+  /* Dynamic Specular Sheen (Follows Mouse Cursor in JS) */
+  .bento-card .sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle 280px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.12), transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  .bento-card:hover .sheen {
+    opacity: 1;
+  }
+
   .bento-card:hover {
     border-color: var(--card-border-hover);
-    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55),
-                0 0 30px var(--accent-glow),
-                inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    box-shadow: 0 26px 54px rgba(0, 0, 0, 0.58),
+                0 0 35px var(--accent-glow),
+                inset 0 1px 2px rgba(255, 255, 255, 0.14);
+  }
+
+  /* Headers */
+  .bento-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(0.88rem, 1.8vw, 0.98rem);
+    font-weight: 700;
+    color: var(--accent-cyan);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .bento-header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bento-header svg {
+    width: 19px;
+    height: 19px;
+    color: var(--accent-cyan);
+    flex-shrink: 0;
   }
 
   /* --- LEFT PROFILE HERO --- */
@@ -123,9 +180,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    position: relative;
-    height: 100%;
-    justify-content: space-between;
+    gap: 16px;
   }
 
   .profile-top {
@@ -135,47 +190,67 @@
     width: 100%;
   }
 
+  /* Dynamic Live Status Badge */
   .status-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     background: rgba(16, 185, 129, 0.12);
-    color: #10b981;
+    color: var(--accent-emerald);
     border: 1px solid rgba(16, 185, 129, 0.3);
     padding: 5px 14px;
     border-radius: 20px;
     font-size: 0.76rem;
     font-weight: 600;
-    margin-bottom: 18px;
+    font-family: 'Space Grotesk', sans-serif;
+    margin-bottom: 14px;
+    transition: all 0.3s ease;
   }
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    background: #10b981;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #10b981;
-    animation: blink 2s ease-in-out infinite;
+  .status-badge.dnd {
+    background: rgba(244, 63, 94, 0.12);
+    color: var(--accent-rose);
+    border-color: rgba(244, 63, 94, 0.35);
   }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+  .status-badge.idle {
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--accent-amber);
+    border-color: rgba(245, 158, 11, 0.35);
+  }
+  .status-badge.offline {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text-muted);
+    border-color: rgba(148, 163, 184, 0.3);
   }
 
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+    animation: blink 2.2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  /* Avatar with Glowing Discord Ring */
   .avatar-container {
     position: relative;
-    width: clamp(110px, 15vw, 140px);
-    height: clamp(110px, 15vw, 140px);
-    margin-bottom: 16px;
+    width: clamp(110px, 14vw, 135px);
+    height: clamp(110px, 14vw, 135px);
+    margin-bottom: 14px;
   }
   .avatar-container::before {
     content: '';
     position: absolute;
     inset: -5px;
-    border-radius: 28px;
+    border-radius: 30px;
     background: linear-gradient(135deg, var(--accent-cyan), var(--primary), var(--accent-violet));
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
-    filter: blur(6px);
+    filter: blur(8px);
     opacity: 0.85;
   }
   @keyframes gradientMove {
@@ -188,25 +263,45 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 24px;
+    border-radius: 26px;
     border: 2px solid #0d1b3e;
     z-index: 1;
   }
 
+  /* Discord Avatar Status Pip */
+  .avatar-status-pip {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 3px solid #060b14;
+    background: #64748b;
+    z-index: 3;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    transition: background-color 0.3s ease;
+  }
+  .avatar-status-pip.online { background: #10b981; }
+  .avatar-status-pip.idle { background: #f59e0b; }
+  .avatar-status-pip.dnd { background: #f43f5e; }
+  .avatar-status-pip.offline { background: #64748b; }
+
   .name-title {
     font-family: 'Outfit', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 2.3rem);
+    font-size: clamp(1.85rem, 3.8vw, 2.35rem);
     font-weight: 900;
     letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 80%, var(--accent-violet) 100%);
+    background: linear-gradient(135deg, #ffffff 35%, var(--accent-cyan) 80%, var(--accent-violet) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    line-height: 1.1;
   }
 
   .tagline-pill {
     margin-top: 8px;
     color: var(--accent-cyan);
-    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    font-size: clamp(0.8rem, 1.8vw, 0.88rem);
     font-weight: 500;
     background: rgba(56, 189, 248, 0.08);
     padding: 6px 14px;
@@ -216,8 +311,165 @@
     align-items: center;
     gap: 6px;
   }
-  .heart { color: #f43f5e; display: inline-block; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+  .heart { color: #f43f5e; display: inline-block; animation: heartPulse 1.6s infinite; }
+  @keyframes heartPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+
+  /* Clock Widget */
+  .clock-widget {
+    font-family: 'Maple Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--accent-cyan);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10, 17, 32, 0.6);
+    padding: 5px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(56, 189, 248, 0.15);
+  }
+
+  /* --- LIVE DISCORD ACTIVITY WIDGET --- */
+  .discord-activity-card {
+    width: 100%;
+    background: rgba(8, 15, 30, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.14);
+    border-radius: 18px;
+    padding: 14px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+  .discord-activity-card:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+  }
+
+  .discord-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    font-family: 'Maple Mono', monospace;
+    color: var(--text-muted);
+  }
+  .discord-user-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+  .discord-tag-pill {
+    color: var(--accent-cyan);
+  }
+  .device-badges {
+    display: flex;
+    gap: 4px;
+    font-size: 0.8rem;
+  }
+
+  /* Custom Status Box */
+  .custom-status-text {
+    font-size: 0.78rem;
+    color: var(--text-main);
+    background: rgba(56, 189, 248, 0.06);
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(56, 189, 248, 0.12);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    word-break: break-word;
+  }
+
+  /* Activity Content (Game / Spotify / Idle) */
+  .activity-body {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .activity-icon-wrap {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+  }
+  .activity-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .activity-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .activity-type {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-family: 'Maple Mono', monospace;
+    letter-spacing: 0.08em;
+    color: var(--accent-cyan);
+  }
+  .activity-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .activity-state {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .activity-time {
+    font-size: 0.7rem;
+    font-family: 'Maple Mono', monospace;
+    color: var(--accent-blue);
+    margin-top: 2px;
+  }
+
+  /* Spotify Progress Bar */
+  .spotify-progress-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .spotify-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .spotify-progress-fill {
+    height: 100%;
+    background: #1db954;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 1s linear;
+  }
+  .spotify-timestamps {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    font-family: 'Maple Mono', monospace;
+    color: var(--text-dim);
+  }
 
   /* Social Links Grid */
   .social-grid {
@@ -225,7 +477,6 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
     width: 100%;
-    margin-top: 20px;
   }
   .social-btn {
     position: relative;
@@ -239,15 +490,15 @@
     color: var(--text-main);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .social-btn svg { width: 20px; height: 20px; }
   .social-btn:hover, .social-btn:active {
     background: linear-gradient(135deg, var(--primary), #0284c7);
     color: #fff;
     border-color: var(--accent-cyan);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 18px rgba(56, 189, 248, 0.3);
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 18px rgba(56, 189, 248, 0.35);
   }
 
   .social-btn::after {
@@ -256,18 +507,19 @@
     bottom: 120%;
     left: 50%;
     transform: translateX(-50%) translateY(4px);
-    background: #0f172a;
+    background: #0b1329;
     color: #e2e8f0;
     border: 1px solid var(--card-border);
     padding: 5px 10px;
     border-radius: 8px;
     font-size: 0.72rem;
-    font-weight: 600;
+    font-family: 'Maple Mono', monospace;
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
     transition: opacity .2s ease, transform .2s ease;
     z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   }
   .social-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -277,22 +529,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: clamp(14px, 2vw, 20px);
   }
-
   .span-2 { grid-column: span 2; }
-
-  .bento-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(0.88rem, 2vw, 1rem);
-    font-weight: 700;
-    color: var(--accent-cyan);
-    margin-bottom: 14px;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-  }
-  .bento-header svg { width: 18px; height: 18px; color: var(--accent-cyan); flex-shrink: 0; }
 
   /* Specs Grid Tiles */
   .specs-tiles {
@@ -308,11 +545,13 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    transition: border-color .2s ease, transform .2s ease;
+    cursor: default;
+    transition: border-color .25s ease, transform .25s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .spec-tile:hover {
-    border-color: rgba(56, 189, 248, 0.35);
-    transform: translateY(-2px);
+    border-color: rgba(56, 189, 248, 0.4);
+    transform: translateY(-3px);
+    background: rgba(14, 25, 48, 0.8);
   }
   .spec-label {
     font-size: 0.68rem;
@@ -322,7 +561,7 @@
     font-family: 'Maple Mono', monospace;
   }
   .spec-val {
-    font-size: clamp(0.78rem, 1.5vw, 0.88rem);
+    font-size: clamp(0.78rem, 1.4vw, 0.88rem);
     font-weight: 700;
     color: var(--text-main);
     font-family: 'Space Grotesk', sans-serif;
@@ -330,14 +569,102 @@
   }
   .spec-highlight { color: var(--accent-cyan); }
   .spec-violet { color: var(--accent-violet); }
+  .spec-emerald { color: var(--accent-emerald); }
 
-  /* About / Roxy Card */
-  .roxy-shrine-content {
-    font-size: 0.88rem;
-    line-height: 1.65;
+  /* --- FEATURED PROJECTS & DOTFILES --- */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .project-card {
+    background: rgba(10, 18, 36, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.13);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card:hover {
+    background: rgba(15, 27, 54, 0.85);
+    border-color: rgba(56, 189, 248, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  }
+  .project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .project-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .project-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-cyan);
+  }
+  .project-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.94rem;
+    color: #fff;
+  }
+  .project-link-icon {
+    color: var(--text-dim);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .project-card:hover .project-link-icon {
+    color: var(--accent-cyan);
+    transform: translate(2px, -2px);
+  }
+  .project-desc {
+    font-size: 0.8rem;
+    line-height: 1.45;
     color: var(--text-muted);
   }
-  .roxy-shrine-content strong { color: var(--text-main); }
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+  }
+  .project-tag {
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--accent-cyan);
+    font-size: 0.68rem;
+    font-family: 'Maple Mono', monospace;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .project-tag.nix {
+    background: rgba(126, 186, 228, 0.1);
+    color: #7ebae4;
+    border-color: rgba(126, 186, 228, 0.3);
+  }
+  .project-tag.osu {
+    background: rgba(244, 63, 94, 0.1);
+    color: #fb7185;
+    border-color: rgba(244, 63, 94, 0.3);
+  }
+
+  /* --- AFFILIATION & WATER SPELLCASTING --- */
+  .shrine-content {
+    font-size: 0.86rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+  .shrine-content strong { color: var(--text-main); }
   
   .badge-list {
     display: flex;
@@ -353,71 +680,28 @@
     font-family: 'Maple Mono', monospace;
     padding: 4px 9px;
     border-radius: 8px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .badge-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-cyan);
   }
 
-  /* Equalizer & Media Player Widget */
-  .equalizer {
-    display: inline-flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 14px;
-    margin-left: auto;
-  }
-  .equalizer span {
-    width: 3px;
-    background: var(--accent-cyan);
-    border-radius: 2px;
-    animation: eqBounce 1.2s ease-in-out infinite alternate;
-  }
-  .equalizer span:nth-child(1) { height: 60%; animation-delay: -0.4s; }
-  .equalizer span:nth-child(2) { height: 100%; animation-delay: -0.2s; }
-  .equalizer span:nth-child(3) { height: 40%; animation-delay: -0.6s; }
-  .equalizer span:nth-child(4) { height: 80%; animation-delay: -0.1s; }
-
-  @keyframes eqBounce {
-    0% { height: 30%; }
-    100% { height: 100%; }
-  }
-
-  .player-wrapper {
-    margin-top: 10px;
-    border-radius: 16px;
-    overflow: hidden;
-    background: rgba(10, 17, 32, 0.6);
-    border: 1px solid rgba(56, 189, 248, 0.15);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  }
-  .player-wrapper iframe {
-    display: block;
-    width: 100%;
-    height: 180px;
-    border: none;
-  }
-
-  /* Interactive Water Magic Cast Box */
-  .cast-box {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: linear-gradient(135deg, rgba(13, 27, 62, 0.8), rgba(29, 78, 216, 0.25));
-  }
-  .cast-actions {
+  .cast-controls {
     display: flex;
     gap: 8px;
     margin-top: 14px;
-    flex-wrap: wrap;
   }
   .cast-btn {
     flex: 1;
-    min-width: 130px;
     background: linear-gradient(135deg, var(--primary), #0284c7);
     color: #fff;
     border: none;
-    padding: 11px 16px;
+    padding: 10px 14px;
     border-radius: 12px;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -426,9 +710,12 @@
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
     transition: all 0.25s ease;
   }
-  .cast-btn:hover, .cast-btn:active {
+  .cast-btn:hover {
     transform: scale(1.02);
-    box-shadow: 0 8px 22px rgba(56, 189, 248, 0.45);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+  }
+  .cast-btn:active {
+    transform: scale(0.98);
   }
   .cast-btn.secondary {
     background: rgba(167, 139, 250, 0.12);
@@ -441,19 +728,55 @@
     border-color: var(--accent-violet);
   }
 
-  /* Clock Widget */
-  .clock-widget {
+  /* --- OSU QUICK STATS CARD --- */
+  .osu-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 35px);
+  }
+  .osu-profile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+  .osu-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .osu-username {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .osu-id-tag {
     font-family: 'Maple Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--accent-cyan);
-    margin-top: 14px;
+    font-size: 0.72rem;
+    color: var(--accent-rose);
+  }
+  .osu-open-btn {
+    background: rgba(244, 63, 94, 0.12);
+    border: 1px solid rgba(244, 63, 94, 0.3);
+    color: #fb7185;
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(10, 17, 32, 0.5);
-    padding: 4px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(56, 189, 248, 0.15);
+    transition: all 0.2s ease;
+  }
+  .osu-open-btn:hover {
+    background: #f43f5e;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.4);
   }
 
   /* Footer */
@@ -462,10 +785,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 10px;
-    font-size: 0.78rem;
+    padding-top: 8px;
+    font-size: 0.76rem;
     font-family: 'Maple Mono', monospace;
     color: var(--text-muted);
+  }
+  .lanyard-ping-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ping-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-emerald);
   }
 
   /* ===== INTRO SPLASH SCREEN ===== */
@@ -478,7 +812,7 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
-    background: #060b14;
+    background: #050914;
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
   #splash.hide {
@@ -553,17 +887,16 @@
     to { width: 100%; }
   }
 
-  /* ===== PAGE ENTRANCE ANIMATIONS ===== */
-  .container {
-    animation: none; /* override just in case */
-  }
-  .bento-card, .profile-hero {
+  /* ===== ENTRANCE STAGGER ANIMATIONS ===== */
+  .bento-card {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(24px);
     transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
   }
-  .bento-card.visible, .profile-hero.visible {
+  .bento-card.visible {
     opacity: 1;
     transform: translateY(0);
   }
@@ -574,14 +907,15 @@
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: #0f172a;
+    background: #091326;
     color: var(--accent-cyan);
     border: 1px solid var(--accent-cyan);
     padding: 10px 22px;
     border-radius: 30px;
     font-size: 0.82rem;
+    font-family: 'Space Grotesk', sans-serif;
     font-weight: 600;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(56, 189, 248, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.35);
     opacity: 0;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     z-index: 100;
@@ -596,7 +930,7 @@
   }
 
   /* Mobile Responsive Breakpoints */
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     .container {
       grid-template-columns: 1fr;
     }
@@ -607,23 +941,27 @@
     .specs-tiles {
       grid-template-columns: repeat(2, 1fr);
     }
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
     footer {
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       text-align: center;
     }
   }
 
   @media (max-width: 480px) {
-    body { padding: 16px 10px; }
+    body { padding: 14px 8px; }
     .container { gap: 14px; }
     .bento-right { gap: 14px; }
-    .bento-card { padding: 18px 14px; }
+    .bento-card { padding: 16px 14px; }
     .specs-tiles { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .spec-tile { padding: 10px 10px; }
     .social-grid { gap: 6px; }
     .social-btn { height: 42px; }
     .social-btn svg { width: 18px; height: 18px; }
+    .cast-controls { flex-direction: column; }
   }
 </style>
 </head>
@@ -653,36 +991,86 @@
 <div class="container">
   
   <!-- LEFT: Hero Profile Bento Card -->
-  <div class="bento-card profile-hero">
+  <div class="bento-card profile-hero" id="card-hero">
+    <div class="sheen"></div>
     <div class="profile-top">
-      <div class="status-badge">
+      
+      <!-- Live Status Badge (Updated by Lanyard) -->
+      <div class="status-badge dnd" id="discord-status-badge">
         <span class="status-dot"></span>
-        <span>Water Holy Class Mage</span>
+        <span id="discord-status-text">Do Not Disturb</span>
       </div>
 
+      <!-- Avatar with Live Status Pip -->
       <div class="avatar-container">
         <img class="avatar-img" src="roxy-ff.png" alt="Afterlight Avatar">
+        <div class="avatar-status-pip dnd" id="avatar-pip" title="Discord Status"></div>
       </div>
 
       <h1 class="name-title">Afterlight</h1>
       <div class="tagline-pill">Roxy Migurdia my beloved <span class="heart">♥</span></div>
     </div>
 
+    <!-- Live Clock -->
     <div class="clock-widget">
       <span>🕒</span> <span id="live-clock">00:00:00 UTC+8</span>
     </div>
 
+    <!-- Live Discord Presence / Activity Card -->
+    <div class="discord-activity-card" id="lanyard-card">
+      <div class="discord-header">
+        <div class="discord-user-info">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.3 5.4A17.5 17.5 0 0 0 15.9 4c-.2.4-.5.9-.6 1.3a16.5 16.5 0 0 0-4.8 0A9 9 0 0 0 9.8 4a17.6 17.6 0 0 0-4.4 1.4C2.6 9 1.9 12.5 2.2 16a17.7 17.7 0 0 0 5.3 2.7c.4-.6.8-1.2 1.1-1.9-.6-.2-1.2-.5-1.7-.9l.4-.3c3.3 1.5 6.9 1.5 10.2 0l.4.3c-.5.4-1.1.7-1.7.9.3.7.7 1.3 1.1 1.9a17.6 17.6 0 0 0 5.3-2.7c.4-4-.6-7.5-2.3-10.6ZM9.7 13.9c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm4.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
+          <span class="discord-tag-pill">@afterlight_hd</span>
+        </div>
+        <div class="device-badges" id="device-badges">
+          <span title="Desktop App">💻</span>
+        </div>
+      </div>
+
+      <!-- Custom Status (if active) -->
+      <div class="custom-status-text" id="discord-custom-status" style="display:none;">
+        <span id="custom-emoji">💬</span>
+        <span id="custom-status-val">...</span>
+      </div>
+
+      <!-- Rich Presence Activity / Spotify -->
+      <div class="activity-body" id="activity-body">
+        <div class="activity-icon-wrap" id="activity-icon-wrap">
+          <img class="activity-icon" id="activity-icon" src="roxy-ff.png" alt="Activity">
+        </div>
+        <div class="activity-details">
+          <span class="activity-type" id="activity-type">SANCTUARY STATUS</span>
+          <span class="activity-name" id="activity-name">Chilling in Roxy's Sanctuary</span>
+          <span class="activity-state" id="activity-state">Water Holy Class Mage</span>
+          <span class="activity-time" id="activity-time">Live • NixOS 26.05</span>
+        </div>
+      </div>
+
+      <!-- Spotify Live Progress (Hidden if not playing Spotify) -->
+      <div class="spotify-progress-wrap" id="spotify-progress-wrap" style="display:none;">
+        <div class="spotify-progress-bar">
+          <div class="spotify-progress-fill" id="spotify-fill"></div>
+        </div>
+        <div class="spotify-timestamps">
+          <span id="spotify-cur">0:00</span>
+          <span id="spotify-tot">0:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Buttons Grid -->
     <div class="social-grid">
       <!-- GitHub -->
       <a class="social-btn" href="https://github.com/Afterlight0338" target="_blank" rel="noopener" aria-label="GitHub (@Afterlight0338)">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.02-.01-1.86-2.78.62-3.37-1.22-3.37-1.22-.46-1.19-1.11-1.51-1.11-1.51-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.92 0 1.39-.01 2.51-.01 2.85 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
       </a>
-      <!-- Discord -->
-      <button class="social-btn" onclick="copyDiscord()" aria-label="Discord: afterlight_hd">
+      <!-- Discord Copy -->
+      <button class="social-btn" onclick="copyDiscord()" aria-label="Copy Discord: afterlight_hd">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 5.4A17.5 17.5 0 0 0 15.9 4c-.2.4-.5.9-.6 1.3a16.5 16.5 0 0 0-4.8 0A9 9 0 0 0 9.8 4a17.6 17.6 0 0 0-4.4 1.4C2.6 9 1.9 12.5 2.2 16a17.7 17.7 0 0 0 5.3 2.7c.4-.6.8-1.2 1.1-1.9-.6-.2-1.2-.5-1.7-.9l.4-.3c3.3 1.5 6.9 1.5 10.2 0l.4.3c-.5.4-1.1.7-1.7.9.3.7.7 1.3 1.1 1.9a17.6 17.6 0 0 0 5.3-2.7c.4-4-.6-7.5-2.3-10.6ZM9.7 13.9c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm4.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
       </button>
       <!-- Twitch -->
-      <a class="social-btn" href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener" aria-label="Twitch (afterlight_)">
+      <a class="social-btn" href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener" aria-label="Twitch (@afterlight_)">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
       </a>
       <!-- TikTok -->
@@ -690,7 +1078,7 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.36-1.5V4h-2.62v13.1a2.7 2.7 0 1 1-2.19-2.66V11.9a5.3 5.3 0 1 0 4.81 5.28V9.4a6.9 6.9 0 0 0 4.36 1.56V8.36c-.34 0-.68-.03-1-.09Z"/></svg>
       </a>
       <!-- osu! -->
-      <a class="social-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" aria-label="osu! Profile">
+      <a class="social-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" aria-label="osu! Profile (14671577)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
       </a>
     </div>
@@ -699,11 +1087,15 @@
   <!-- RIGHT: Bento Grid Dashboard -->
   <div class="bento-right">
     
-    <!-- Specs Grid Box (Span 2) -->
-    <div class="bento-card span-2">
+    <!-- System Specs & Rig Card (Span 2) -->
+    <div class="bento-card span-2" id="card-specs">
+      <div class="sheen"></div>
       <div class="bento-header">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        <span>System Setup & Rig Specs</span>
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span>System Setup & Rig Specs</span>
+        </div>
+        <span style="font-size:0.72rem; color:var(--text-dim); font-family:'Maple Mono', monospace;">NIXOS-HYPRLAND</span>
       </div>
 
       <div class="specs-tiles">
@@ -729,7 +1121,7 @@
         </div>
         <div class="spec-tile">
           <span class="spec-label">Operating System</span>
-          <span class="spec-val">NixOS 26.05</span>
+          <span class="spec-val spec-emerald">NixOS 26.05</span>
         </div>
         <div class="spec-tile">
           <span class="spec-label">Window Manager</span>
@@ -742,106 +1134,473 @@
       </div>
     </div>
 
-    <!-- Shrine / Fav Info Box -->
-    <div class="bento-card span-2">
+    <!-- Featured Projects & Dotfiles Showcase (Span 2) -->
+    <div class="bento-card span-2" id="card-projects">
+      <div class="sheen"></div>
       <div class="bento-header">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-        <span>Affiliation & Interests</span>
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          <span>Featured Projects & Dotfiles</span>
+        </div>
+        <a href="https://github.com/Afterlight0338?tab=repositories" target="_blank" rel="noopener" style="color:var(--accent-cyan); text-decoration:none; font-size:0.75rem; font-family:'Maple Mono', monospace;">View All →</a>
       </div>
-      <div class="roxy-shrine-content">
-        Dedicated disciple of <strong>Roxy Migurdia</strong> from <em>Mushoku Tensei</em>. Master of water spellcrafting & Linux customization.
+
+      <div class="projects-grid">
+        <!-- Project 1: roxy-fastfetch -->
+        <a class="project-card" href="https://github.com/Afterlight0338/roxy-fastfetch" target="_blank" rel="noopener">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                <span class="project-title">roxy-fastfetch</span>
+              </div>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <p class="project-desc" style="margin-top: 8px;">Roxy Migurdia themed Fastfetch configuration with custom ASCII and system spec layout.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Shell</span>
+            <span class="project-tag">Fastfetch</span>
+            <span class="project-tag">Roxy Theme</span>
+          </div>
+        </a>
+
+        <!-- Project 2: nixos-hyprland-rice -->
+        <div class="project-card" style="cursor: pointer;" onclick="showToast('Declarative NixOS Flake + Hyprland Rice')">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span class="project-title">NixOS Hyprland Rice</span>
+              </div>
+              <span style="font-size:0.7rem; color:var(--accent-emerald); font-family:'Maple Mono', monospace;">Active</span>
+            </div>
+            <p class="project-desc" style="margin-top: 8px;">Declarative NixOS configuration featuring Hyprland, Waybar, Rofi, and smooth fluid animations.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag nix">NixOS 26.05</span>
+            <span class="project-tag">Hyprland</span>
+            <span class="project-tag">240Hz</span>
+          </div>
+        </div>
+
+        <!-- Project 3: osu-skins -->
+        <a class="project-card" href="https://github.com/Afterlight0338/osu-skins" target="_blank" rel="noopener">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+                <span class="project-title">osu! Skin Collection</span>
+              </div>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <p class="project-desc" style="margin-top: 8px;">Curated high-readability osu! standard skin collection optimized for high-refresh competitive play.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag osu">osu!</span>
+            <span class="project-tag">Skins</span>
+            <span class="project-tag">Gameplay</span>
+          </div>
+        </a>
+
+        <!-- Project 4: Sanctuary Web Dashboard -->
+        <a class="project-card" href="https://github.com/Afterlight0338/Afterlight0338.github.io" target="_blank" rel="noopener">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+                <span class="project-title">Roxy's Sanctuary</span>
+              </div>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <p class="project-desc" style="margin-top: 8px;">Personal sanctuary website with real-time Lanyard WebSocket sync & canvas water mana physics.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">HTML5 / CSS3</span>
+            <span class="project-tag">Lanyard WS</span>
+            <span class="project-tag">Canvas</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Shrine / Affiliation & Water Spellcrafting (Span 1) -->
+    <div class="bento-card" id="card-shrine">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+          <span>Affiliation & Mastery</span>
+        </div>
+      </div>
+      <div class="shrine-content">
+        Dedicated disciple of <strong>Roxy Migurdia</strong> from <em>Mushoku Tensei</em>. Master of chantless water spellcrafting & Linux rice engineering.
         <div class="badge-list">
           <span class="badge-item">💧 Water Holy Class</span>
           <span class="badge-item">❄️ Ice Magic</span>
-          <span class="badge-item">⚙️ NixOS Rice</span>
-          <span class="badge-item">🎯 osu! Player</span>
+          <span class="badge-item">⚙️ NixOS Flake</span>
+          <span class="badge-item">🎯 osu! 240Hz</span>
+        </div>
+      </div>
+
+      <div class="cast-controls">
+        <button class="cast-btn" onclick="castWaterSurge()">
+          <span>💧 Mana Surge</span>
+        </button>
+        <button class="cast-btn secondary" onclick="castCumulonimbus()">
+          <span>❄️ Cumulonimbus</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- osu! Profile Card (Span 1) -->
+    <div class="bento-card" id="card-osu">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
+          <span>osu! Player Sanctuary</span>
+        </div>
+        <span style="font-size:0.72rem; color:var(--accent-rose); font-family:'Maple Mono', monospace;">STD</span>
+      </div>
+
+      <div class="osu-card-content">
+        <p style="font-size: 0.84rem; line-height: 1.5; color: var(--text-muted);">
+          Competitive standard mode player aiming on a 240Hz Acer Nitro display. Check profile & beatmap scores.
+        </p>
+
+        <div class="osu-profile-row">
+          <div class="osu-meta">
+            <span class="osu-username">Afterlight</span>
+            <span class="osu-id-tag">UID: #14671577</span>
+          </div>
+          <a class="osu-open-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">
+            <span>View Profile</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
         </div>
       </div>
     </div>
 
-    <!-- Footer inside Grid -->
+    <!-- Footer -->
     <footer>
       <span>© Afterlight • Roxy's Sanctuary</span>
+      <div class="lanyard-ping-wrap">
+        <span class="ping-dot" id="lanyard-ping-dot"></span>
+        <span id="lanyard-status-note">Lanyard Gateway: Connected</span>
+      </div>
     </footer>
 
   </div>
 
 </div>
 
+<!-- Interactive Toast -->
 <div id="toast">Copied Discord tag: afterlight_hd</div>
 
 <script>
-// ===== SPLASH SCREEN + ENTRANCE ANIMATIONS =====
+// ===== 1. SPLASH SCREEN & ENTRANCE ANIMATIONS =====
 (function () {
   var splash = document.getElementById('splash');
-  var cards = Array.from(document.querySelectorAll('.bento-card, .profile-hero'));
+  var cards = Array.from(document.querySelectorAll('.bento-card'));
 
-  // Dismiss splash after bar fills (~1.7s total), then trigger card entrances
-  setTimeout(function () {
+  function dismissSplash() {
     splash.classList.add('hide');
-
-    // Stagger each card's entrance with a small delay
     cards.forEach(function (card, i) {
       setTimeout(function () {
         card.classList.add('visible');
-      }, i * 90);
+      }, i * 75);
     });
-
-    // Remove splash from DOM after transition ends so it can't block clicks
     setTimeout(function () {
       splash.style.display = 'none';
-    }, 800);
-  }, 1800);
+    }, 700);
+  }
 
-  // Allow clicking the splash to skip it early
-  splash.addEventListener('click', function () {
-    splash.classList.add('hide');
-    cards.forEach(function (card, i) {
-      setTimeout(function () { card.classList.add('visible'); }, i * 60);
-    });
-    setTimeout(function () { splash.style.display = 'none'; }, 700);
-  });
+  setTimeout(dismissSplash, 1700);
+  splash.addEventListener('click', dismissSplash);
 })();
 
-// Live Clock
+// ===== 2. LIVE UTC+8 CLOCK =====
 function updateClock() {
   const now = new Date();
   const options = { timeZone: 'Asia/Shanghai', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
   const timeStr = now.toLocaleTimeString('en-US', options);
-  document.getElementById('live-clock').innerText = timeStr + ' UTC+8';
+  const clockEl = document.getElementById('live-clock');
+  if (clockEl) clockEl.innerText = timeStr + ' UTC+8';
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-// Copy Discord Tag
+// ===== 3. TOAST & DISCORD CLIPBOARD =====
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.innerText = msg;
+  toast.classList.add("show");
+  setTimeout(() => { toast.classList.remove("show"); }, 2600);
+}
+
 function copyDiscord() {
   const discordTag = "afterlight_hd";
   navigator.clipboard.writeText(discordTag).then(() => {
     showToast("Copied Discord tag: " + discordTag);
   }).catch(() => {
-    alert("Discord: " + discordTag);
+    prompt("Copy Discord tag:", discordTag);
   });
 }
 
-function showToast(msg) {
-  const toast = document.getElementById("toast");
-  toast.innerText = msg;
-  toast.classList.add("show");
-  setTimeout(() => { toast.classList.remove("show"); }, 2800);
+// ===== 4. 3D CARD HOVER TILT WITH SPECULAR SHEEN =====
+(function initTilt() {
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (isTouch) return; // Skip 3D tilt on mobile touch devices
+
+  const cards = document.querySelectorAll('.bento-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -5;
+      const rotateY = ((x - centerX) / centerX) * 5;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-3px)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+    });
+  });
+})();
+
+// ===== 5. REAL-TIME DISCORD PRESENCE VIA LANYARD =====
+const DISCORD_USER_ID = "553169854304354304";
+let lanyardSocket = null;
+let heartbeatInterval = null;
+let spotifyInterval = null;
+
+function formatDuration(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return `${min}:${sec < 10 ? '0' : ''}${sec}`;
 }
 
-// Floating Water Mana & Expanding Ripple System
-var canvas = document.getElementById('net');
-var ctx = canvas.getContext('2d');
-var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function formatElapsed(startTimeMs) {
+  const diffSec = Math.floor((Date.now() - startTimeMs) / 1000);
+  const hrs = Math.floor(diffSec / 3600);
+  const min = Math.floor((diffSec % 3600) / 60);
+  const sec = diffSec % 60;
+  if (hrs > 0) {
+    return `${hrs}:${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec} elapsed`;
+  }
+  return `${min}:${sec < 10 ? '0' : ''}${sec} elapsed`;
+}
 
-var dpr = Math.min(window.devicePixelRatio || 1, 2);
-var w, h, particles, ripples = [];
-var mouse = { x: null, y: null, active: false };
+function updatePresenceUI(d) {
+  if (!d) return;
 
-var PALETTE = ['56, 189, 248', '96, 165, 250', '167, 139, 250', '125, 211, 252'];
+  const statusBadge = document.getElementById('discord-status-badge');
+  const statusText = document.getElementById('discord-status-text');
+  const avatarPip = document.getElementById('avatar-pip');
+  const deviceBadges = document.getElementById('device-badges');
+  const customStatusEl = document.getElementById('discord-custom-status');
+  const customStatusVal = document.getElementById('custom-status-val');
+  const customEmoji = document.getElementById('custom-emoji');
 
-function size(){
+  const activityType = document.getElementById('activity-type');
+  const activityName = document.getElementById('activity-name');
+  const activityState = document.getElementById('activity-state');
+  const activityTime = document.getElementById('activity-time');
+  const activityIcon = document.getElementById('activity-icon');
+  const spotifyWrap = document.getElementById('spotify-progress-wrap');
+  const spotifyFill = document.getElementById('spotify-fill');
+  const spotifyCur = document.getElementById('spotify-cur');
+  const spotifyTot = document.getElementById('spotify-tot');
+
+  const rawStatus = d.discord_status || 'offline';
+  
+  // Update status badge & pip
+  statusBadge.className = 'status-badge ' + rawStatus;
+  avatarPip.className = 'avatar-status-pip ' + rawStatus;
+
+  const statusLabels = {
+    online: 'Online in Sanctuary',
+    idle: 'Idle / AFK',
+    dnd: 'Do Not Disturb',
+    offline: 'Offline in Sanctuary'
+  };
+  statusText.innerText = statusLabels[rawStatus] || 'Water Holy Class';
+
+  // Device Badges
+  let devicesHTML = '';
+  if (d.active_on_discord_desktop) devicesHTML += '<span title="Desktop App">💻</span>';
+  if (d.active_on_discord_mobile) devicesHTML += '<span title="Mobile App">📱</span>';
+  if (d.active_on_discord_web) devicesHTML += '<span title="Web Client">🌐</span>';
+  if (deviceBadges) deviceBadges.innerHTML = devicesHTML || '<span title="Sanctuary">🌊</span>';
+
+  // Custom Status
+  if (d.activities && d.activities.length > 0) {
+    const custom = d.activities.find(a => a.type === 4);
+    if (custom && custom.state) {
+      customStatusEl.style.display = 'flex';
+      customStatusVal.innerText = custom.state;
+      customEmoji.innerText = custom.emoji ? (custom.emoji.name || '💬') : '💬';
+    } else {
+      customStatusEl.style.display = 'none';
+    }
+  } else {
+    customStatusEl.style.display = 'none';
+  }
+
+  // Clear previous timers
+  if (spotifyInterval) { clearInterval(spotifyInterval); spotifyInterval = null; }
+
+  // Check Spotify
+  if (d.listening_to_spotify && d.spotify) {
+    const s = d.spotify;
+    activityType.innerText = 'LISTENING TO SPOTIFY';
+    activityName.innerText = s.song;
+    activityState.innerText = `by ${s.artist}`;
+    activityTime.innerText = s.album;
+    activityIcon.src = s.album_art_url || 'roxy-ff.png';
+    spotifyWrap.style.display = 'flex';
+
+    function updateSpotifyProgress() {
+      const now = Date.now();
+      const start = s.timestamps.start;
+      const end = s.timestamps.end;
+      const current = Math.min(Math.max(now - start, 0), end - start);
+      const percent = ((current / (end - start)) * 100).toFixed(1);
+      
+      spotifyFill.style.width = percent + '%';
+      spotifyCur.innerText = formatDuration(current);
+      spotifyTot.innerText = formatDuration(end - start);
+    }
+    updateSpotifyProgress();
+    spotifyInterval = setInterval(updateSpotifyProgress, 1000);
+    return;
+  }
+
+  // Check Game / Rich Presence Activity
+  const gameActivity = d.activities && d.activities.find(a => a.type === 0 || a.type === 1 || a.type === 2);
+  if (gameActivity) {
+    spotifyWrap.style.display = 'none';
+    activityType.innerText = gameActivity.type === 1 ? 'STREAMING' : 'PLAYING GAME';
+    activityName.innerText = gameActivity.name;
+    activityState.innerText = gameActivity.details || gameActivity.state || 'In Session';
+    
+    if (gameActivity.timestamps && gameActivity.timestamps.start) {
+      activityTime.innerText = formatElapsed(gameActivity.timestamps.start);
+    } else {
+      activityTime.innerText = 'Active on NixOS';
+    }
+
+    if (gameActivity.assets && gameActivity.assets.large_image) {
+      if (gameActivity.assets.large_image.startsWith('mp:external/')) {
+        activityIcon.src = `https://media.discordapp.net/external/${gameActivity.assets.large_image.replace('mp:external/', '')}`;
+      } else {
+        activityIcon.src = `https://cdn.discordapp.com/app-assets/${gameActivity.application_id}/${gameActivity.assets.large_image}.png`;
+      }
+    } else {
+      activityIcon.src = 'roxy-ff.png';
+    }
+    return;
+  }
+
+  // Fallback: Idle / Sanctuary Default
+  spotifyWrap.style.display = 'none';
+  activityType.innerText = 'SANCTUARY STATUS';
+  activityName.innerText = rawStatus === 'offline' ? 'Resting in Sanctuary' : 'Exploring NixOS & Roxy Arts';
+  activityState.innerText = 'Water Holy Class Mage';
+  activityTime.innerText = 'Live • NixOS 26.05';
+  activityIcon.src = 'roxy-ff.png';
+}
+
+function initLanyardREST() {
+  fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`)
+    .then(r => r.json())
+    .then(res => {
+      if (res.success && res.data) {
+        updatePresenceUI(res.data);
+      }
+    })
+    .catch(err => console.log('Lanyard REST error:', err));
+}
+
+function initLanyardWS() {
+  try {
+    lanyardSocket = new WebSocket('wss://api.lanyard.rest/socket');
+
+    lanyardSocket.onopen = function () {
+      const note = document.getElementById('lanyard-status-note');
+      const dot = document.getElementById('lanyard-ping-dot');
+      if (note) note.innerText = 'Lanyard Gateway: Connected';
+      if (dot) dot.style.background = 'var(--accent-emerald)';
+    };
+
+    lanyardSocket.onmessage = function (event) {
+      const msg = JSON.parse(event.data);
+      
+      // Hello event (OP 1) -> Start heartbeat & subscribe
+      if (msg.op === 1) {
+        const interval = msg.d.heartbeat_interval;
+        heartbeatInterval = setInterval(() => {
+          if (lanyardSocket && lanyardSocket.readyState === WebSocket.OPEN) {
+            lanyardSocket.send(JSON.stringify({ op: 3 }));
+          }
+        }, interval);
+
+        // Send OP 2: Initialize
+        lanyardSocket.send(JSON.stringify({
+          op: 2,
+          d: { subscribe_to_id: DISCORD_USER_ID }
+        }));
+      }
+
+      // Event Dispatch (OP 0)
+      if (msg.op === 0) {
+        if (msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE') {
+          updatePresenceUI(msg.d);
+        }
+      }
+    };
+
+    lanyardSocket.onclose = function () {
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      const note = document.getElementById('lanyard-status-note');
+      const dot = document.getElementById('lanyard-ping-dot');
+      if (note) note.innerText = 'Lanyard Gateway: Reconnecting...';
+      if (dot) dot.style.background = 'var(--accent-amber)';
+      setTimeout(initLanyardWS, 5000);
+    };
+
+    lanyardSocket.onerror = function () {
+      if (lanyardSocket) lanyardSocket.close();
+    };
+  } catch (e) {
+    console.log('WebSocket not supported or failed', e);
+  }
+}
+
+initLanyardREST();
+initLanyardWS();
+
+// ===== 6. INTERACTIVE WATER MANA & RIPPLE CANVAS SYSTEM =====
+const canvas = document.getElementById('net');
+const ctx = canvas.getContext('2d');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const dpr = Math.min(window.devicePixelRatio || 1, 2);
+let w, h, particles = [], ripples = [];
+
+const PALETTE = ['56, 189, 248', '96, 165, 250', '167, 139, 250', '125, 211, 252', '37, 99, 235'];
+
+function sizeCanvas() {
   w = window.innerWidth;
   h = window.innerHeight;
   canvas.width = w * dpr;
@@ -851,43 +1610,82 @@ function size(){
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
-function makeParticles(){
-  var count = Math.round((w * h) / 14000);
-  count = Math.max(30, Math.min(count, 75));
+function makeParticles() {
+  const count = Math.max(35, Math.min(Math.round((w * h) / 13000), 80));
   particles = [];
-  for (var i = 0; i < count; i++){
+  for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * w,
       y: Math.random() * h,
       vx: (Math.random() - 0.5) * 0.35,
-      vy: -(Math.random() * 0.4 + 0.15),
-      r: Math.random() * 2.4 + 1.1,
+      vy: -(Math.random() * 0.45 + 0.15),
+      r: Math.random() * 2.2 + 1.1,
       color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
       pulse: Math.random() * Math.PI * 2,
-      wobbleSpeed: Math.random() * 0.04 + 0.01
+      wobbleSpeed: Math.random() * 0.035 + 0.015
     });
   }
 }
 
-function addRipple(x, y) {
-  if (ripples.length > 15) ripples.shift();
+function addRipple(x, y, maxRadius = 45, customColor = '56, 189, 248') {
+  if (ripples.length > 20) ripples.shift();
   ripples.push({
     x: x,
     y: y,
     r: 4,
-    maxR: Math.random() * 45 + 30,
-    alpha: 0.8,
-    color: '56, 189, 248'
+    maxR: maxRadius,
+    alpha: 0.85,
+    color: customColor
   });
 }
 
-function step(){
+// Interactive Spell Cast Handlers
+function castWaterSurge() {
+  showToast('💧 Cast: [Water Holy Magic] Mana Surge!');
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  
+  for (let i = 0; i < 40; i++) {
+    const angle = (i / 40) * Math.PI * 2;
+    const speed = Math.random() * 4 + 2;
+    particles.push({
+      x: cx,
+      y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: Math.random() * 3 + 2,
+      color: '56, 189, 248',
+      pulse: 0,
+      wobbleSpeed: 0.05
+    });
+  }
+  addRipple(cx, cy, 140, '56, 189, 248');
+}
+
+function castCumulonimbus() {
+  showToast('❄️ Cast: [Water Holy Class] Cumulonimbus!');
+  for (let i = 0; i < 30; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: -10,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: Math.random() * 5 + 3,
+      r: Math.random() * 2.5 + 1.5,
+      color: '167, 139, 250',
+      pulse: 0,
+      wobbleSpeed: 0.08
+    });
+  }
+}
+
+function stepCanvas() {
   ctx.clearRect(0, 0, w, h);
 
-  for (var i = 0; i < particles.length; i++){
-    var p = particles[i];
+  // Particles
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
     p.pulse += p.wobbleSpeed;
-    p.x += p.vx + Math.sin(p.pulse) * 0.25;
+    p.x += p.vx + Math.sin(p.pulse) * 0.3;
     p.y += p.vy;
 
     if (p.y < -20) {
@@ -897,26 +1695,27 @@ function step(){
     if (p.x < -20) p.x = w + 20;
     if (p.x > w + 20) p.x = -20;
 
-    var currentRadius = p.r + Math.sin(p.pulse) * 0.5;
+    const currentRadius = p.r + Math.sin(p.pulse) * 0.4;
 
     ctx.beginPath();
     ctx.arc(p.x, p.y, Math.max(0.6, currentRadius), 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(' + p.color + ', 0.75)';
+    ctx.fillStyle = `rgba(${p.color}, 0.75)`;
     ctx.shadowBlur = 10;
-    ctx.shadowColor = 'rgba(' + p.color + ', 0.8)';
+    ctx.shadowColor = `rgba(${p.color}, 0.8)`;
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(p.x, p.y, Math.max(1, currentRadius * 1.7), 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(' + p.color + ', 0.12)';
+    ctx.arc(p.x, p.y, Math.max(1, currentRadius * 1.6), 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${p.color}, 0.1)`;
     ctx.fill();
     ctx.shadowBlur = 0;
   }
 
-  for (var k = ripples.length - 1; k >= 0; k--) {
-    var rip = ripples[k];
-    rip.r += 1.3;
-    rip.alpha -= 0.02;
+  // Ripples
+  for (let k = ripples.length - 1; k >= 0; k--) {
+    const rip = ripples[k];
+    rip.r += 1.4;
+    rip.alpha -= 0.022;
 
     if (rip.alpha <= 0 || rip.r >= rip.maxR) {
       ripples.splice(k, 1);
@@ -925,46 +1724,42 @@ function step(){
 
     ctx.beginPath();
     ctx.arc(rip.x, rip.y, rip.r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(' + rip.color + ', ' + rip.alpha + ')';
+    ctx.strokeStyle = `rgba(${rip.color}, ${rip.alpha})`;
     ctx.lineWidth = 1.4;
     ctx.stroke();
   }
 
-  if (!reduceMotion) requestAnimationFrame(step);
+  if (!reduceMotion) requestAnimationFrame(stepCanvas);
 }
 
-var lastRipple = 0;
-window.addEventListener('mousemove', function(e){
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-  mouse.active = true;
-
-  var now = Date.now();
-  if (now - lastRipple > 120) {
-    addRipple(mouse.x, mouse.y);
-    lastRipple = now;
+let lastRippleTime = 0;
+window.addEventListener('mousemove', function (e) {
+  const now = Date.now();
+  if (now - lastRippleTime > 110) {
+    addRipple(e.clientX, e.clientY, 35);
+    lastRippleTime = now;
   }
 });
 
-// Mobile Touch Ripple Support
-window.addEventListener('touchstart', function(e){
-  if (e.touches && e.touches[0]){
-    addRipple(e.touches[0].clientX, e.touches[0].clientY);
+window.addEventListener('touchstart', function (e) {
+  if (e.touches && e.touches[0]) {
+    addRipple(e.touches[0].clientX, e.touches[0].clientY, 40);
   }
 }, { passive: true });
 
-window.addEventListener('mouseleave', function(){ mouse.active = false; });
-window.addEventListener('click', function(e){ addRipple(e.clientX, e.clientY); });
-
-window.addEventListener('resize', function(){
-  size();
-  makeParticles();
-  if (reduceMotion) step();
+window.addEventListener('click', function (e) {
+  addRipple(e.clientX, e.clientY, 55, '167, 139, 250');
 });
 
-size();
+window.addEventListener('resize', function () {
+  sizeCanvas();
+  makeParticles();
+  if (reduceMotion) stepCanvas();
+});
+
+sizeCanvas();
 makeParticles();
-step();
+stepCanvas();
 </script>
 
 </body>
