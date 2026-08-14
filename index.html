@@ -2,24 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>Afterlight | Roxy's Sanctuary</title>
 <meta name="description" content="Afterlight's personal sanctuary & system dashboard - Water Holy Class Mage & Roxy Migurdia Enthusiast">
-<meta name="theme-color" content="#060b14">
+<meta name="theme-color" content="#050914">
 <link rel="icon" type="image/png" href="roxy-ff.png">
 
 <!-- OpenGraph / Discord Preview -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://afterlight0338.github.io/">
 <meta property="og:title" content="Afterlight | Roxy's Sanctuary">
-<meta property="og:description" content="Water Holy Class Mage & NixOS / Hyprland Rice Setup • Roxy Migurdia Enthusiast • Real-time Discord Presence">
+<meta property="og:description" content="Water Holy Class Mage & NixOS / Hyprland Rice • AOC 24G11ZE 240Hz • SayoDevice K05 HE • Wacom CTH-670">
 <meta property="og:image" content="https://afterlight0338.github.io/roxy-ff.png">
 
 <!-- Twitter / X Preview -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://afterlight0338.github.io/">
 <meta property="twitter:title" content="Afterlight | Roxy's Sanctuary">
-<meta property="twitter:description" content="Water Holy Class Mage & NixOS / Hyprland Rice Setup • Roxy Migurdia Enthusiast">
+<meta property="twitter:description" content="Water Holy Class Mage & NixOS / Hyprland Rice • AOC 24G11ZE 240Hz • SayoDevice K05 HE • Wacom CTH-670">
 <meta property="twitter:image" content="https://afterlight0338.github.io/roxy-ff.png">
 
 <!-- Google Fonts & Maple Mono -->
@@ -33,7 +33,7 @@
   :root {
     --bg: #050914;
     --bg-gradient: radial-gradient(circle at 15% 15%, #0d1b3e 0%, #050914 75%);
-    --card-bg: rgba(11, 20, 39, 0.72);
+    --card-bg: rgba(11, 20, 39, 0.74);
     --card-border: rgba(56, 189, 248, 0.16);
     --card-border-hover: rgba(56, 189, 248, 0.45);
     --primary: #2563eb;
@@ -49,10 +49,17 @@
     --text-dim: #64748b;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -61,13 +68,15 @@
     color: var(--text-main);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
-    padding: clamp(16px, 3.5vw, 40px) clamp(12px, 2.5vw, 24px);
+    padding: clamp(14px, 3.5vw, 40px) clamp(10px, 2.5vw, 24px);
     position: relative;
     overflow-x: hidden;
-    perspective: 1200px;
+    width: 100%;
   }
 
   /* Background Ambient Water Orbs */
@@ -77,22 +86,25 @@
     filter: blur(100px);
     z-index: 0;
     pointer-events: none;
-    opacity: 0.28;
+    opacity: 0.26;
     animation: orbFloat 18s ease-in-out infinite alternate;
   }
-  .orb-1 { width: clamp(280px, 40vw, 480px); height: clamp(280px, 40vw, 480px); background: #1d4ed8; top: -10%; left: 5%; }
-  .orb-2 { width: clamp(260px, 35vw, 420px); height: clamp(260px, 35vw, 420px); background: #0284c7; bottom: -5%; right: 5%; animation-delay: -9s; }
-  .orb-3 { width: clamp(220px, 30vw, 340px); height: clamp(220px, 30vw, 340px); background: #7c3aed; top: 40%; right: 25%; animation-delay: -4.5s; }
+  .orb-1 { width: clamp(240px, 40vw, 480px); height: clamp(240px, 40vw, 480px); background: #1d4ed8; top: -10%; left: 5%; }
+  .orb-2 { width: clamp(220px, 35vw, 420px); height: clamp(220px, 35vw, 420px); background: #0284c7; bottom: -5%; right: 5%; animation-delay: -9s; }
+  .orb-3 { width: clamp(180px, 30vw, 340px); height: clamp(180px, 30vw, 340px); background: #7c3aed; top: 40%; right: 25%; animation-delay: -4.5s; }
 
   @keyframes orbFloat {
     0% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(35px, -25px) scale(1.08); }
-    100% { transform: translate(-25px, 35px) scale(0.94); }
+    50% { transform: translate(30px, -20px) scale(1.06); }
+    100% { transform: translate(-20px, 30px) scale(0.95); }
   }
 
   #net {
     position: fixed;
     inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
     z-index: 0;
     pointer-events: none;
   }
@@ -102,32 +114,32 @@
     width: 100%;
     max-width: 1140px;
     display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: clamp(16px, 2.2vw, 24px);
+    grid-template-columns: 340px 1fr;
+    gap: clamp(14px, 2vw, 22px);
     position: relative;
     z-index: 1;
-    margin: 0 auto;
+    margin: auto 0;
   }
 
-  /* Bento Card Base & 3D Tilt Layer */
+  /* Bento Card Base */
   .bento-card {
     background: var(--card-bg);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
     border: 1px solid var(--card-border);
-    border-radius: clamp(20px, 2.8vw, 26px);
-    padding: clamp(20px, 2.8vw, 28px);
+    border-radius: clamp(18px, 2.5vw, 24px);
+    padding: clamp(16px, 2.5vw, 26px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45),
                 inset 0 1px 1px rgba(255, 255, 255, 0.08);
     position: relative;
     overflow: hidden;
-    transform-style: preserve-3d;
+    min-width: 0; /* Prevents flex/grid blowouts */
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.3s ease,
                 box-shadow 0.3s ease;
   }
 
-  /* Dynamic Specular Sheen (Follows Mouse Cursor in JS) */
+  /* Specular Sheen (Desktop Only) */
   .bento-card .sheen {
     position: absolute;
     inset: 0;
@@ -138,15 +150,16 @@
     transition: opacity 0.3s ease;
     z-index: 2;
   }
-  .bento-card:hover .sheen {
-    opacity: 1;
-  }
-
-  .bento-card:hover {
-    border-color: var(--card-border-hover);
-    box-shadow: 0 26px 54px rgba(0, 0, 0, 0.58),
-                0 0 35px var(--accent-glow),
-                inset 0 1px 2px rgba(255, 255, 255, 0.14);
+  @media (hover: hover) and (pointer: fine) {
+    .bento-card:hover .sheen {
+      opacity: 1;
+    }
+    .bento-card:hover {
+      border-color: var(--card-border-hover);
+      box-shadow: 0 26px 54px rgba(0, 0, 0, 0.58),
+                  0 0 35px var(--accent-glow),
+                  inset 0 1px 2px rgba(255, 255, 255, 0.14);
+    }
   }
 
   /* Headers */
@@ -155,21 +168,24 @@
     align-items: center;
     justify-content: space-between;
     font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(0.88rem, 1.8vw, 0.98rem);
+    font-size: clamp(0.82rem, 1.6vw, 0.94rem);
     font-weight: 700;
     color: var(--accent-cyan);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   .bento-header-title {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    min-width: 0;
   }
   .bento-header svg {
-    width: 19px;
-    height: 19px;
+    width: 18px;
+    height: 18px;
     color: var(--accent-cyan);
     flex-shrink: 0;
   }
@@ -180,7 +196,8 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 16px;
+    gap: 14px;
+    justify-content: space-between;
   }
 
   .profile-top {
@@ -190,7 +207,7 @@
     width: 100%;
   }
 
-  /* Dynamic Live Status Badge */
+  /* Live Status Badge */
   .status-badge {
     display: inline-flex;
     align-items: center;
@@ -203,8 +220,9 @@
     font-size: 0.76rem;
     font-weight: 600;
     font-family: 'Space Grotesk', sans-serif;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     transition: all 0.3s ease;
+    max-width: 100%;
   }
   .status-badge.dnd {
     background: rgba(244, 63, 94, 0.12);
@@ -229,24 +247,25 @@
     border-radius: 50%;
     box-shadow: 0 0 10px currentColor;
     animation: blink 2.2s ease-in-out infinite;
+    flex-shrink: 0;
   }
   @keyframes blink {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.4; transform: scale(0.85); }
   }
 
-  /* Avatar with Glowing Discord Ring */
+  /* Avatar with Glowing Ring */
   .avatar-container {
     position: relative;
-    width: clamp(110px, 14vw, 135px);
-    height: clamp(110px, 14vw, 135px);
-    margin-bottom: 14px;
+    width: clamp(100px, 14vw, 130px);
+    height: clamp(100px, 14vw, 130px);
+    margin-bottom: 12px;
   }
   .avatar-container::before {
     content: '';
     position: absolute;
     inset: -5px;
-    border-radius: 30px;
+    border-radius: 28px;
     background: linear-gradient(135deg, var(--accent-cyan), var(--primary), var(--accent-violet));
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
@@ -263,9 +282,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 26px;
+    border-radius: 24px;
     border: 2px solid #0d1b3e;
     z-index: 1;
+    display: block;
   }
 
   /* Discord Avatar Status Pip */
@@ -273,8 +293,8 @@
     position: absolute;
     bottom: 2px;
     right: 2px;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     border: 3px solid #060b14;
     background: #64748b;
@@ -289,27 +309,28 @@
 
   .name-title {
     font-family: 'Outfit', sans-serif;
-    font-size: clamp(1.85rem, 3.8vw, 2.35rem);
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
     font-weight: 900;
     letter-spacing: -0.02em;
     background: linear-gradient(135deg, #ffffff 35%, var(--accent-cyan) 80%, var(--accent-violet) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    line-height: 1.1;
+    line-height: 1.15;
   }
 
   .tagline-pill {
-    margin-top: 8px;
+    margin-top: 6px;
     color: var(--accent-cyan);
-    font-size: clamp(0.8rem, 1.8vw, 0.88rem);
+    font-size: clamp(0.76rem, 1.8vw, 0.86rem);
     font-weight: 500;
     background: rgba(56, 189, 248, 0.08);
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 12px;
     border: 1px solid rgba(56, 189, 248, 0.2);
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    max-width: 100%;
   }
   .heart { color: #f43f5e; display: inline-block; animation: heartPulse 1.6s infinite; }
   @keyframes heartPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
@@ -317,7 +338,7 @@
   /* Clock Widget */
   .clock-widget {
     font-family: 'Maple Mono', monospace;
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     color: var(--accent-cyan);
     display: inline-flex;
     align-items: center;
@@ -333,16 +354,14 @@
     width: 100%;
     background: rgba(8, 15, 30, 0.85);
     border: 1px solid rgba(56, 189, 248, 0.14);
-    border-radius: 18px;
-    padding: 14px;
+    border-radius: 16px;
+    padding: 12px 14px;
     text-align: left;
     display: flex;
     flex-direction: column;
     gap: 10px;
     transition: all 0.3s ease;
-  }
-  .discord-activity-card:hover {
-    border-color: rgba(56, 189, 248, 0.35);
+    min-width: 0;
   }
 
   .discord-header {
@@ -359,19 +378,24 @@
     gap: 6px;
     font-weight: 600;
     color: var(--text-main);
+    min-width: 0;
   }
   .discord-tag-pill {
     color: var(--accent-cyan);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .device-badges {
     display: flex;
     gap: 4px;
     font-size: 0.8rem;
+    flex-shrink: 0;
   }
 
   /* Custom Status Box */
   .custom-status-text {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--text-main);
     background: rgba(56, 189, 248, 0.06);
     padding: 6px 10px;
@@ -381,18 +405,20 @@
     align-items: center;
     gap: 6px;
     word-break: break-word;
+    min-width: 0;
   }
 
-  /* Activity Content (Game / Spotify / Idle) */
+  /* Activity Content */
   .activity-body {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    min-width: 0;
   }
   .activity-icon-wrap {
     position: relative;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     border-radius: 12px;
     overflow: hidden;
@@ -403,6 +429,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
   .activity-details {
     flex: 1;
@@ -412,14 +439,14 @@
     gap: 2px;
   }
   .activity-type {
-    font-size: 0.65rem;
+    font-size: 0.64rem;
     text-transform: uppercase;
     font-family: 'Maple Mono', monospace;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: var(--accent-cyan);
   }
   .activity-name {
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 700;
     color: #fff;
     white-space: nowrap;
@@ -428,26 +455,26 @@
     font-family: 'Space Grotesk', sans-serif;
   }
   .activity-state {
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .activity-time {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-family: 'Maple Mono', monospace;
     color: var(--accent-blue);
     margin-top: 2px;
   }
 
-  /* Spotify Progress Bar */
+  /* Spotify Progress */
   .spotify-progress-wrap {
     display: flex;
     flex-direction: column;
     gap: 4px;
     width: 100%;
-    margin-top: 4px;
+    min-width: 0;
   }
   .spotify-progress-bar {
     width: 100%;
@@ -474,31 +501,32 @@
   /* Social Links Grid */
   .social-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
     width: 100%;
   }
   .social-btn {
     position: relative;
-    height: 46px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(15, 23, 42, 0.8);
     border: 1px solid var(--card-border);
-    border-radius: 14px;
+    border-radius: 12px;
     color: var(--text-main);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 0;
   }
-  .social-btn svg { width: 20px; height: 20px; }
+  .social-btn svg { width: 19px; height: 19px; flex-shrink: 0; }
   .social-btn:hover, .social-btn:active {
     background: linear-gradient(135deg, var(--primary), #0284c7);
     color: #fff;
     border-color: var(--accent-cyan);
-    transform: translateY(-3px) scale(1.04);
-    box-shadow: 0 8px 18px rgba(56, 189, 248, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(56, 189, 248, 0.35);
   }
 
   .social-btn::after {
@@ -510,9 +538,9 @@
     background: #0b1329;
     color: #e2e8f0;
     border: 1px solid var(--card-border);
-    padding: 5px 10px;
+    padding: 5px 9px;
     border-radius: 8px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-family: 'Maple Mono', monospace;
     white-space: nowrap;
     opacity: 0;
@@ -526,125 +554,264 @@
   /* --- RIGHT BENTO GRID --- */
   .bento-right {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(14px, 2vw, 20px);
+    min-width: 0;
   }
   .span-2 { grid-column: span 2; }
 
-  /* Specs Grid Tiles */
+  /* System Specs Grid Tiles */
   .specs-tiles {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
   }
   .spec-tile {
     background: rgba(10, 17, 32, 0.6);
     border: 1px solid rgba(56, 189, 248, 0.12);
-    border-radius: 14px;
-    padding: 12px 14px;
+    border-radius: 12px;
+    padding: 10px 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    cursor: default;
-    transition: border-color .25s ease, transform .25s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 3px;
+    min-width: 0;
+    transition: border-color .2s ease, transform .2s ease;
   }
   .spec-tile:hover {
     border-color: rgba(56, 189, 248, 0.4);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     background: rgba(14, 25, 48, 0.8);
   }
   .spec-label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     color: var(--text-muted);
     font-family: 'Maple Mono', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .spec-val {
-    font-size: clamp(0.78rem, 1.4vw, 0.88rem);
+    font-size: clamp(0.76rem, 1.2vw, 0.85rem);
     font-weight: 700;
     color: var(--text-main);
     font-family: 'Space Grotesk', sans-serif;
     word-break: break-word;
+    line-height: 1.25;
   }
   .spec-highlight { color: var(--accent-cyan); }
   .spec-violet { color: var(--accent-violet); }
   .spec-emerald { color: var(--accent-emerald); }
 
+  /* --- PERIPHERALS & HARDWARE RHYTHM GEAR CARD (SPAN 2) --- */
+  .gear-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+  .gear-tile {
+    background: rgba(8, 15, 30, 0.7);
+    border: 1px solid rgba(56, 189, 248, 0.14);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .gear-tile:hover {
+    border-color: rgba(56, 189, 248, 0.38);
+    transform: translateY(-2px);
+  }
+  .gear-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .gear-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gear-tag {
+    font-size: 0.64rem;
+    font-family: 'Maple Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    flex-shrink: 0;
+  }
+  .gear-desc {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+
+  /* Hall Effect Keypad Continuous Travel Visualization */
+  .he-travel-box {
+    background: rgba(5, 10, 22, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .he-bar-track {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .he-bar-fill {
+    height: 100%;
+    width: 37.5%; /* 1.5mm / 4.0mm = 37.5% */
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    border-radius: 6px;
+    position: relative;
+  }
+  .he-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #f43f5e;
+    box-shadow: 0 0 4px #f43f5e;
+  }
+  .he-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    font-size: 0.66rem;
+    font-family: 'Maple Mono', monospace;
+    color: var(--text-muted);
+  }
+  .he-stat-item strong {
+    color: var(--accent-cyan);
+  }
+
+  /* Tablet Area Preview Box */
+  .tablet-area-box {
+    background: rgba(5, 10, 22, 0.85);
+    border: 1px dashed rgba(56, 189, 248, 0.35);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .tablet-dim-text {
+    font-family: 'Maple Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent-violet);
+    font-weight: 600;
+  }
+  .tablet-ratio-pill {
+    font-size: 0.65rem;
+    font-family: 'Maple Mono', monospace;
+    color: var(--accent-cyan);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
   /* --- FEATURED PROJECTS & DOTFILES --- */
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
   }
   .project-card {
     background: rgba(10, 18, 36, 0.6);
     border: 1px solid rgba(56, 189, 248, 0.13);
-    border-radius: 16px;
-    padding: 14px 16px;
+    border-radius: 14px;
+    padding: 12px 14px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
     text-decoration: none;
     color: inherit;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 0;
   }
   .project-card:hover {
     background: rgba(15, 27, 54, 0.85);
     border-color: rgba(56, 189, 248, 0.4);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   }
   .project-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 6px;
   }
   .project-title-wrap {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
+    min-width: 0;
   }
   .project-icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     color: var(--accent-cyan);
+    flex-shrink: 0;
   }
   .project-title {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 0.94rem;
+    font-size: 0.9rem;
     color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .project-link-icon {
     color: var(--text-dim);
     transition: color 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
   }
   .project-card:hover .project-link-icon {
     color: var(--accent-cyan);
     transform: translate(2px, -2px);
   }
   .project-desc {
-    font-size: 0.8rem;
-    line-height: 1.45;
+    font-size: 0.78rem;
+    line-height: 1.4;
     color: var(--text-muted);
   }
   .project-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 4px;
+    gap: 4px;
+    margin-top: 2px;
   }
   .project-tag {
     background: rgba(56, 189, 248, 0.08);
     border: 1px solid rgba(56, 189, 248, 0.2);
     color: var(--accent-cyan);
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-family: 'Maple Mono', monospace;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: 6px;
   }
   .project-tag.nix {
@@ -660,8 +827,8 @@
 
   /* --- AFFILIATION & WATER SPELLCASTING --- */
   .shrine-content {
-    font-size: 0.86rem;
-    line-height: 1.6;
+    font-size: 0.84rem;
+    line-height: 1.55;
     color: var(--text-muted);
   }
   .shrine-content strong { color: var(--text-main); }
@@ -669,50 +836,47 @@
   .badge-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 12px;
+    gap: 5px;
+    margin-top: 10px;
   }
   .badge-item {
     background: rgba(56, 189, 248, 0.08);
     border: 1px solid rgba(56, 189, 248, 0.2);
     color: var(--accent-cyan);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-family: 'Maple Mono', monospace;
-    padding: 4px 9px;
+    padding: 3px 8px;
     border-radius: 8px;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-  }
-  .badge-item:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent-cyan);
   }
 
   .cast-controls {
     display: flex;
     gap: 8px;
-    margin-top: 14px;
+    margin-top: 12px;
+    width: 100%;
   }
   .cast-btn {
     flex: 1;
     background: linear-gradient(135deg, var(--primary), #0284c7);
     color: #fff;
     border: none;
-    padding: 10px 14px;
-    border-radius: 12px;
+    padding: 9px 12px;
+    border-radius: 10px;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
+    min-height: 40px;
   }
   .cast-btn:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+    box-shadow: 0 6px 18px rgba(56, 189, 248, 0.45);
   }
   .cast-btn:active {
     transform: scale(0.98);
@@ -733,13 +897,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: calc(100% - 35px);
+    height: calc(100% - 30px);
+    gap: 10px;
   }
   .osu-profile-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 6px;
+    margin-top: 4px;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   .osu-meta {
     display: flex;
@@ -748,13 +915,13 @@
   }
   .osu-username {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: #fff;
   }
   .osu-id-tag {
     font-family: 'Maple Mono', monospace;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--accent-rose);
   }
   .osu-open-btn {
@@ -771,6 +938,7 @@
     align-items: center;
     gap: 6px;
     transition: all 0.2s ease;
+    min-height: 38px;
   }
   .osu-open-btn:hover {
     background: #f43f5e;
@@ -786,9 +954,10 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 8px;
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     font-family: 'Maple Mono', monospace;
     color: var(--text-muted);
+    gap: 8px;
   }
   .lanyard-ping-wrap {
     display: flex;
@@ -800,29 +969,33 @@
     height: 6px;
     border-radius: 50%;
     background: var(--accent-emerald);
+    flex-shrink: 0;
   }
 
   /* ===== INTRO SPLASH SCREEN ===== */
   #splash {
     position: fixed;
     inset: 0;
-    z-index: 999;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 9999;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 18px;
     background: #050914;
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
   #splash.hide {
     opacity: 0;
     pointer-events: none;
   }
   .splash-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 24px;
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
     object-fit: cover;
     border: 2px solid #0d1b3e;
     position: relative;
@@ -843,12 +1016,12 @@
   .splash-ring:nth-child(2) { animation-delay: 0.4s; }
   .splash-ring:nth-child(3) { animation-delay: 0.8s; }
   @keyframes splashRingExpand {
-    0%   { width: 110px; height: 110px; opacity: 0.7; }
-    100% { width: 260px; height: 260px; opacity: 0; }
+    0%   { width: 100px; height: 100px; opacity: 0.7; }
+    100% { width: 240px; height: 240px; opacity: 0; }
   }
   .splash-name {
     font-family: 'Outfit', sans-serif;
-    font-size: 2rem;
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
     font-weight: 900;
     letter-spacing: -0.02em;
     background: linear-gradient(135deg, #fff 40%, #38bdf8 80%, #a78bfa);
@@ -862,14 +1035,14 @@
   }
   .splash-sub {
     font-family: 'Maple Mono', monospace;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--accent-cyan);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     animation: splashNameIn 0.6s 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   .splash-bar-wrap {
-    width: 160px;
+    width: 150px;
     height: 3px;
     background: rgba(56, 189, 248, 0.15);
     border-radius: 99px;
@@ -887,12 +1060,12 @@
     to { width: 100%; }
   }
 
-  /* ===== ENTRANCE STAGGER ANIMATIONS ===== */
+  /* Entrance Transitions */
   .bento-card {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform: translateY(20px);
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.3s ease,
                 box-shadow 0.3s ease;
   }
@@ -910,15 +1083,15 @@
     background: #091326;
     color: var(--accent-cyan);
     border: 1px solid var(--accent-cyan);
-    padding: 10px 22px;
+    padding: 10px 20px;
     border-radius: 30px;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 600;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.35);
     opacity: 0;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    z-index: 100;
+    z-index: 10000;
     pointer-events: none;
     width: max-content;
     max-width: 90vw;
@@ -929,20 +1102,47 @@
     opacity: 1;
   }
 
-  /* Mobile Responsive Breakpoints */
+  /* =========================================================================
+     ROBUST RESPONSIVE BREAKPOINTS (Desktop 1920x1080 -> Tablet -> Mobile Portrait)
+     ========================================================================= */
+
+  /* Medium Desktop / Tablet Landscape / Narrow Viewports (< 960px) */
   @media (max-width: 960px) {
     .container {
       grid-template-columns: 1fr;
+      margin: 0 auto;
     }
     .bento-right {
       grid-template-columns: 1fr;
     }
     .span-2 { grid-column: span 1; }
     .specs-tiles {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .gear-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .projects-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    footer {
+      flex-direction: row;
+    }
+  }
+
+  /* Tablet Portrait & Large Mobile (< 720px) */
+  @media (max-width: 720px) {
+    .specs-tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .gear-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
     }
     .projects-grid {
       grid-template-columns: 1fr;
+      gap: 8px;
     }
     footer {
       flex-direction: column;
@@ -951,17 +1151,65 @@
     }
   }
 
+  /* Standard Mobile (< 480px) */
   @media (max-width: 480px) {
-    body { padding: 14px 8px; }
-    .container { gap: 14px; }
-    .bento-right { gap: 14px; }
-    .bento-card { padding: 16px 14px; }
-    .specs-tiles { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .spec-tile { padding: 10px 10px; }
-    .social-grid { gap: 6px; }
-    .social-btn { height: 42px; }
-    .social-btn svg { width: 18px; height: 18px; }
-    .cast-controls { flex-direction: column; }
+    body {
+      padding: 12px 8px;
+    }
+    .container {
+      gap: 12px;
+    }
+    .bento-right {
+      gap: 12px;
+    }
+    .bento-card {
+      padding: 14px 12px;
+      border-radius: 18px;
+    }
+    .specs-tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .spec-tile {
+      padding: 8px 10px;
+    }
+    .social-grid {
+      gap: 5px;
+    }
+    .social-btn {
+      height: 42px;
+    }
+    .social-btn svg {
+      width: 17px;
+      height: 17px;
+    }
+    .cast-controls {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+
+  /* Ultra-Compact Mobile (< 350px) */
+  @media (max-width: 350px) {
+    body {
+      padding: 8px 4px;
+    }
+    .bento-card {
+      padding: 12px 10px;
+    }
+    .specs-tiles {
+      grid-template-columns: 1fr;
+    }
+    .social-btn {
+      height: 38px;
+    }
+    .social-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    .he-stats-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 </head>
@@ -995,7 +1243,7 @@
     <div class="sheen"></div>
     <div class="profile-top">
       
-      <!-- Live Status Badge (Updated by Lanyard) -->
+      <!-- Live Status Badge (Synced with Lanyard) -->
       <div class="status-badge dnd" id="discord-status-badge">
         <span class="status-dot"></span>
         <span id="discord-status-text">Do Not Disturb</span>
@@ -1028,7 +1276,7 @@
         </div>
       </div>
 
-      <!-- Custom Status (if active) -->
+      <!-- Custom Status -->
       <div class="custom-status-text" id="discord-custom-status" style="display:none;">
         <span id="custom-emoji">💬</span>
         <span id="custom-status-val">...</span>
@@ -1047,7 +1295,7 @@
         </div>
       </div>
 
-      <!-- Spotify Live Progress (Hidden if not playing Spotify) -->
+      <!-- Spotify Live Progress -->
       <div class="spotify-progress-wrap" id="spotify-progress-wrap" style="display:none;">
         <div class="spotify-progress-bar">
           <div class="spotify-progress-fill" id="spotify-fill"></div>
@@ -1087,7 +1335,7 @@
   <!-- RIGHT: Bento Grid Dashboard -->
   <div class="bento-right">
     
-    <!-- System Specs & Rig Card (Span 2) -->
+    <!-- System Setup & Rig Specs Card (Span 2) -->
     <div class="bento-card span-2" id="card-specs">
       <div class="sheen"></div>
       <div class="bento-header">
@@ -1095,13 +1343,17 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
           <span>System Setup & Rig Specs</span>
         </div>
-        <span style="font-size:0.72rem; color:var(--text-dim); font-family:'Maple Mono', monospace;">NIXOS-HYPRLAND</span>
+        <span style="font-size:0.7rem; color:var(--text-dim); font-family:'Maple Mono', monospace;">NIXOS 26.05 • HYPRLAND</span>
       </div>
 
       <div class="specs-tiles">
         <div class="spec-tile">
           <span class="spec-label">Host Laptop</span>
           <span class="spec-val spec-highlight">Acer Nitro V 15</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Primary Display</span>
+          <span class="spec-val spec-highlight">AOC 24G11ZE 240Hz</span>
         </div>
         <div class="spec-tile">
           <span class="spec-label">Processor</span>
@@ -1114,10 +1366,6 @@
         <div class="spec-tile">
           <span class="spec-label">Memory</span>
           <span class="spec-val">32GB DDR5</span>
-        </div>
-        <div class="spec-tile">
-          <span class="spec-label">Display</span>
-          <span class="spec-val spec-highlight">1080p @ 240Hz</span>
         </div>
         <div class="spec-tile">
           <span class="spec-label">Operating System</span>
@@ -1134,6 +1382,86 @@
       </div>
     </div>
 
+    <!-- Peripherals & Rhythm Hardware Setup (Span 2) -->
+    <div class="bento-card span-2" id="card-hardware">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"></path></svg>
+          <span>Peripherals & Input Hardware</span>
+        </div>
+        <span style="font-size:0.7rem; color:var(--accent-rose); font-family:'Maple Mono', monospace;">HALL EFFECT • RAPID TRIGGER</span>
+      </div>
+
+      <div class="gear-grid">
+        
+        <!-- Keypad: SayoDevice K05 HE -->
+        <div class="gear-tile">
+          <div>
+            <div class="gear-header">
+              <span class="gear-title">SayoDevice K05 HE</span>
+              <span class="gear-tag" style="color:#f43f5e; border-color:rgba(244,63,94,0.3); background:rgba(244,63,94,0.1);">Hall Effect</span>
+            </div>
+            <p class="gear-desc" style="margin-top: 6px;">Analog magnetic switches with continuous physical travel tracking.</p>
+          </div>
+
+          <div class="he-travel-box">
+            <div style="display:flex; justify-content:space-between; font-size:0.65rem; font-family:'Maple Mono', monospace; color:var(--text-muted);">
+              <span>0.0mm (Rest)</span>
+              <span style="color:var(--accent-cyan);">1.5mm Actuation</span>
+              <span>4.0mm (Bottom)</span>
+            </div>
+            <div class="he-bar-track">
+              <div class="he-bar-fill"></div>
+              <div class="he-marker" style="left: 37.5%;" title="Trigger Point 1.5mm"></div>
+            </div>
+            <div class="he-stats-grid">
+              <div class="he-stat-item">Trigger: <strong>1.5 mm</strong></div>
+              <div class="he-stat-item">Release: <strong>0.3 mm</strong></div>
+              <div class="he-stat-item">RT Release: <strong>0.4 mm</strong></div>
+              <div class="he-stat-item">RT Actuation: <strong>0.2 mm</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tablet: Wacom CTH-670 -->
+        <div class="gear-tile">
+          <div>
+            <div class="gear-header">
+              <span class="gear-title">Wacom CTH-670</span>
+              <span class="gear-tag" style="color:var(--accent-violet); border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.1);">Tablet</span>
+            </div>
+            <p class="gear-desc" style="margin-top: 6px;">Dedicated osu! aiming tablet mapped to custom active area.</p>
+          </div>
+
+          <div class="tablet-area-box">
+            <div>
+              <div style="font-size:0.64rem; text-transform:uppercase; color:var(--text-muted); font-family:'Maple Mono', monospace;">Active Area</div>
+              <div class="tablet-dim-text">67.67 × 39.39 mm</div>
+            </div>
+            <span class="tablet-ratio-pill">1.718 : 1</span>
+          </div>
+        </div>
+
+        <!-- Keyboard: Everglide AE68 PRO -->
+        <div class="gear-tile">
+          <div>
+            <div class="gear-header">
+              <span class="gear-title">Everglide AE68 PRO</span>
+              <span class="gear-tag">Main Board</span>
+            </div>
+            <p class="gear-desc" style="margin-top: 6px;">Primary custom mechanical keyboard for daily driving and typing.</p>
+          </div>
+
+          <div style="background:rgba(5, 10, 22, 0.85); border:1px solid rgba(56, 189, 248, 0.15); border-radius:8px; padding:8px 10px; margin-top:4px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.72rem; color:var(--text-muted); font-family:'Maple Mono', monospace;">Layout</span>
+            <span style="font-size:0.72rem; color:var(--accent-emerald); font-family:'Maple Mono', monospace; font-weight:600;">68-Key Compact</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- Featured Projects & Dotfiles Showcase (Span 2) -->
     <div class="bento-card span-2" id="card-projects">
       <div class="sheen"></div>
@@ -1142,7 +1470,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
           <span>Featured Projects & Dotfiles</span>
         </div>
-        <a href="https://github.com/Afterlight0338?tab=repositories" target="_blank" rel="noopener" style="color:var(--accent-cyan); text-decoration:none; font-size:0.75rem; font-family:'Maple Mono', monospace;">View All →</a>
+        <a href="https://github.com/Afterlight0338?tab=repositories" target="_blank" rel="noopener" style="color:var(--accent-cyan); text-decoration:none; font-size:0.72rem; font-family:'Maple Mono', monospace;">View All →</a>
       </div>
 
       <div class="projects-grid">
@@ -1154,9 +1482,9 @@
                 <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
                 <span class="project-title">roxy-fastfetch</span>
               </div>
-              <svg class="project-link-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </div>
-            <p class="project-desc" style="margin-top: 8px;">Roxy Migurdia themed Fastfetch configuration with custom ASCII and system spec layout.</p>
+            <p class="project-desc" style="margin-top: 6px;">Roxy Migurdia themed Fastfetch configuration with custom ASCII and system spec layout.</p>
           </div>
           <div class="project-tags">
             <span class="project-tag">Shell</span>
@@ -1173,9 +1501,9 @@
                 <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                 <span class="project-title">NixOS Hyprland Rice</span>
               </div>
-              <span style="font-size:0.7rem; color:var(--accent-emerald); font-family:'Maple Mono', monospace;">Active</span>
+              <span style="font-size:0.68rem; color:var(--accent-emerald); font-family:'Maple Mono', monospace;">Active</span>
             </div>
-            <p class="project-desc" style="margin-top: 8px;">Declarative NixOS configuration featuring Hyprland, Waybar, Rofi, and smooth fluid animations.</p>
+            <p class="project-desc" style="margin-top: 6px;">Declarative NixOS configuration featuring Hyprland, Waybar, Rofi, and smooth fluid animations.</p>
           </div>
           <div class="project-tags">
             <span class="project-tag nix">NixOS 26.05</span>
@@ -1192,14 +1520,14 @@
                 <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
                 <span class="project-title">osu! Skin Collection</span>
               </div>
-              <svg class="project-link-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </div>
-            <p class="project-desc" style="margin-top: 8px;">Curated high-readability osu! standard skin collection optimized for high-refresh competitive play.</p>
+            <p class="project-desc" style="margin-top: 6px;">Curated high-readability osu! standard skin collection optimized for high-refresh competitive play.</p>
           </div>
           <div class="project-tags">
             <span class="project-tag osu">osu!</span>
             <span class="project-tag">Skins</span>
-            <span class="project-tag">Gameplay</span>
+            <span class="project-tag">240Hz</span>
           </div>
         </a>
 
@@ -1211,9 +1539,9 @@
                 <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><line x1="2" y1="12" x2="22" y2="12"></line></svg>
                 <span class="project-title">Roxy's Sanctuary</span>
               </div>
-              <svg class="project-link-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </div>
-            <p class="project-desc" style="margin-top: 8px;">Personal sanctuary website with real-time Lanyard WebSocket sync & canvas water mana physics.</p>
+            <p class="project-desc" style="margin-top: 6px;">Personal sanctuary website with real-time Lanyard WebSocket sync & canvas water mana physics.</p>
           </div>
           <div class="project-tags">
             <span class="project-tag">HTML5 / CSS3</span>
@@ -1261,12 +1589,12 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
           <span>osu! Player Sanctuary</span>
         </div>
-        <span style="font-size:0.72rem; color:var(--accent-rose); font-family:'Maple Mono', monospace;">STD</span>
+        <span style="font-size:0.7rem; color:var(--accent-rose); font-family:'Maple Mono', monospace;">STD</span>
       </div>
 
       <div class="osu-card-content">
-        <p style="font-size: 0.84rem; line-height: 1.5; color: var(--text-muted);">
-          Competitive standard mode player aiming on a 240Hz Acer Nitro display. Check profile & beatmap scores.
+        <p style="font-size: 0.8rem; line-height: 1.45; color: var(--text-muted);">
+          Competitive standard mode player aiming with Wacom CTH-670 on AOC 24G11ZE 240Hz.
         </p>
 
         <div class="osu-profile-row">
@@ -1276,7 +1604,7 @@
           </div>
           <a class="osu-open-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">
             <span>View Profile</span>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
           </a>
         </div>
       </div>
@@ -1309,14 +1637,14 @@
     cards.forEach(function (card, i) {
       setTimeout(function () {
         card.classList.add('visible');
-      }, i * 75);
+      }, i * 60);
     });
     setTimeout(function () {
       splash.style.display = 'none';
-    }, 700);
+    }, 650);
   }
 
-  setTimeout(dismissSplash, 1700);
+  setTimeout(dismissSplash, 1600);
   splash.addEventListener('click', dismissSplash);
 })();
 
@@ -1336,7 +1664,7 @@ function showToast(msg) {
   const toast = document.getElementById("toast");
   toast.innerText = msg;
   toast.classList.add("show");
-  setTimeout(() => { toast.classList.remove("show"); }, 2600);
+  setTimeout(() => { toast.classList.remove("show"); }, 2500);
 }
 
 function copyDiscord() {
@@ -1348,10 +1676,10 @@ function copyDiscord() {
   });
 }
 
-// ===== 4. 3D CARD HOVER TILT WITH SPECULAR SHEEN =====
+// ===== 4. 3D CARD HOVER TILT WITH SPECULAR SHEEN (Desktop Mouse Only) =====
 (function initTilt() {
-  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-  if (isTouch) return; // Skip 3D tilt on mobile touch devices
+  const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!isFinePointer) return; // Do not apply 3D tilt on touch devices to ensure smooth native scrolling
 
   const cards = document.querySelectorAll('.bento-card');
   cards.forEach(card => {
@@ -1365,10 +1693,10 @@ function copyDiscord() {
 
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -5;
-      const rotateY = ((x - centerX) / centerX) * 5;
+      const rotateX = ((y - centerY) / centerY) * -4;
+      const rotateY = ((x - centerX) / centerX) * 4;
 
-      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-3px)`;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
     });
 
     card.addEventListener('mouseleave', () => {
@@ -1611,7 +1939,7 @@ function sizeCanvas() {
 }
 
 function makeParticles() {
-  const count = Math.max(35, Math.min(Math.round((w * h) / 13000), 80));
+  const count = Math.max(30, Math.min(Math.round((w * h) / 14000), 75));
   particles = [];
   for (let i = 0; i < count; i++) {
     particles.push({
@@ -1751,11 +2079,14 @@ window.addEventListener('click', function (e) {
   addRipple(e.clientX, e.clientY, 55, '167, 139, 250');
 });
 
-window.addEventListener('resize', function () {
+// Dynamic viewport recalculation on resize and orientation changes
+function handleViewportResize() {
   sizeCanvas();
   makeParticles();
   if (reduceMotion) stepCanvas();
-});
+}
+window.addEventListener('resize', handleViewportResize);
+window.addEventListener('orientationchange', handleViewportResize);
 
 sizeCanvas();
 makeParticles();
