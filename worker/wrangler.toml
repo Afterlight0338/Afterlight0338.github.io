@@ -1,0 +1,10 @@
+name = "osu-api-proxy"
+main = "osu-worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+DEFAULT_USER_ID = "14671577"
+
+# Required Secrets (set with `wrangler secret put <KEY>`):
+# OSU_CLIENT_ID
+# OSU_CLIENT_SECRET

@@ -411,7 +411,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
           <span>osu! Player Sanctuary</span>
         </div>
-        <span class="bento-header-tag" style="color:var(--accent-rose);">STD</span>
+        <span class="bento-header-tag" id="osu-live-tag" style="color:var(--accent-rose);">STD</span>
       </div>
 
       <div class="osu-card-content">
@@ -419,9 +419,32 @@
           Competitive standard mode player aiming with Wacom CTH-670 on AOC 24G11ZE 240Hz.
         </p>
 
+        <!-- Live Performance & Rank Stats Grid -->
+        <div class="osu-stats-grid">
+          <div class="osu-stat-tile">
+            <span class="osu-stat-label">Global Rank</span>
+            <span class="osu-stat-val spec-rose" id="osu-global-rank">#14,424</span>
+          </div>
+          <div class="osu-stat-tile">
+            <span class="osu-stat-label">Performance</span>
+            <span class="osu-stat-val spec-highlight" id="osu-pp">8,796 pp</span>
+          </div>
+          <div class="osu-stat-tile">
+            <span class="osu-stat-label">Hit Accuracy</span>
+            <span class="osu-stat-val spec-emerald" id="osu-acc">97.19%</span>
+          </div>
+          <div class="osu-stat-tile">
+            <span class="osu-stat-label">Play Count</span>
+            <span class="osu-stat-val spec-violet" id="osu-plays">44,637</span>
+          </div>
+        </div>
+
         <div class="osu-profile-row">
           <div class="osu-meta">
-            <span class="osu-username">Afterlight</span>
+            <div class="osu-user-title-wrap">
+              <span class="osu-username" id="osu-username-display">RyoYamada</span>
+              <span class="osu-country-flag" id="osu-country-flag">MY</span>
+            </div>
             <span class="osu-id-tag">UID: #14671577</span>
           </div>
           <a class="osu-open-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">
@@ -452,6 +475,7 @@
 <script src="js/app.js" defer></script>
 <script src="js/canvas.js" defer></script>
 <script src="js/lanyard.js" defer></script>
+<script src="js/osu.js" defer></script>
 <script src="js/tilt.js" defer></script>
 
 </body>

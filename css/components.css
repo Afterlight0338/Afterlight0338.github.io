@@ -420,20 +420,69 @@
 /* =========================================================================
    5. OSU! PLAYER CARD
    ========================================================================= */
+.spec-rose { color: var(--accent-rose); }
+
 .osu-card-content {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: calc(100% - 30px);
-  gap: 10px;
+  gap: 8px;
   min-height: 90px;
+}
+
+/* Live Stats Grid */
+.osu-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 4px 0;
+  width: 100%;
+}
+
+.osu-stat-tile {
+  background: rgba(5, 10, 22, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.osu-stat-tile:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: rgba(8, 15, 30, 0.9);
+}
+
+.osu-stat-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  font-family: 'Maple Mono', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.osu-stat-val {
+  font-size: clamp(0.74rem, 1.1vw, 0.82rem);
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .osu-profile-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4px;
+  margin-top: 2px;
   gap: 8px;
   flex-wrap: wrap;
 }
@@ -446,11 +495,30 @@
   min-width: 0;
 }
 
+.osu-user-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .osu-username {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #fff;
+  line-height: 1.2;
+}
+
+.osu-country-flag {
+  font-size: 0.62rem;
+  font-family: 'Maple Mono', monospace;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.2;
 }
 
 .osu-id-tag {
@@ -463,17 +531,17 @@
   background: rgba(244, 63, 94, 0.12);
   border: 1px solid rgba(244, 63, 94, 0.3);
   color: #fb7185;
-  padding: 8px 14px;
+  padding: 7px 12px;
   border-radius: 10px;
   text-decoration: none;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   transition: all 0.2s ease;
-  min-height: 40px;
+  min-height: 38px;
   flex-shrink: 0;
 }
 
@@ -483,3 +551,4 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 14px rgba(244, 63, 94, 0.4);
 }
+
