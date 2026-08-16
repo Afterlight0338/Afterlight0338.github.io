@@ -418,47 +418,100 @@
 }
 
 /* =========================================================================
-   5. OSU! PLAYER CARD
+   5. OSU! PLAYER SANCTUARY (FEATURED HIGHLIGHT)
    ========================================================================= */
 .spec-rose { color: var(--accent-rose); }
 
-.osu-card-content {
+.osu-highlight-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.3fr);
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 4px;
+}
+
+.osu-profile-panel {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100% - 30px);
-  gap: 8px;
-  min-height: 90px;
+  gap: 12px;
+  min-width: 0;
 }
 
-/* Live Stats Grid */
+.osu-user-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.osu-user-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.osu-username {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.osu-country-flag {
+  font-size: 0.65rem;
+  font-family: 'Maple Mono', monospace;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
+.osu-id-tag {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--accent-rose);
+}
+
+.osu-bio-text {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* 4-Stat Micro Grid */
 .osu-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin: 4px 0;
+  gap: 8px;
   width: 100%;
 }
 
 .osu-stat-tile {
-  background: rgba(5, 10, 22, 0.7);
+  background: rgba(5, 10, 22, 0.75);
   border: 1px solid rgba(56, 189, 248, 0.12);
-  border-radius: 8px;
-  padding: 6px 8px;
+  border-radius: 9px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .osu-stat-tile:hover {
   border-color: rgba(56, 189, 248, 0.35);
-  background: rgba(8, 15, 30, 0.9);
+  background: rgba(8, 15, 30, 0.95);
+  transform: translateY(-1px);
 }
 
 .osu-stat-label {
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-dim);
@@ -469,7 +522,7 @@
 }
 
 .osu-stat-val {
-  font-size: clamp(0.74rem, 1.1vw, 0.82rem);
+  font-size: 0.92rem;
   font-weight: 700;
   font-family: 'Space Grotesk', sans-serif;
   color: var(--text-main);
@@ -478,16 +531,258 @@
   text-overflow: ellipsis;
 }
 
-.osu-profile-row {
+.osu-actions-row {
+  margin-top: 4px;
+}
+
+.osu-open-btn {
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #fb7185;
+  padding: 8px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  width: 100%;
+}
+
+.osu-open-btn:hover {
+  background: #f43f5e;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
+}
+
+/* =========================================================================
+   Top Plays Showcase & Top 5 View
+   ========================================================================= */
+.osu-scores-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  background: rgba(4, 9, 20, 0.5);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.osu-scores-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 2px;
+  gap: 8px;
+}
+
+.osu-scores-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-cyan);
+}
+
+.osu-tab-controls {
+  display: flex;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.osu-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.osu-tab-btn:hover {
+  color: var(--text-main);
+}
+
+.osu-tab-btn.active {
+  background: rgba(56, 189, 248, 0.2);
+  color: var(--accent-cyan);
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.15);
+}
+
+/* #1 Top Play Banner */
+.osu-top1-banner {
+  display: block;
+  text-decoration: none;
+  border-radius: 10px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  min-height: 140px;
+}
+
+.osu-top1-banner:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.2);
+}
+
+.osu-top1-content {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  gap: 12px;
+  min-height: 140px;
+  background: linear-gradient(135deg, rgba(6, 12, 28, 0.85) 0%, rgba(6, 12, 28, 0.94) 100%);
+}
+
+.osu-top1-badge {
+  display: inline-block;
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.osu-top1-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.osu-top1-artist {
+  font-size: 0.76rem;
+  color: var(--accent-cyan);
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.osu-top1-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.osu-meta {
+.osu-top1-pp {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #38bdf8;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+  line-height: 1;
+}
+
+.osu-top1-substats {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.osu-pill-acc, .osu-pill-mods, .osu-pill-rank {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
+.osu-pill-acc {
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #34d399;
+}
+
+.osu-pill-mods {
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: #a78bfa;
+}
+
+.osu-pill-rank {
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #fb7185;
+}
+
+/* Top 5 List */
+.osu-top5-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.osu-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.1);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  min-width: 0;
+}
+
+.osu-score-row:hover {
+  background: rgba(20, 30, 55, 0.9);
+  border-color: rgba(56, 189, 248, 0.35);
+  transform: translateX(2px);
+}
+
+.osu-score-rank-num {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.osu-score-rank-num.gold { color: #fbbf24; text-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
+.osu-score-rank-num.silver { color: #cbd5e1; }
+.osu-score-rank-num.bronze { color: #f97316; }
+
+.osu-score-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -495,60 +790,66 @@
   min-width: 0;
 }
 
-.osu-user-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.osu-username {
+.osu-score-title {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 0.82rem;
+  font-weight: 700;
   color: #fff;
-  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.osu-country-flag {
-  font-size: 0.62rem;
-  font-family: 'Maple Mono', monospace;
-  font-weight: 700;
-  color: var(--accent-cyan);
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  padding: 1px 5px;
-  border-radius: 4px;
-  line-height: 1.2;
+.osu-score-diff {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.osu-id-tag {
-  font-family: 'Maple Mono', monospace;
-  font-size: 0.7rem;
-  color: var(--accent-rose);
-}
-
-.osu-open-btn {
-  background: rgba(244, 63, 94, 0.12);
-  border: 1px solid rgba(244, 63, 94, 0.3);
-  color: #fb7185;
-  padding: 7px 12px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.76rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-  min-height: 38px;
+.osu-score-metrics {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
   flex-shrink: 0;
 }
 
-.osu-open-btn:hover {
-  background: #f43f5e;
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.4);
+.osu-score-pp {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
 }
+
+.osu-score-sub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.osu-score-acc {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.64rem;
+  color: #34d399;
+}
+
+.osu-score-mods {
+  font-family: 'Maple Mono', monospace;
+  font-size: 0.62rem;
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.1);
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+/* Responsive adjustment */
+@media (max-width: 820px) {
+  .osu-highlight-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
 

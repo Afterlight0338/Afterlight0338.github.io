@@ -1,13 +1,33 @@
-// ===== LIVE OSU! API PROFILE INTEGRATION =====
+// ===== LIVE OSU! API PROFILE & TOP PLAYS INTEGRATION =====
 (function initOsu() {
   const OSU_USER_ID = "14671577";
   const DEFAULT_USERNAME = "RyoYamada";
-  const CACHE_KEY = "osu_profile_cache_v1";
+  const CACHE_KEY = "osu_profile_cache_v2";
   const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 
   // Primary live endpoint and static data fallback
   const PRIMARY_ENDPOINT = window.OSU_API_ENDPOINT || `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=${OSU_USER_ID}`;
   const FALLBACK_ENDPOINT = "data/osu.json";
+
+  // Global tab switcher for UI buttons
+  window.switchOsuTab = function(tabName) {
+    const viewTop1 = document.getElementById('osu-view-top1');
+    const viewTop5 = document.getElementById('osu-view-top5');
+    const btnTop1 = document.getElementById('osu-tab-top1');
+    const btnTop5 = document.getElementById('osu-tab-top5');
+
+    if (tabName === 'top1') {
+      if (viewTop1) viewTop1.style.display = 'block';
+      if (viewTop5) viewTop5.style.display = 'none';
+      if (btnTop1) btnTop1.classList.add('active');
+      if (btnTop5) btnTop5.classList.remove('active');
+    } else if (tabName === 'top5') {
+      if (viewTop1) viewTop1.style.display = 'none';
+      if (viewTop5) viewTop5.style.display = 'block';
+      if (btnTop1) btnTop1.classList.remove('active');
+      if (btnTop5) btnTop5.classList.add('active');
+    }
+  };
 
   function formatNumber(num) {
     if (num === null || num === undefined || isNaN(num)) return "--";
@@ -27,6 +47,60 @@
   function formatAcc(acc) {
     if (acc === null || acc === undefined || isNaN(acc)) return "--%";
     return `${Number(acc).toFixed(2)}%`;
+  }
+
+  function renderTop1(top1) {
+    if (!top1) return;
+    const linkEl = document.getElementById('osu-top1-link');
+    const titleEl = document.getElementById('osu-top1-title');
+    const artistEl = document.getElementById('osu-top1-artist');
+    const ppEl = document.getElementById('osu-top1-pp');
+    const accEl = document.getElementById('osu-top1-acc');
+    const modsEl = document.getElementById('osu-top1-mods');
+    const rankEl = document.getElementById('osu-top1-rank');
+
+    if (linkEl) {
+      linkEl.href = `https://osu.ppy.sh/beatmaps/${top1.beatmap_id}`;
+      if (top1.cover_url) {
+        linkEl.style.backgroundImage = `linear-gradient(180deg, rgba(6, 12, 28, 0.75) 0%, rgba(6, 12, 28, 0.95) 100%), url('${top1.cover_url}')`;
+      }
+    }
+    if (titleEl) titleEl.innerText = top1.title;
+    if (artistEl) artistEl.innerText = `${top1.artist} • ${top1.difficulty}`;
+    if (ppEl) ppEl.innerText = `${top1.pp} pp`;
+    if (accEl) accEl.innerText = `${top1.accuracy}%`;
+    if (modsEl) modsEl.innerText = top1.mod_str || 'NM';
+    if (rankEl) {
+      rankEl.innerText = top1.rank || 'A';
+      rankEl.className = `osu-pill-rank rank-${String(top1.rank || 'a').toLowerCase()}`;
+    }
+  }
+
+  function renderTop5List(scores) {
+    if (!scores || !Array.isArray(scores) || scores.length === 0) return;
+    const container = document.getElementById('osu-top5-items');
+    if (!container) return;
+
+    const rankClasses = ['gold', 'silver', 'bronze', '', ''];
+    container.innerHTML = scores.map((s, idx) => {
+      const rankClass = rankClasses[idx] || '';
+      return `
+        <a class="osu-score-row" href="https://osu.ppy.sh/beatmaps/${s.beatmap_id}" target="_blank" rel="noopener">
+          <span class="osu-score-rank-num ${rankClass}">#${s.rank_index || idx + 1}</span>
+          <div class="osu-score-info">
+            <span class="osu-score-title">${s.title}</span>
+            <span class="osu-score-diff">${s.difficulty} • ${s.artist}</span>
+          </div>
+          <div class="osu-score-metrics">
+            <span class="osu-score-pp">${s.pp} pp</span>
+            <div class="osu-score-sub">
+              <span class="osu-score-acc">${s.accuracy}%</span>
+              <span class="osu-score-mods">${s.mod_str || 'NM'}</span>
+            </div>
+          </div>
+        </a>
+      `;
+    }).join('');
   }
 
   function updateOsuUI(data, isLive = true) {
@@ -66,6 +140,12 @@
     if (liveTag) {
       liveTag.innerText = isLive ? 'STD • LIVE' : 'STD';
       liveTag.style.color = isLive ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+    }
+
+    // Render Top Plays
+    if (data.top_scores && data.top_scores.length > 0) {
+      renderTop1(data.top_scores[0]);
+      renderTop5List(data.top_scores);
     }
   }
 
