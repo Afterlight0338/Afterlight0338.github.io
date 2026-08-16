@@ -16,6 +16,7 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
+  min-width: 0;
   transition: border-color .2s ease, transform .2s ease;
 }
 
@@ -32,6 +33,9 @@
   color: var(--text-muted);
   font-family: 'Maple Mono', monospace;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .spec-val {
@@ -40,18 +44,29 @@
   color: var(--text-main);
   font-family: 'Space Grotesk', sans-serif;
   line-height: 1.25;
+  word-break: break-word;
 }
 
 .spec-highlight { color: var(--accent-cyan); }
 .spec-violet { color: var(--accent-violet); }
 .spec-emerald { color: var(--accent-emerald); }
 
+@media (max-width: 520px) {
+  .specs-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .spec-tile {
+    padding: 8px 10px;
+  }
+}
+
 /* =========================================================================
    2. PERIPHERALS & HARDWARE RHYTHM GEAR (SayoDevice, Wacom, AE68 Pro)
    ========================================================================= */
 .gear-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 10px;
   width: 100%;
 }
@@ -65,6 +80,7 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 8px;
+  min-width: 0;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -116,6 +132,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .he-travel-header {
@@ -157,8 +174,8 @@
 
 .he-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 110px), 1fr));
-  gap: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
   font-size: 0.66rem;
   font-family: 'Maple Mono', monospace;
   color: var(--text-muted);
@@ -180,6 +197,7 @@
   gap: 6px;
   margin-top: 4px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .tablet-dim-text {
@@ -211,6 +229,7 @@
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 /* =========================================================================
@@ -218,7 +237,7 @@
    ========================================================================= */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 10px;
   width: 100%;
 }
@@ -234,6 +253,7 @@
   gap: 8px;
   text-decoration: none;
   color: inherit;
+  min-width: 0;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -257,6 +277,7 @@
   align-items: center;
   gap: 7px;
   flex: 1 1 auto;
+  min-width: 0;
 }
 
 .project-icon {
@@ -353,7 +374,7 @@
 }
 
 .cast-btn {
-  flex: 1 1 130px;
+  flex: 1 1 120px;
   background: linear-gradient(135deg, var(--primary), #0284c7);
   color: #fff;
   border: none;
@@ -369,7 +390,7 @@
   gap: 6px;
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
   transition: all 0.2s ease;
-  min-height: 40px;
+  min-height: 42px;
 }
 
 .cast-btn:hover {
@@ -390,6 +411,12 @@
   border-color: var(--accent-violet);
 }
 
+@media (max-width: 400px) {
+  .cast-btn {
+    flex: 1 1 100%;
+  }
+}
+
 /* =========================================================================
    5. OSU! PLAYER CARD
    ========================================================================= */
@@ -399,6 +426,7 @@
   justify-content: space-between;
   height: calc(100% - 30px);
   gap: 10px;
+  min-height: 90px;
 }
 
 .osu-profile-row {
@@ -415,6 +443,7 @@
   flex-direction: column;
   gap: 2px;
   flex: 1 1 auto;
+  min-width: 0;
 }
 
 .osu-username {
@@ -444,7 +473,7 @@
   align-items: center;
   gap: 6px;
   transition: all 0.2s ease;
-  min-height: 38px;
+  min-height: 40px;
   flex-shrink: 0;
 }
 

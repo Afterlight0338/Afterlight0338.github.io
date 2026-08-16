@@ -5,12 +5,13 @@
   const ctx = canvas.getContext('2d');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
   let w, h, particles = [], ripples = [];
 
   const PALETTE = ['56, 189, 248', '96, 165, 250', '167, 139, 250', '125, 211, 252', '37, 99, 235'];
 
   function sizeCanvas() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
     w = window.innerWidth;
     h = window.innerHeight;
     canvas.width = w * dpr;

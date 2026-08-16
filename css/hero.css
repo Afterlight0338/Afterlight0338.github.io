@@ -169,6 +169,7 @@
   flex-direction: column;
   gap: 10px;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .discord-header {
@@ -187,6 +188,7 @@
   font-weight: 600;
   color: var(--text-main);
   flex: 1 1 auto;
+  min-width: 0;
 }
 .discord-tag-pill {
   color: var(--accent-cyan);
@@ -210,6 +212,7 @@
   align-items: center;
   gap: 6px;
   word-break: break-word;
+  min-width: 0;
 }
 
 /* Rich Presence Activity Body */
@@ -217,6 +220,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 .activity-icon-wrap {
   position: relative;
@@ -239,6 +243,8 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
+  overflow: hidden;
 }
 .activity-type {
   font-size: 0.64rem;
@@ -246,6 +252,9 @@
   font-family: 'Maple Mono', monospace;
   letter-spacing: 0.06em;
   color: var(--accent-cyan);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .activity-name {
   font-size: 0.84rem;
@@ -253,17 +262,26 @@
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .activity-state {
   font-size: 0.72rem;
   color: var(--text-muted);
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .activity-time {
   font-size: 0.68rem;
   font-family: 'Maple Mono', monospace;
   color: var(--accent-blue);
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Spotify Progress */
@@ -298,7 +316,7 @@
 /* Social Buttons Grid */
 .social-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(40px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
   width: 100%;
 }
@@ -315,6 +333,7 @@
   text-decoration: none;
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
 }
 .social-btn svg { width: 19px; height: 19px; flex-shrink: 0; }
 .social-btn:hover, .social-btn:active {
@@ -325,35 +344,52 @@
   box-shadow: 0 6px 16px rgba(56, 189, 248, 0.35);
 }
 
-.social-btn::after {
-  content: attr(aria-label);
-  position: absolute;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: #0b1329;
-  color: #e2e8f0;
-  border: 1px solid var(--card-border);
-  padding: 5px 9px;
-  border-radius: 8px;
-  font-size: 0.7rem;
-  font-family: 'Maple Mono', monospace;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s ease, transform .2s ease;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+@media (hover: hover) and (pointer: fine) {
+  .social-btn::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #0b1329;
+    color: #e2e8f0;
+    border: 1px solid var(--card-border);
+    padding: 5px 9px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-family: 'Maple Mono', monospace;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .social-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
-.social-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Tablet & Mobile Hero Framing */
+@media (max-width: 960px) {
+  .profile-hero {
+    gap: 16px;
+  }
+  .discord-activity-card {
+    max-width: 520px;
+  }
+  .social-grid {
+    max-width: 520px;
+  }
+}
 
 @media (max-width: 480px) {
-  .social-btn { height: 42px; }
-  .social-btn svg { width: 17px; height: 17px; }
+  .social-btn { height: 42px; border-radius: 10px; }
+  .social-btn svg { width: 18px; height: 18px; }
+  .discord-activity-card { padding: 10px 12px; }
+  .avatar-container { width: 96px; height: 96px; }
 }
 
-@media (max-width: 350px) {
-  .social-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+@media (max-width: 360px) {
+  .social-grid { gap: 4px; }
+  .social-btn { height: 38px; }
+  .social-btn svg { width: 16px; height: 16px; }
 }
