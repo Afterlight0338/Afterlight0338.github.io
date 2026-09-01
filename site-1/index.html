@@ -4,27 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Afterlight • vivlos.dev</title>
-  <meta name="description" content="Afterlight's personal developer space, NixOS & Hyprland setup, and rhythm gaming sanctuary.">
+  <meta name="description" content="Afterlight's personal developer sanctuary, NixOS & Hyprland setup, and rhythm gaming hub.">
   <meta name="theme-color" content="#060911">
-  <link rel="icon" type="image/webp" href="../assets/vivlos/racing.webp">
+  <link rel="icon" type="image/webp" href="../assets/vivlos/casual.webp">
 
   <!-- OpenGraph / Discord Preview -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://vivlos.dev/site-1">
   <meta property="og:title" content="Afterlight • vivlos.dev">
   <meta property="og:description" content="Developer • NixOS & Hyprland Rice • AOC 240Hz • SayoDevice K05 HE • Wacom CTH-670">
-  <meta property="og:image" content="https://vivlos.dev/assets/vivlos/racing.webp">
+  <meta property="og:image" content="https://vivlos.dev/assets/vivlos/casual.webp">
 
   <!-- Twitter Preview -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:title" content="Afterlight • vivlos.dev">
   <meta property="twitter:description" content="Developer • NixOS & Hyprland Rice • AOC 240Hz • SayoDevice K05 HE • Wacom CTH-670">
-  <meta property="twitter:image" content="https://vivlos.dev/assets/vivlos/racing.webp">
+  <meta property="twitter:image" content="https://vivlos.dev/assets/vivlos/casual.webp">
 
   <!-- Google Fonts & Maple Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
 
@@ -35,45 +35,23 @@
 <div class="app-container">
 
   <!-- ==========================================================
-       LEFT STAGE: FIXED / STICKY STUDIO
+       LEFT STAGE: COMPACT STICKY PROFILE & PRESENCE
        ========================================================== -->
   <aside class="left-stage">
 
-    <!-- Vivlos Artwork Frame with Outfit Switcher -->
-    <div class="vivlos-art-card">
-      <div class="art-display-frame">
-        <div class="art-badge-overlay">
-          <span class="badge-dot"></span>
-          <span id="current-outfit-label">Racing Silks</span>
-        </div>
-        <img id="vivlos-art-image" class="vivlos-main-img" src="../assets/vivlos/racing.webp" alt="Vivlos (Umamusume)">
-      </div>
-
-      <!-- 4-Way Outfit Switcher Bar -->
-      <div class="outfit-selector-bar">
-        <button class="outfit-btn active" data-outfit="racing" aria-label="Racing Silks">
-          <span>🏁 Racing</span>
-        </button>
-        <button class="outfit-btn" data-outfit="stage" aria-label="Stage Performance">
-          <span>✨ Stage</span>
-        </button>
-        <button class="outfit-btn" data-outfit="summer" aria-label="Summer Resort">
-          <span>☀️ Summer</span>
-        </button>
-        <button class="outfit-btn" data-outfit="casual" aria-label="Casual School">
-          <span>🎓 Casual</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Identity & Profile Block -->
     <div class="profile-meta-card">
-      <div class="profile-name-row">
-        <h1 class="profile-name">Afterlight</h1>
-        <span class="domain-pill">vivlos.dev</span>
+      <div class="profile-header-top">
+        <div class="profile-avatar-thumb">
+          <img src="../assets/vivlos/casual.webp" alt="Afterlight Avatar">
+        </div>
+        <div class="profile-name-group">
+          <h1 class="profile-name">Afterlight</h1>
+          <span class="domain-pill">vivlos.dev</span>
+        </div>
       </div>
+
       <p class="profile-tagline">
-        Developer & NixOS enthusiast crafting declarative systems, ricing Hyprland, and clicking circles on 240Hz.
+        Developer & Linux ricing enthusiast crafting declarative systems on NixOS / Hyprland and playing osu! at 240Hz.
       </p>
 
       <!-- Live Discord Presence (Lanyard Sync) -->
@@ -89,13 +67,13 @@
         </div>
 
         <!-- Custom Status -->
-        <div class="presence-status-label" id="discord-custom-status" style="display:none;">
+        <div class="presence-status-label" id="discord-custom-status" style="display:none; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted);">
           <span id="custom-emoji">💬</span> <span id="custom-status-val">...</span>
         </div>
 
         <!-- Activity / Game / Spotify Body -->
         <div class="presence-activity-body" id="activity-body">
-          <img class="activity-icon-img" id="activity-icon" src="../assets/vivlos/racing.webp" alt="Activity Icon">
+          <img class="activity-icon-img" id="activity-icon" src="../assets/vivlos/casual.webp" alt="Activity Icon">
           <div class="activity-text-group">
             <span class="activity-type-label" id="activity-type">STATUS</span>
             <span class="activity-title" id="activity-name">Active on NixOS</span>
@@ -118,9 +96,9 @@
       <!-- Jump Navigation -->
       <nav class="nav-jump-list">
         <a href="#about" class="nav-jump-item"><span>01 // About</span><span>→</span></a>
-        <a href="#projects" class="nav-jump-item"><span>02 // Projects</span><span>→</span></a>
+        <a href="#projects" class="nav-jump-item"><span>02 // Repositories</span><span>→</span></a>
         <a href="#specs" class="nav-jump-item"><span>03 // System & Gear</span><span>→</span></a>
-        <a href="#osu" class="nav-jump-item"><span>04 // osu! Performance</span><span>→</span></a>
+        <a href="#osu" class="nav-jump-item"><span>04 // osu! Gaming</span><span>→</span></a>
       </nav>
 
       <!-- Socials Row -->
@@ -153,22 +131,27 @@
 
 
   <!-- ==========================================================
-       RIGHT FEED: SCROLLABLE STREAM
+       RIGHT FEED: 4 CHARACTER-PAIRED SECTIONS
        ========================================================== -->
   <main class="right-feed">
 
-    <!-- SECTION 1: ABOUT & STATEMENT -->
+    <!-- SECTION 1: ABOUT & STATEMENT (Paired with Casual Vivlos) -->
     <section class="section-block" id="about">
-      <div class="section-title-wrap">
-        <h2 class="section-heading">
-          <span class="section-index-num">01 //</span> About & Overview
-        </h2>
-        <span class="section-pill-tag">Profile</span>
+      <div class="section-character-banner">
+        <div class="banner-left-info">
+          <span class="banner-index-label">01 // Identity & Origins</span>
+          <h2 class="banner-heading">About & Focus</h2>
+          <span class="banner-subtext">Building clean systems, declarative Linux flakes, and rhythm mastery.</span>
+        </div>
+        <div class="character-spotlight-frame" title="Vivlos (Casual / School)">
+          <img class="character-spotlight-img" src="../assets/vivlos/casual.webp" alt="Vivlos Casual">
+          <span class="character-theme-tag">Casual</span>
+        </div>
       </div>
 
       <div class="statement-card">
         <p class="statement-text">
-          Hey, I'm <strong>Afterlight</strong>. I build clean web software, maintain declarative <strong>NixOS</strong> configs on <strong>Hyprland</strong>, and play competitive rhythm games at 240Hz.
+          Hey, I'm <strong>Afterlight</strong>. I build clean web software, maintain declarative <strong>NixOS</strong> configs on <strong>Hyprland</strong>, and play competitive rhythm games on a 240Hz monitor.
         </p>
         <p class="statement-text">
           This domain is named after <strong>Vivlos (ヴィブロス)</strong> from <em>Umamusume: Pretty Derby</em>—embodying speed, elegance, and precision.
@@ -176,7 +159,7 @@
         <div class="statement-chips">
           <span class="chip-tag">NixOS 26.05</span>
           <span class="chip-tag">Hyprland Wayland</span>
-          <span class="chip-tag">240Hz Fast-IPS</span>
+          <span class="chip-tag">AOC 240Hz Fast-IPS</span>
           <span class="chip-tag gold">SayoDevice Rapid Trigger</span>
           <span class="chip-tag">Wacom CTH-670</span>
         </div>
@@ -184,13 +167,18 @@
     </section>
 
 
-    <!-- SECTION 2: FEATURED PROJECTS -->
+    <!-- SECTION 2: FEATURED PROJECTS (Paired with Stage Vivlos) -->
     <section class="section-block" id="projects">
-      <div class="section-title-wrap">
-        <h2 class="section-heading">
-          <span class="section-index-num">02 //</span> Featured Repositories
-        </h2>
-        <a href="https://github.com/Afterlight0338?tab=repositories" target="_blank" rel="noopener" class="section-pill-tag" style="color:var(--accent-cyan); text-decoration:none;">View All GitHub →</a>
+      <div class="section-character-banner">
+        <div class="banner-left-info">
+          <span class="banner-index-label">02 // Open Source</span>
+          <h2 class="banner-heading">Featured Repositories</h2>
+          <span class="banner-subtext">Declarative configurations, competitive toolsets, and web apps.</span>
+        </div>
+        <div class="character-spotlight-frame" title="Vivlos (Stage / Performance)">
+          <img class="character-spotlight-img" src="../assets/vivlos/stage.webp" alt="Vivlos Stage">
+          <span class="character-theme-tag">Stage</span>
+        </div>
       </div>
 
       <div class="projects-list">
@@ -253,13 +241,18 @@
     </section>
 
 
-    <!-- SECTION 3: SYSTEM SETUP & GEAR SPECS -->
+    <!-- SECTION 3: SYSTEM SETUP & GEAR SPECS (Paired with Summer Vivlos) -->
     <section class="section-block" id="specs">
-      <div class="section-title-wrap">
-        <h2 class="section-heading">
-          <span class="section-index-num">03 //</span> System Setup & Hardware
-        </h2>
-        <span class="section-pill-tag">Specifications</span>
+      <div class="section-character-banner">
+        <div class="banner-left-info">
+          <span class="banner-index-label">03 // Hardware Architecture</span>
+          <h2 class="banner-heading">System & Peripherals</h2>
+          <span class="banner-subtext">Laptop specs, NixOS environment, and rapid-trigger gaming gear.</span>
+        </div>
+        <div class="character-spotlight-frame" title="Vivlos (Summer / Resort)">
+          <img class="character-spotlight-img" src="../assets/vivlos/summer.webp" alt="Vivlos Summer">
+          <span class="character-theme-tag">Summer</span>
+        </div>
       </div>
 
       <div class="specs-split-grid">
@@ -342,13 +335,18 @@
     </section>
 
 
-    <!-- SECTION 4: OSU! PERFORMANCE -->
+    <!-- SECTION 4: OSU! PERFORMANCE (Paired with Racing Vivlos) -->
     <section class="section-block" id="osu">
-      <div class="section-title-wrap">
-        <h2 class="section-heading">
-          <span class="section-index-num">04 //</span> osu! Performance
-        </h2>
-        <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" class="section-pill-tag" style="color:var(--accent-cyan); text-decoration:none;">Profile #14671577 ↗</a>
+      <div class="section-character-banner">
+        <div class="banner-left-info">
+          <span class="banner-index-label">04 // Competitive Rhythm</span>
+          <h2 class="banner-heading">osu! Performance</h2>
+          <span class="banner-subtext">Live standard ranking, performance metrics, and top scores.</span>
+        </div>
+        <div class="character-spotlight-frame" title="Vivlos (Racing Silks / Dubai Turf)">
+          <img class="character-spotlight-img" src="../assets/vivlos/racing.webp" alt="Vivlos Racing">
+          <span class="character-theme-tag">Racing</span>
+        </div>
       </div>
 
       <div class="osu-performance-card">
@@ -387,7 +385,7 @@
         <!-- Scores Showcase -->
         <div class="osu-scores-section">
           <div class="osu-tabs-header">
-            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">Top Plays</span>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">Personal Bests</span>
             <div class="osu-tab-switch-group">
               <button class="osu-tab-btn active" id="osu-tab-top1" onclick="switchOsuTab('top1')">#1 Best</button>
               <button class="osu-tab-btn" id="osu-tab-top5" onclick="switchOsuTab('top5')">Top 5</button>
@@ -475,7 +473,7 @@
 
 <!-- Scripts -->
 <script>
-  window.VIVLOS_AVATAR_SRC = '../assets/vivlos/racing.webp';
+  window.VIVLOS_AVATAR_SRC = '../assets/vivlos/casual.webp';
 </script>
 <script src="app.js" defer></script>
 <script src="../js/lanyard.js" defer></script>

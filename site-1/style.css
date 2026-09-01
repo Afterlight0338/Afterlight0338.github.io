@@ -1,18 +1,18 @@
-/* ===== VIVLOS.DEV - STYLE 1: ASYMMETRIC SPLIT STUDIO ===== */
+/* ===== VIVLOS.DEV - STYLE 1: 4-SECTION CHARACTER-PAIRED STREAM ===== */
 :root {
   --bg-main: #060911;
   --bg-surface: #0b101c;
   --bg-card: rgba(14, 21, 37, 0.65);
   --bg-card-hover: rgba(20, 30, 52, 0.85);
-  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-subtle: rgba(255, 255, 255, 0.08);
   --border-focus: rgba(6, 182, 212, 0.4);
   --border-gold: rgba(251, 191, 36, 0.35);
 
   --accent-cyan: #06b6d4;
   --accent-cyan-light: #38bdf8;
-  --accent-cyan-glow: rgba(6, 182, 212, 0.15);
+  --accent-cyan-glow: rgba(6, 182, 212, 0.12);
   --accent-gold: #fbbf24;
-  --accent-gold-glow: rgba(251, 191, 36, 0.15);
+  --accent-gold-glow: rgba(251, 191, 36, 0.12);
   --accent-emerald: #10b981;
   --accent-rose: #f43f5e;
   --accent-violet: #a78bfa;
@@ -66,173 +66,97 @@ body {
 
 /* Master Layout Container */
 .app-container {
-  max-width: 1380px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 40px 24px;
   display: grid;
-  grid-template-columns: 420px 1fr;
-  gap: 40px;
+  grid-template-columns: 340px 1fr;
+  gap: 36px;
   position: relative;
 }
 
 /* ==========================================================
-   LEFT STAGE: FIXED / STICKY STUDIO
+   LEFT STAGE: COMPACT STICKY PROFILE & PRESENCE
    ========================================================== */
 .left-stage {
   position: sticky;
-  top: 32px;
+  top: 40px;
   height: fit-content;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-/* Vivlos Character Visual Card */
-.vivlos-art-card {
-  position: relative;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 18px;
-  overflow: hidden;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
-  transition: border-color 0.25s ease;
-}
-
-.vivlos-art-card:hover {
-  border-color: var(--border-focus);
-}
-
-.art-display-frame {
-  position: relative;
-  width: 100%;
-  height: 380px;
-  overflow: hidden;
-  background: linear-gradient(180deg, rgba(6, 182, 212, 0.1) 0%, rgba(11, 16, 28, 0.9) 95%);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.vivlos-main-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center bottom;
-  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6));
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s ease;
-}
-
-.art-badge-overlay {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(6, 9, 17, 0.75);
-  border: 1px solid var(--border-subtle);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--accent-cyan);
-  backdrop-filter: blur(8px);
-}
-
-.art-badge-overlay .badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-cyan);
-}
-
-/* Outfit Selector Toolbar */
-.outfit-selector-bar {
-  padding: 12px;
-  background: rgba(8, 13, 24, 0.85);
-  border-top: 1px solid var(--border-subtle);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-}
-
-.outfit-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 6px 4px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  transition: all 0.2s ease;
-}
-
-.outfit-btn:hover {
-  background: rgba(6, 182, 212, 0.08);
-  border-color: var(--border-focus);
-  color: var(--text-primary);
-}
-
-.outfit-btn.active {
-  background: rgba(6, 182, 212, 0.15);
-  border-color: var(--accent-cyan);
-  color: var(--accent-cyan);
-  font-weight: 600;
-}
-
-/* Identity & Profile Block */
 .profile-meta-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: 18px;
   padding: 22px;
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.profile-name-row {
+.profile-header-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
+}
+
+.profile-avatar-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.3) 0%, rgba(11, 16, 28, 0.9) 100%);
+  border: 1px solid var(--border-focus);
+  flex-shrink: 0;
+}
+
+.profile-avatar-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.profile-name-group {
+  display: flex;
+  flex-direction: column;
 }
 
 .profile-name {
-  font-size: 1.55rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--text-primary);
+  color: #fff;
 }
 
 .domain-pill {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--accent-cyan);
   background: var(--accent-cyan-glow);
   border: 1px solid rgba(6, 182, 212, 0.3);
-  padding: 3px 8px;
-  border-radius: 6px;
+  padding: 2px 7px;
+  border-radius: 5px;
   font-weight: 600;
+  width: fit-content;
+  margin-top: 2px;
 }
 
 .profile-tagline {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
-/* Live Presence Card (Lanyard Sync) */
+/* Lanyard Discord & Spotify Card */
 .presence-box {
-  background: rgba(8, 13, 24, 0.7);
+  background: rgba(8, 13, 24, 0.75);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 12px 14px;
@@ -252,7 +176,7 @@ body {
   align-items: center;
   gap: 7px;
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: var(--text-primary);
 }
 
@@ -269,13 +193,6 @@ body {
 .status-dot.dnd { background: var(--accent-rose); box-shadow: 0 0 8px rgba(244, 63, 94, 0.5); }
 .status-dot.offline { background: var(--text-muted); }
 
-.presence-status-label {
-  font-size: 0.7rem;
-  font-family: var(--font-mono);
-  color: var(--text-muted);
-}
-
-/* Spotify / Activity Module */
 .presence-activity-body {
   display: flex;
   align-items: center;
@@ -283,8 +200,8 @@ body {
 }
 
 .activity-icon-img {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 8px;
   object-fit: cover;
   background: #1e293b;
@@ -300,14 +217,14 @@ body {
 
 .activity-type-label {
   font-family: var(--font-mono);
-  font-size: 0.64rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
   color: var(--accent-cyan);
   letter-spacing: 0.04em;
 }
 
 .activity-title {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -316,14 +233,14 @@ body {
 }
 
 .activity-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Spotify Progress */
+/* Spotify Track Bar */
 .spotify-progress-container {
   display: flex;
   flex-direction: column;
@@ -357,7 +274,7 @@ body {
 .nav-jump-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .nav-jump-item {
@@ -368,16 +285,15 @@ body {
   border-radius: 8px;
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-family: var(--font-mono);
   transition: all 0.2s ease;
-  background: transparent;
 }
 
 .nav-jump-item:hover {
   background: rgba(255, 255, 255, 0.04);
   color: var(--accent-cyan);
-  padding-left: 16px;
+  padding-left: 15px;
 }
 
 /* Social Buttons Row */
@@ -388,8 +304,8 @@ body {
 }
 
 .social-link-btn {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-subtle);
@@ -403,15 +319,15 @@ body {
 }
 
 .social-link-btn:hover {
-  background: rgba(6, 182, 212, 0.12);
+  background: rgba(6, 182, 212, 0.15);
   border-color: var(--border-focus);
   color: var(--accent-cyan);
   transform: translateY(-2px);
 }
 
 .social-link-btn svg {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
 }
 
 /* Live Clock */
@@ -425,62 +341,119 @@ body {
 }
 
 /* ==========================================================
-   RIGHT CONTENT FEED
+   RIGHT STREAM: 4 CHARACTER-PAIRED SECTIONS
    ========================================================== */
 .right-feed {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 40px;
 }
 
-/* Section Header */
 .section-block {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-.section-title-wrap {
+/* Section Header Banner with Vivlos Character Spotlight */
+.section-character-banner {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-subtle);
+  gap: 16px;
+  overflow: hidden;
+  position: relative;
+  backdrop-filter: blur(14px);
+  transition: border-color 0.25s ease;
 }
 
-.section-index-num {
+.section-character-banner:hover {
+  border-color: var(--border-focus);
+}
+
+.banner-left-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 2;
+}
+
+.banner-index-label {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   color: var(--accent-cyan);
-  margin-right: 8px;
-}
-
-.section-heading {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
+  gap: 6px;
 }
 
-.section-pill-tag {
+.banner-heading {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.banner-subtext {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Character Spotlight Frame */
+.character-spotlight-frame {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.2) 0%, rgba(11, 16, 28, 0.95) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.character-spotlight-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+  transition: transform 0.3s ease;
+}
+
+.section-character-banner:hover .character-spotlight-img {
+  transform: scale(1.08);
+}
+
+.character-theme-tag {
+  position: absolute;
+  bottom: 4px;
+  background: rgba(6, 9, 17, 0.85);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-muted);
+  font-size: 0.6rem;
+  color: var(--accent-cyan);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
 }
 
-/* --- SECTION 1: ABOUT & STATEMENT --- */
+/* --- SECTION 1: ABOUT CONTENT --- */
 .statement-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: 16px;
   padding: 24px;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(14px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -490,11 +463,6 @@ body {
   font-size: 0.95rem;
   color: #cbd5e1;
   line-height: 1.7;
-}
-
-.statement-text strong {
-  color: var(--text-primary);
-  font-weight: 600;
 }
 
 .statement-chips {
@@ -599,7 +567,7 @@ body {
   color: #000;
 }
 
-/* --- SECTION 3: SYSTEM SETUP & GEAR SPECS --- */
+/* --- SECTION 3: SPECS & HARDWARE --- */
 .specs-split-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -715,7 +683,6 @@ body {
   gap: 5px;
 }
 
-/* Metric Tiles Grid */
 .osu-metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -751,7 +718,7 @@ body {
 .metric-value.rose { color: var(--accent-rose); }
 .metric-value.gold { color: var(--accent-gold); }
 
-/* Score Viewer */
+/* Scores Showcase */
 .osu-scores-section {
   display: flex;
   flex-direction: column;
@@ -788,7 +755,6 @@ body {
   font-weight: 600;
 }
 
-/* Top 1 Score Banner */
 .osu-top1-box {
   display: block;
   text-decoration: none;
@@ -872,7 +838,6 @@ body {
 .osu-stat-badge.rank-a { color: var(--accent-emerald); font-weight: 700; }
 .osu-stat-badge.rank-s { color: var(--accent-gold); font-weight: 700; }
 
-/* Top 5 Score Rows */
 .osu-top5-container {
   display: flex;
   flex-direction: column;
@@ -987,9 +952,7 @@ body {
   transform: translateY(0);
 }
 
-/* ==========================================================
-   RESPONSIVE DESIGN
-   ========================================================== */
+/* Responsive */
 @media (max-width: 1024px) {
   .app-container {
     grid-template-columns: 1fr;
@@ -1008,13 +971,15 @@ body {
   .app-container {
     padding: 16px 14px;
   }
-  .art-display-frame {
-    height: 300px;
+  .section-character-banner {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+  .character-spotlight-frame {
+    width: 80px;
+    height: 80px;
   }
   .osu-metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .outfit-selector-bar {
     grid-template-columns: repeat(2, 1fr);
   }
 }
