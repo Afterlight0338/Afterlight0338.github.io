@@ -176,7 +176,7 @@
           <span class="score-rank-badge ${badgeClass}">#${s.rank_index || idx + 1}</span>
 
           <!-- Framed Beatmap Thumbnail -->
-          <img class="score-cover-thumb" src="${coverUrl}" alt="${s.title}" loading="lazy" onerror="this.style.display='none'">
+          <img class="score-cover-thumb" src="${coverUrl}" alt="${s.title}" width="50" height="32" style="width:50px;height:32px;min-width:50px;max-width:50px;min-height:32px;max-height:32px;object-fit:cover;border-radius:6px;flex-shrink:0;" loading="lazy" onerror="this.style.display='none'">
 
           <!-- Audio Play Button -->
           <button class="audio-preview-btn" data-beatmapset-id="${setId}" onclick="window.toggleAudioPreview(${setId}, this, event)" title="Play Music Preview">
