@@ -11,19 +11,22 @@
   let currentAudio = null;
   let currentPlayingSetId = null;
 
-  // Global audio preview handler
+  // Global audio preview handler (plays soft, low volume)
   window.toggleAudioPreview = function(beatmapsetId, btnEl, e) {
     if (e) {
-      e.preventDefault();
-      e.stopPropagation();
+      if (typeof e.preventDefault === 'function') e.preventDefault();
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
     }
-    if (!beatmapsetId) return;
+    if (!beatmapsetId) return false;
+
+    const targetId = String(beatmapsetId);
 
     // If clicking same button and playing -> Pause
-    if (currentPlayingSetId === String(beatmapsetId) && currentAudio && !currentAudio.paused) {
+    if (currentPlayingSetId === targetId && currentAudio && !currentAudio.paused) {
       currentAudio.pause();
+      currentPlayingSetId = null;
       updateAudioButtons(null);
-      return;
+      return false;
     }
 
     // Stop existing audio
@@ -32,20 +35,29 @@
       currentAudio.currentTime = 0;
     }
 
-    const previewUrl = `https://b.ppy.sh/preview/${beatmapsetId}.mp3`;
+    const previewUrl = `https://b.ppy.sh/preview/${targetId}.mp3`;
     currentAudio = new Audio(previewUrl);
-    currentAudio.volume = 0.55;
-    currentPlayingSetId = String(beatmapsetId);
+    currentAudio.volume = 0.18; // Soft volume to prevent loud blasts
+    currentPlayingSetId = targetId;
     updateAudioButtons(currentPlayingSetId);
 
-    currentAudio.play().catch(err => {
-      console.log('Audio playback notice:', err);
-      updateAudioButtons(null);
-    });
+    const playPromise = currentAudio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(err => {
+        console.warn('Audio playback notice:', err);
+        currentPlayingSetId = null;
+        updateAudioButtons(null);
+      });
+    }
 
     currentAudio.onended = () => {
-      updateAudioButtons(null);
+      if (currentPlayingSetId === targetId) {
+        currentPlayingSetId = null;
+        updateAudioButtons(null);
+      }
     };
+
+    return false;
   };
 
   function updateAudioButtons(activeSetId) {
@@ -124,11 +136,13 @@
     const setId = top1.beatmapset_id || 2401111;
 
     if (linkEl) {
-      linkEl.href = `https://osu.ppy.sh/beatmaps/${top1.beatmap_id}`;
       const coverUrl = top1.cover_url || `https://assets.ppy.sh/beatmaps/${setId}/covers/cover.jpg`;
       linkEl.style.backgroundImage = `linear-gradient(180deg, rgba(6, 12, 28, 0.78) 0%, rgba(6, 12, 28, 0.94) 100%), url('${coverUrl}')`;
     }
-    if (titleEl) titleEl.innerText = top1.title;
+    if (titleEl) {
+      titleEl.innerText = top1.title;
+      titleEl.href = `https://osu.ppy.sh/beatmaps/${top1.beatmap_id}`;
+    }
     if (artistEl) artistEl.innerHTML = `${top1.artist} • <span class="score-diff-highlight">[${top1.difficulty}]</span>`;
     if (ppEl) ppEl.innerText = `${top1.pp} pp`;
     if (accEl) accEl.innerText = `${top1.accuracy}%`;
@@ -157,9 +171,12 @@
       const gradeHtml = getGradeBadge(s.rank);
 
       return `
-        <div class="osu-score-card-item" style="background-image: linear-gradient(90deg, rgba(6, 11, 24, 0.94) 0%, rgba(6, 11, 24, 0.82) 45%, rgba(6, 11, 24, 0.95) 100%), url('${coverUrl}');">
+        <div class="osu-score-card-item">
           <!-- Rank Index -->
           <span class="score-rank-badge ${badgeClass}">#${s.rank_index || idx + 1}</span>
+
+          <!-- Framed Beatmap Thumbnail -->
+          <img class="score-cover-thumb" src="${coverUrl}" alt="${s.title}" loading="lazy" onerror="this.style.display='none'">
 
           <!-- Audio Play Button -->
           <button class="audio-preview-btn" data-beatmapset-id="${setId}" onclick="window.toggleAudioPreview(${setId}, this, event)" title="Play Music Preview">
