@@ -137,10 +137,10 @@
     // Fallback: Idle / Default
     if (spotifyWrap) spotifyWrap.style.display = 'none';
     if (activityType) activityType.innerText = 'STATUS';
-    if (activityName) activityName.innerText = rawStatus === 'offline' ? 'Offline' : 'Active on NixOS';
-    if (activityState) activityState.innerText = 'Developer • osu! Standard';
+    if (activityName) activityName.innerText = rawStatus === 'offline' ? 'Offline' : 'osu! gaming';
+    if (activityState) activityState.innerText = 'fuck osu! *plays it*';
     if (activityTime) activityTime.innerText = 'Hyprland • 240Hz';
-    if (activityIcon) activityIcon.src = (window.VIVLOS_AVATAR_SRC || 'assets/vivlos/racing.webp');
+    if (activityIcon) activityIcon.src = (window.VIVLOS_AVATAR_SRC || 'assets/vivlos/casual.webp');
   }
 
   function initLanyardREST() {
