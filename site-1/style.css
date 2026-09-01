@@ -774,20 +774,45 @@ body {
 
 /* Audio Preview Button */
 .audio-preview-btn {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  max-width: 28px;
+  min-height: 28px;
+  max-height: 28px;
   border-radius: 50%;
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid rgba(6, 182, 212, 0.4);
-  color: var(--accent-cyan-light);
-  display: flex;
+  background: rgba(6, 182, 212, 0.18);
+  border: 1px solid var(--accent-cyan);
+  color: #fff;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  padding: 0;
+  margin: 0;
+  outline: none;
   transition: all 0.2s ease;
-  z-index: 5;
+  z-index: 10;
+  position: relative;
+}
+
+.audio-preview-btn svg {
+  display: block;
+  pointer-events: none;
+}
+
+.audio-preview-btn .play-icon {
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
+}
+
+.audio-preview-btn .pause-icon {
+  display: none;
+  width: 12px;
+  height: 12px;
 }
 
 .audio-preview-btn:hover {
@@ -797,29 +822,20 @@ body {
   box-shadow: 0 0 10px var(--accent-cyan);
 }
 
-.audio-preview-btn svg {
-  width: 14px;
-  height: 14px;
-}
-
-.audio-preview-btn .pause-icon {
-  display: none;
-}
-
 .audio-preview-btn.playing {
   background: var(--accent-cyan);
   color: #000;
   border-color: #fff;
-  box-shadow: 0 0 12px var(--accent-cyan);
+  box-shadow: 0 0 14px var(--accent-cyan);
   animation: audioPulse 1.4s infinite ease-in-out;
 }
 
 .audio-preview-btn.playing .play-icon {
-  display: none;
+  display: none !important;
 }
 
 .audio-preview-btn.playing .pause-icon {
-  display: block;
+  display: block !important;
 }
 
 @keyframes audioPulse {
@@ -830,14 +846,15 @@ body {
 /* Mod Pills & Grade Badges */
 .mod-pill {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  padding: 2px 7px;
+  padding: 2px 6px;
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   letter-spacing: 0.04em;
+  text-decoration: none !important;
 }
 
 .mod-hd { background: #1e3a8a; color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); }
@@ -848,15 +865,16 @@ body {
 
 .osu-grade-badge {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 900;
-  padding: 2px 8px;
-  border-radius: 5px;
+  padding: 2px 7px;
+  border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none !important;
 }
 
 .grade-ss { color: #fde047; border-color: rgba(253, 224, 71, 0.4); text-shadow: 0 0 8px rgba(253, 224, 71, 0.5); }
@@ -869,12 +887,12 @@ body {
 .osu-scores-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .osu-scores-section-heading {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -883,10 +901,10 @@ body {
   gap: 8px;
 }
 
-/* Top 1 Spotlight Box */
+/* Top 1 Spotlight Box (Remains Full Banner Size) */
 .osu-top1-box {
   display: block;
-  text-decoration: none;
+  text-decoration: none !important;
   background-size: cover;
   background-position: center;
   border: 1px solid var(--border-subtle);
@@ -940,6 +958,7 @@ body {
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.01em;
+  text-decoration: none !important;
 }
 
 .top1-song-artist {
@@ -978,11 +997,11 @@ body {
   color: #e2e8f0;
 }
 
-/* Full Top 5 Leaderboard List with Banner Art Background */
+/* Full Top 5 Leaderboard List - Compact Sleek Design */
 .osu-top5-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 7px;
 }
 
 .osu-score-card-item {
@@ -990,30 +1009,33 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 12px 18px;
+  border-radius: 10px;
+  padding: 8px 14px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
   position: relative;
   overflow: hidden;
-  transition: all 0.22s ease;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
 }
 
 .osu-score-card-item:hover {
   border-color: var(--border-focus);
-  transform: translateX(4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transform: translateX(3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .score-rank-badge {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: var(--text-muted);
-  width: 26px;
+  width: 22px;
   flex-shrink: 0;
+  text-decoration: none !important;
 }
 
 .score-rank-badge.gold { color: #f59e0b; text-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
@@ -1024,62 +1046,75 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
   flex: 1;
-  text-decoration: none;
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.score-main-content-link * {
+  text-decoration: none !important;
 }
 
 .score-detail-text {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  text-decoration: none !important;
 }
 
 .score-title-text {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-primary);
+  text-decoration: none !important;
 }
 
 .score-diff-text {
-  font-size: 0.76rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
+  text-decoration: none !important;
 }
 
 .score-diff-highlight {
   color: var(--accent-cyan-light);
   font-weight: 600;
+  text-decoration: none !important;
 }
 
 .score-metric-text {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
   font-family: var(--font-mono);
+  text-decoration: none !important;
 }
 
 .score-pp-val {
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   font-weight: 800;
   color: var(--accent-cyan-light);
+  text-decoration: none !important;
 }
 
 .score-tags-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  text-decoration: none !important;
 }
 
 .score-acc-text {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
+  text-decoration: none !important;
 }
 
 .score-combo-text {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
+  text-decoration: none !important;
 }
 
 /* Footer */
