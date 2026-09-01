@@ -343,7 +343,7 @@
         <!-- User Bar -->
         <div class="osu-user-bar">
           <div class="osu-profile-tag">
-            <img class="osu-avatar-mini" id="osu-avatar-img" src="https://a.ppy.sh/14671577" alt="osu! Avatar">
+            <img class="osu-avatar-mini" id="osu-avatar-img" src="https://a.ppy.sh/14671577" alt="osu! Avatar" width="44" height="44" style="width:44px; height:44px; max-width:44px; max-height:44px; border-radius:50%; object-fit:cover; flex-shrink:0;">
             <div class="osu-user-meta">
               <div class="osu-user-title-row">
                 <a class="osu-username-text" id="osu-username-display" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">
@@ -395,12 +395,20 @@
 
           <!-- Top 1 Banner -->
           <div id="osu-view-top1">
-            <a class="osu-top1-box" id="osu-top1-link" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener" style="background-image: linear-gradient(180deg, rgba(6, 12, 28, 0.78) 0%, rgba(6, 12, 28, 0.94) 100%), url('https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg');">
+            <div class="osu-top1-box" id="osu-top1-link" style="background-image: linear-gradient(180deg, rgba(6, 12, 28, 0.78) 0%, rgba(6, 12, 28, 0.94) 100%), url('https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg');">
               <div class="osu-top1-inner">
                 <div class="top1-meta-left">
-                  <span class="top1-badge-tag">🏆 TOP #1 RECORD</span>
-                  <div class="top1-song-title" id="osu-top1-title">Power of the Dragonflame</div>
-                  <div class="top1-song-artist" id="osu-top1-artist">Rhapsody • <span class="score-diff-highlight">[Uri's Extreme]</span></div>
+                  <!-- Audio Play Button -->
+                  <button class="audio-preview-btn" id="osu-top1-play-btn" data-beatmapset-id="2401111" onclick="window.toggleAudioPreview(2401111, this, event)" title="Play Music Preview" style="width:40px; height:40px; min-width:40px;">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor" style="width:18px; height:18px;"><path d="M8 5v14l11-7z"/></svg>
+                    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="width:18px; height:18px;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                  </button>
+
+                  <div class="top1-song-info">
+                    <span class="top1-badge-tag">🏆 TOP #1 RECORD</span>
+                    <a class="top1-song-title" id="osu-top1-title" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener" style="text-decoration:none;">Power of the Dragonflame</a>
+                    <div class="top1-song-artist" id="osu-top1-artist">Rhapsody • <span class="score-diff-highlight">[Uri's Extreme]</span></div>
+                  </div>
                 </div>
                 <div class="top1-meta-right">
                   <div class="top1-pp-val" id="osu-top1-pp">580.1 pp</div>
@@ -412,100 +420,139 @@
                   </div>
                 </div>
               </div>
-            </a>
+            </div>
           </div>
 
           <div class="osu-scores-section-heading" style="margin-top: 6px;">
             <span>📊 Top 5 Personal Bests</span>
           </div>
 
-          <!-- Top 5 List -->
+          <!-- Top 5 List with Banner Covers & Audio Previews -->
           <div class="osu-top5-container" id="osu-top5-items">
-            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener">
+            <!-- Item 1 -->
+            <div class="osu-score-card-item" style="background-image: linear-gradient(90deg, rgba(6, 11, 24, 0.94) 0%, rgba(6, 11, 24, 0.82) 45%, rgba(6, 11, 24, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg');">
               <span class="score-rank-badge gold">#1</span>
-              <div class="score-detail-text">
-                <span class="score-title-text">Power of the Dragonflame</span>
-                <span class="score-diff-text">Rhapsody • <span class="score-diff-highlight">[Uri's Extreme]</span></span>
-              </div>
-              <div class="score-metric-text">
-                <span class="score-pp-val">580.1 pp</span>
-                <div class="score-tags-row">
-                  <span class="score-acc-text">96.21%</span>
-                  <span class="score-combo-text">(1,899x max combo)</span>
-                  <span class="mod-pill mod-hd">HD</span>
-                  <span class="mod-pill mod-hr">HR</span>
-                  <span class="osu-grade-badge grade-a">A</span>
+              <button class="audio-preview-btn" data-beatmapset-id="2401111" onclick="window.toggleAudioPreview(2401111, this, event)" title="Play Music Preview">
+                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <a class="score-main-content-link" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener">
+                <div class="score-detail-text">
+                  <span class="score-title-text">Power of the Dragonflame</span>
+                  <span class="score-diff-text">Rhapsody • <span class="score-diff-highlight">[Uri's Extreme]</span></span>
                 </div>
-              </div>
-            </a>
-            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5141310" target="_blank" rel="noopener">
+                <div class="score-metric-text">
+                  <span class="score-pp-val">580.1 pp</span>
+                  <div class="score-tags-row">
+                    <span class="score-acc-text">96.21%</span>
+                    <span class="score-combo-text">(1,899x)</span>
+                    <span class="mod-pill mod-hd">HD</span>
+                    <span class="mod-pill mod-hr">HR</span>
+                    <span class="osu-grade-badge grade-a">A</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="osu-score-card-item" style="background-image: linear-gradient(90deg, rgba(6, 11, 24, 0.94) 0%, rgba(6, 11, 24, 0.82) 45%, rgba(6, 11, 24, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/2310753/covers/cover.jpg');">
               <span class="score-rank-badge silver">#2</span>
-              <div class="score-detail-text">
-                <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
-                <span class="score-diff-text">VINXIS • <span class="score-diff-highlight">[-Tynamo's Resolution]</span></span>
-              </div>
-              <div class="score-metric-text">
-                <span class="score-pp-val">504.1 pp</span>
-                <div class="score-tags-row">
-                  <span class="score-acc-text">96.52%</span>
-                  <span class="score-combo-text">(375x max combo)</span>
-                  <span class="mod-pill mod-hd">HD</span>
-                  <span class="mod-pill mod-hr">HR</span>
-                  <span class="osu-grade-badge grade-a">A</span>
+              <button class="audio-preview-btn" data-beatmapset-id="2310753" onclick="window.toggleAudioPreview(2310753, this, event)" title="Play Music Preview">
+                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <a class="score-main-content-link" href="https://osu.ppy.sh/beatmaps/5141310" target="_blank" rel="noopener">
+                <div class="score-detail-text">
+                  <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
+                  <span class="score-diff-text">VINXIS • <span class="score-diff-highlight">[-Tynamo's Resolution]</span></span>
                 </div>
-              </div>
-            </a>
-            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5061151" target="_blank" rel="noopener">
+                <div class="score-metric-text">
+                  <span class="score-pp-val">504.1 pp</span>
+                  <div class="score-tags-row">
+                    <span class="score-acc-text">96.52%</span>
+                    <span class="score-combo-text">(375x)</span>
+                    <span class="mod-pill mod-hd">HD</span>
+                    <span class="mod-pill mod-hr">HR</span>
+                    <span class="osu-grade-badge grade-a">A</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="osu-score-card-item" style="background-image: linear-gradient(90deg, rgba(6, 11, 24, 0.94) 0%, rgba(6, 11, 24, 0.82) 45%, rgba(6, 11, 24, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/2341780/covers/cover.jpg');">
               <span class="score-rank-badge bronze">#3</span>
-              <div class="score-detail-text">
-                <span class="score-title-text">Green Greens</span>
-                <span class="score-diff-text">Jun Ishikawa • <span class="score-diff-highlight">[Mekadon's Super Ability]</span></span>
-              </div>
-              <div class="score-metric-text">
-                <span class="score-pp-val">482.0 pp</span>
-                <div class="score-tags-row">
-                  <span class="score-acc-text">99.09%</span>
-                  <span class="score-combo-text">(512x max combo)</span>
-                  <span class="mod-pill mod-hd">HD</span>
-                  <span class="mod-pill mod-hr">HR</span>
-                  <span class="osu-grade-badge grade-sh">SH</span>
+              <button class="audio-preview-btn" data-beatmapset-id="2341780" onclick="window.toggleAudioPreview(2341780, this, event)" title="Play Music Preview">
+                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <a class="score-main-content-link" href="https://osu.ppy.sh/beatmaps/5061151" target="_blank" rel="noopener">
+                <div class="score-detail-text">
+                  <span class="score-title-text">Green Greens</span>
+                  <span class="score-diff-text">Jun Ishikawa • <span class="score-diff-highlight">[Mekadon's Super Ability]</span></span>
                 </div>
-              </div>
-            </a>
-            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/2084862" target="_blank" rel="noopener">
+                <div class="score-metric-text">
+                  <span class="score-pp-val">482.0 pp</span>
+                  <div class="score-tags-row">
+                    <span class="score-acc-text">99.09%</span>
+                    <span class="score-combo-text">(512x)</span>
+                    <span class="mod-pill mod-hd">HD</span>
+                    <span class="mod-pill mod-hr">HR</span>
+                    <span class="osu-grade-badge grade-sh">SH</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="osu-score-card-item" style="background-image: linear-gradient(90deg, rgba(6, 11, 24, 0.94) 0%, rgba(6, 11, 24, 0.82) 45%, rgba(6, 11, 24, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/983911/covers/cover.jpg');">
               <span class="score-rank-badge">#4</span>
-              <div class="score-detail-text">
-                <span class="score-title-text">Bass Slut (Original Mix)</span>
-                <span class="score-diff-text">S3RL • <span class="score-diff-highlight">[Intense Ecstasy]</span></span>
-              </div>
-              <div class="score-metric-text">
-                <span class="score-pp-val">478.7 pp</span>
-                <div class="score-tags-row">
-                  <span class="score-acc-text">97.63%</span>
-                  <span class="score-combo-text">(562x max combo)</span>
-                  <span class="mod-pill mod-hd">HD</span>
-                  <span class="mod-pill mod-hr">HR</span>
-                  <span class="osu-grade-badge grade-sh">SH</span>
+              <button class="audio-preview-btn" data-beatmapset-id="983911" onclick="window.toggleAudioPreview(983911, this, event)" title="Play Music Preview">
+                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <a class="score-main-content-link" href="https://osu.ppy.sh/beatmaps/2084862" target="_blank" rel="noopener">
+                <div class="score-detail-text">
+                  <span class="score-title-text">Bass Slut (Original Mix)</span>
+                  <span class="score-diff-text">S3RL • <span class="score-diff-highlight">[Intense Ecstasy]</span></span>
                 </div>
-              </div>
-            </a>
-            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/4943355" target="_blank" rel="noopener">
+                <div class="score-metric-text">
+                  <span class="score-pp-val">478.7 pp</span>
+                  <div class="score-tags-row">
+                    <span class="score-acc-text">97.63%</span>
+                    <span class="score-combo-text">(562x)</span>
+                    <span class="mod-pill mod-hd">HD</span>
+                    <span class="mod-pill mod-hr">HR</span>
+                    <span class="osu-grade-badge grade-sh">SH</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="osu-score-card-item" style="background-image: linear-gradient(90deg, rgba(6, 11, 24, 0.94) 0%, rgba(6, 11, 24, 0.82) 45%, rgba(6, 11, 24, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/2310753/covers/cover.jpg');">
               <span class="score-rank-badge">#5</span>
-              <div class="score-detail-text">
-                <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
-                <span class="score-diff-text">VINXIS • <span class="score-diff-highlight">[Lost]</span></span>
-              </div>
-              <div class="score-metric-text">
-                <span class="score-pp-val">470.5 pp</span>
-                <div class="score-tags-row">
-                  <span class="score-acc-text">97.04%</span>
-                  <span class="score-combo-text">(734x max combo)</span>
-                  <span class="mod-pill mod-hd">HD</span>
-                  <span class="mod-pill mod-hr">HR</span>
-                  <span class="osu-grade-badge grade-a">A</span>
+              <button class="audio-preview-btn" data-beatmapset-id="2310753" onclick="window.toggleAudioPreview(2310753, this, event)" title="Play Music Preview">
+                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <a class="score-main-content-link" href="https://osu.ppy.sh/beatmaps/4943355" target="_blank" rel="noopener">
+                <div class="score-detail-text">
+                  <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
+                  <span class="score-diff-text">VINXIS • <span class="score-diff-highlight">[Lost]</span></span>
                 </div>
-              </div>
-            </a>
+                <div class="score-metric-text">
+                  <span class="score-pp-val">470.5 pp</span>
+                  <div class="score-tags-row">
+                    <span class="score-acc-text">97.04%</span>
+                    <span class="score-combo-text">(734x)</span>
+                    <span class="mod-pill mod-hd">HD</span>
+                    <span class="mod-pill mod-hr">HR</span>
+                    <span class="osu-grade-badge grade-a">A</span>
+                  </div>
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </div>

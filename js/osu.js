@@ -1,12 +1,65 @@
 // ===== LIVE OSU! API PROFILE & TOP PLAYS INTEGRATION =====
 (function initOsu() {
   const OSU_USER_ID = "14671577";
-  const CACHE_KEY = "osu_profile_cache_v3";
+  const CACHE_KEY = "osu_profile_cache_v4";
   const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 
   // Primary live endpoint and static fallback
   const PRIMARY_ENDPOINT = window.OSU_API_ENDPOINT || `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=${OSU_USER_ID}`;
   const FALLBACK_ENDPOINT = window.OSU_FALLBACK_ENDPOINT || (window.location.pathname.includes('/site-') ? '../data/osu.json' : 'data/osu.json');
+
+  let currentAudio = null;
+  let currentPlayingSetId = null;
+
+  // Global audio preview handler
+  window.toggleAudioPreview = function(beatmapsetId, btnEl, e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!beatmapsetId) return;
+
+    // If clicking same button and playing -> Pause
+    if (currentPlayingSetId === String(beatmapsetId) && currentAudio && !currentAudio.paused) {
+      currentAudio.pause();
+      updateAudioButtons(null);
+      return;
+    }
+
+    // Stop existing audio
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+
+    const previewUrl = `https://b.ppy.sh/preview/${beatmapsetId}.mp3`;
+    currentAudio = new Audio(previewUrl);
+    currentAudio.volume = 0.55;
+    currentPlayingSetId = String(beatmapsetId);
+    updateAudioButtons(currentPlayingSetId);
+
+    currentAudio.play().catch(err => {
+      console.log('Audio playback notice:', err);
+      updateAudioButtons(null);
+    });
+
+    currentAudio.onended = () => {
+      updateAudioButtons(null);
+    };
+  };
+
+  function updateAudioButtons(activeSetId) {
+    document.querySelectorAll('.audio-preview-btn').forEach(btn => {
+      const setId = btn.getAttribute('data-beatmapset-id');
+      if (activeSetId && setId === String(activeSetId)) {
+        btn.classList.add('playing');
+        btn.setAttribute('title', 'Pause Preview');
+      } else {
+        btn.classList.remove('playing');
+        btn.setAttribute('title', 'Play Music Preview');
+      }
+    });
+  }
 
   function formatNumber(num) {
     if (num === null || num === undefined || isNaN(num)) return "--";
@@ -66,12 +119,14 @@
     const comboEl = document.getElementById('osu-top1-combo');
     const modsWrap = document.getElementById('osu-top1-mods-wrap');
     const rankWrap = document.getElementById('osu-top1-rank-wrap');
+    const playBtn = document.getElementById('osu-top1-play-btn');
+
+    const setId = top1.beatmapset_id || 2401111;
 
     if (linkEl) {
       linkEl.href = `https://osu.ppy.sh/beatmaps/${top1.beatmap_id}`;
-      if (top1.cover_url) {
-        linkEl.style.backgroundImage = `linear-gradient(180deg, rgba(6, 12, 28, 0.78) 0%, rgba(6, 12, 28, 0.94) 100%), url('${top1.cover_url}')`;
-      }
+      const coverUrl = top1.cover_url || `https://assets.ppy.sh/beatmaps/${setId}/covers/cover.jpg`;
+      linkEl.style.backgroundImage = `linear-gradient(180deg, rgba(6, 12, 28, 0.78) 0%, rgba(6, 12, 28, 0.94) 100%), url('${coverUrl}')`;
     }
     if (titleEl) titleEl.innerText = top1.title;
     if (artistEl) artistEl.innerHTML = `${top1.artist} • <span class="score-diff-highlight">[${top1.difficulty}]</span>`;
@@ -80,6 +135,11 @@
     if (comboEl && top1.max_combo) comboEl.innerText = `${formatNumber(top1.max_combo)}x`;
     if (modsWrap) modsWrap.innerHTML = renderModPills(top1.mods || top1.mod_str);
     if (rankWrap) rankWrap.innerHTML = getGradeBadge(top1.rank);
+
+    if (playBtn) {
+      playBtn.setAttribute('data-beatmapset-id', setId);
+      playBtn.onclick = (e) => window.toggleAudioPreview(setId, playBtn, e);
+    }
   }
 
   function renderTop5List(scores) {
@@ -90,27 +150,40 @@
     const rankBadges = ['gold', 'silver', 'bronze', '', ''];
     container.innerHTML = scores.map((s, idx) => {
       const badgeClass = rankBadges[idx] || '';
-      const comboText = s.max_combo ? `${formatNumber(s.max_combo)}x max combo` : '';
+      const setId = s.beatmapset_id || 2401111;
+      const coverUrl = s.cover_url || `https://assets.ppy.sh/beatmaps/${setId}/covers/cover.jpg`;
+      const comboText = s.max_combo ? `${formatNumber(s.max_combo)}x` : '';
       const modsHtml = renderModPills(s.mods || s.mod_str);
       const gradeHtml = getGradeBadge(s.rank);
 
       return `
-        <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/${s.beatmap_id}" target="_blank" rel="noopener">
+        <div class="osu-score-card-item" style="background-image: linear-gradient(90deg, rgba(6, 11, 24, 0.94) 0%, rgba(6, 11, 24, 0.82) 45%, rgba(6, 11, 24, 0.95) 100%), url('${coverUrl}');">
+          <!-- Rank Index -->
           <span class="score-rank-badge ${badgeClass}">#${s.rank_index || idx + 1}</span>
-          <div class="score-detail-text">
-            <span class="score-title-text">${s.title}</span>
-            <span class="score-diff-text">${s.artist} • <span class="score-diff-highlight">[${s.difficulty}]</span></span>
-          </div>
-          <div class="score-metric-text">
-            <span class="score-pp-val">${s.pp} pp</span>
-            <div class="score-tags-row">
-              <span class="score-acc-text">${s.accuracy}%</span>
-              ${comboText ? `<span class="score-combo-text">(${comboText})</span>` : ''}
-              ${modsHtml}
-              ${gradeHtml}
+
+          <!-- Audio Play Button -->
+          <button class="audio-preview-btn" data-beatmapset-id="${setId}" onclick="window.toggleAudioPreview(${setId}, this, event)" title="Play Music Preview">
+            <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+
+          <!-- Clickable Beatmap Link -->
+          <a class="score-main-content-link" href="https://osu.ppy.sh/beatmaps/${s.beatmap_id}" target="_blank" rel="noopener">
+            <div class="score-detail-text">
+              <span class="score-title-text">${s.title}</span>
+              <span class="score-diff-text">${s.artist} • <span class="score-diff-highlight">[${s.difficulty}]</span></span>
             </div>
-          </div>
-        </a>
+            <div class="score-metric-text">
+              <span class="score-pp-val">${s.pp} pp</span>
+              <div class="score-tags-row">
+                <span class="score-acc-text">${s.accuracy}%</span>
+                ${comboText ? `<span class="score-combo-text">(${comboText})</span>` : ''}
+                ${modsHtml}
+                ${gradeHtml}
+              </div>
+            </div>
+          </a>
+        </div>
       `;
     }).join('');
   }
