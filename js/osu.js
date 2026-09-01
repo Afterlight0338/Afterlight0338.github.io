@@ -1,33 +1,12 @@
 // ===== LIVE OSU! API PROFILE & TOP PLAYS INTEGRATION =====
 (function initOsu() {
   const OSU_USER_ID = "14671577";
-  const DEFAULT_USERNAME = "RyoYamada";
-  const CACHE_KEY = "osu_profile_cache_v2";
+  const CACHE_KEY = "osu_profile_cache_v3";
   const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 
-  // Primary live endpoint and static data fallback
+  // Primary live endpoint and static fallback
   const PRIMARY_ENDPOINT = window.OSU_API_ENDPOINT || `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=${OSU_USER_ID}`;
   const FALLBACK_ENDPOINT = window.OSU_FALLBACK_ENDPOINT || (window.location.pathname.includes('/site-') ? '../data/osu.json' : 'data/osu.json');
-
-  // Global tab switcher for UI buttons
-  window.switchOsuTab = function(tabName) {
-    const viewTop1 = document.getElementById('osu-view-top1');
-    const viewTop5 = document.getElementById('osu-view-top5');
-    const btnTop1 = document.getElementById('osu-tab-top1');
-    const btnTop5 = document.getElementById('osu-tab-top5');
-
-    if (tabName === 'top1') {
-      if (viewTop1) viewTop1.style.display = 'block';
-      if (viewTop5) viewTop5.style.display = 'none';
-      if (btnTop1) btnTop1.classList.add('active');
-      if (btnTop5) btnTop5.classList.remove('active');
-    } else if (tabName === 'top5') {
-      if (viewTop1) viewTop1.style.display = 'none';
-      if (viewTop5) viewTop5.style.display = 'block';
-      if (btnTop1) btnTop1.classList.remove('active');
-      if (btnTop5) btnTop5.classList.add('active');
-    }
-  };
 
   function formatNumber(num) {
     if (num === null || num === undefined || isNaN(num)) return "--";
@@ -49,6 +28,34 @@
     return `${Number(acc).toFixed(2)}%`;
   }
 
+  function renderModPills(mods) {
+    if (!mods) return '<span class="mod-pill mod-nm">NM</span>';
+    const modArr = Array.isArray(mods) ? mods : String(mods).split(',').map(m => m.trim());
+    if (modArr.length === 0 || (modArr.length === 1 && modArr[0] === '')) {
+      return '<span class="mod-pill mod-nm">NM</span>';
+    }
+    return modArr.map(m => {
+      const lower = m.toLowerCase();
+      let cls = 'mod-nm';
+      if (lower === 'hd') cls = 'mod-hd';
+      else if (lower === 'hr') cls = 'mod-hr';
+      else if (lower === 'dt' || lower === 'nc') cls = 'mod-dt';
+      else if (lower === 'fl') cls = 'mod-fl';
+      return `<span class="mod-pill ${cls}">${m}</span>`;
+    }).join(' ');
+  }
+
+  function getGradeBadge(grade) {
+    const g = String(grade || 'A').toUpperCase();
+    let cls = 'grade-a';
+    if (g === 'XH' || g === 'SS') cls = 'grade-ss';
+    else if (g === 'SH') cls = 'grade-sh';
+    else if (g === 'S') cls = 'grade-s';
+    else if (g === 'A') cls = 'grade-a';
+    else if (g === 'B') cls = 'grade-b';
+    return `<span class="osu-grade-badge ${cls}">${g}</span>`;
+  }
+
   function renderTop1(top1) {
     if (!top1) return;
     const linkEl = document.getElementById('osu-top1-link');
@@ -56,24 +63,23 @@
     const artistEl = document.getElementById('osu-top1-artist');
     const ppEl = document.getElementById('osu-top1-pp');
     const accEl = document.getElementById('osu-top1-acc');
-    const modsEl = document.getElementById('osu-top1-mods');
-    const rankEl = document.getElementById('osu-top1-rank');
+    const comboEl = document.getElementById('osu-top1-combo');
+    const modsWrap = document.getElementById('osu-top1-mods-wrap');
+    const rankWrap = document.getElementById('osu-top1-rank-wrap');
 
     if (linkEl) {
       linkEl.href = `https://osu.ppy.sh/beatmaps/${top1.beatmap_id}`;
       if (top1.cover_url) {
-        linkEl.style.backgroundImage = `linear-gradient(180deg, rgba(6, 12, 28, 0.75) 0%, rgba(6, 12, 28, 0.95) 100%), url('${top1.cover_url}')`;
+        linkEl.style.backgroundImage = `linear-gradient(180deg, rgba(6, 12, 28, 0.78) 0%, rgba(6, 12, 28, 0.94) 100%), url('${top1.cover_url}')`;
       }
     }
     if (titleEl) titleEl.innerText = top1.title;
-    if (artistEl) artistEl.innerText = `${top1.artist} • ${top1.difficulty}`;
+    if (artistEl) artistEl.innerHTML = `${top1.artist} • <span class="score-diff-highlight">[${top1.difficulty}]</span>`;
     if (ppEl) ppEl.innerText = `${top1.pp} pp`;
     if (accEl) accEl.innerText = `${top1.accuracy}%`;
-    if (modsEl) modsEl.innerText = top1.mod_str || 'NM';
-    if (rankEl) {
-      rankEl.innerText = top1.rank || 'A';
-      rankEl.className = `osu-pill-rank rank-${String(top1.rank || 'a').toLowerCase()}`;
-    }
+    if (comboEl && top1.max_combo) comboEl.innerText = `${formatNumber(top1.max_combo)}x`;
+    if (modsWrap) modsWrap.innerHTML = renderModPills(top1.mods || top1.mod_str);
+    if (rankWrap) rankWrap.innerHTML = getGradeBadge(top1.rank);
   }
 
   function renderTop5List(scores) {
@@ -81,21 +87,27 @@
     const container = document.getElementById('osu-top5-items');
     if (!container) return;
 
-    const rankClasses = ['gold', 'silver', 'bronze', '', ''];
+    const rankBadges = ['gold', 'silver', 'bronze', '', ''];
     container.innerHTML = scores.map((s, idx) => {
-      const rankClass = rankClasses[idx] || '';
+      const badgeClass = rankBadges[idx] || '';
+      const comboText = s.max_combo ? `${formatNumber(s.max_combo)}x max combo` : '';
+      const modsHtml = renderModPills(s.mods || s.mod_str);
+      const gradeHtml = getGradeBadge(s.rank);
+
       return `
-        <a class="osu-score-row" href="https://osu.ppy.sh/beatmaps/${s.beatmap_id}" target="_blank" rel="noopener">
-          <span class="osu-score-rank-num ${rankClass}">#${s.rank_index || idx + 1}</span>
-          <div class="osu-score-info">
-            <span class="osu-score-title">${s.title}</span>
-            <span class="osu-score-diff">${s.difficulty} • ${s.artist}</span>
+        <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/${s.beatmap_id}" target="_blank" rel="noopener">
+          <span class="score-rank-badge ${badgeClass}">#${s.rank_index || idx + 1}</span>
+          <div class="score-detail-text">
+            <span class="score-title-text">${s.title}</span>
+            <span class="score-diff-text">${s.artist} • <span class="score-diff-highlight">[${s.difficulty}]</span></span>
           </div>
-          <div class="osu-score-metrics">
-            <span class="osu-score-pp">${s.pp} pp</span>
-            <div class="osu-score-sub">
-              <span class="osu-score-acc">${s.accuracy}%</span>
-              <span class="osu-score-mods">${s.mod_str || 'NM'}</span>
+          <div class="score-metric-text">
+            <span class="score-pp-val">${s.pp} pp</span>
+            <div class="score-tags-row">
+              <span class="score-acc-text">${s.accuracy}%</span>
+              ${comboText ? `<span class="score-combo-text">(${comboText})</span>` : ''}
+              ${modsHtml}
+              ${gradeHtml}
             </div>
           </div>
         </a>
@@ -107,16 +119,21 @@
     if (!data) return;
 
     const rankEl = document.getElementById('osu-global-rank');
+    const countryRankSubEl = document.getElementById('osu-country-rank-sub');
     const ppEl = document.getElementById('osu-pp');
     const accEl = document.getElementById('osu-acc');
     const playsEl = document.getElementById('osu-plays');
+    const levelPill = document.getElementById('osu-level-pill');
     const usernameEl = document.getElementById('osu-username-display');
     const liveTag = document.getElementById('osu-live-tag');
     const flagEl = document.getElementById('osu-country-flag');
+    const avatarImg = document.getElementById('osu-avatar-img');
 
     if (rankEl && data.global_rank) {
       rankEl.innerText = formatRank(data.global_rank);
-      rankEl.title = data.country_rank ? `Country Rank: #${formatNumber(data.country_rank)}` : '';
+    }
+    if (countryRankSubEl && data.country_rank) {
+      countryRankSubEl.innerText = `#${formatNumber(data.country_rank)} ${data.country_code || 'MY'}`;
     }
     if (ppEl && (data.pp !== undefined)) {
       ppEl.innerText = formatPP(data.pp);
@@ -127,14 +144,19 @@
     if (playsEl && data.play_count) {
       playsEl.innerText = formatNumber(data.play_count);
     }
+    if (levelPill && data.level) {
+      levelPill.innerText = `Lv. ${data.level}`;
+    }
     if (usernameEl && data.username) {
       usernameEl.innerText = data.username;
     }
+    if (avatarImg && data.avatar_url) {
+      avatarImg.src = data.avatar_url;
+    }
 
     if (flagEl && data.country_code) {
-      flagEl.innerText = data.country_code.toUpperCase();
+      flagEl.innerText = `🇲🇾 ${data.country_code.toUpperCase()} #${data.country_rank || 146}`;
       flagEl.style.display = 'inline-flex';
-      flagEl.title = data.country_name || data.country_code;
     }
 
     if (liveTag) {

@@ -616,134 +616,229 @@ body {
 .osu-performance-inner {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .osu-user-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: rgba(8, 13, 24, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 12px 18px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .osu-profile-tag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.osu-avatar-mini {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-cyan);
+  object-fit: cover;
+}
+
+.osu-user-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.osu-user-title-row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .osu-username-text {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s ease;
+}
+
+.osu-username-text:hover {
+  color: var(--accent-cyan);
+}
+
+.osu-user-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .osu-flag-pill {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-subtle);
-  padding: 2px 6px;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  padding: 2px 7px;
   border-radius: 4px;
   color: var(--accent-gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.osu-level-pill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent-cyan-light);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  padding: 2px 7px;
+  border-radius: 4px;
 }
 
 .osu-live-status-pill {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--accent-emerald);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 4px 10px;
+  border-radius: 6px;
 }
 
+/* 4-Tile Telemetry Grid */
 .osu-metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 12px;
 }
 
 .osu-metric-tile {
-  background: rgba(8, 13, 24, 0.7);
+  background: rgba(8, 13, 24, 0.75);
   border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.osu-metric-tile:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
 }
 
 .metric-label {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .metric-value {
   font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--text-primary);
 }
 
+.metric-value.rose { color: #fb7185; }
 .metric-value.cyan { color: var(--accent-cyan-light); }
 .metric-value.emerald { color: var(--accent-emerald); }
-.metric-value.rose { color: var(--accent-rose); }
 .metric-value.gold { color: var(--accent-gold); }
 
-/* Scores Showcase */
+.metric-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+/* Mod Pills & Grade Badges */
+.mod-pill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.04em;
+}
+
+.mod-hd { background: #1e3a8a; color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); }
+.mod-hr { background: #881337; color: #fca5a5; border: 1px solid rgba(252, 165, 165, 0.3); }
+.mod-dt { background: #581c87; color: #d8b4fe; border: 1px solid rgba(216, 180, 254, 0.3); }
+.mod-fl { background: #78350f; color: #fde047; border: 1px solid rgba(253, 224, 71, 0.3); }
+.mod-nm { background: rgba(255, 255, 255, 0.08); color: var(--text-secondary); }
+
+.osu-grade-badge {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.grade-ss { color: #fde047; border-color: rgba(253, 224, 71, 0.4); text-shadow: 0 0 8px rgba(253, 224, 71, 0.5); }
+.grade-sh { color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); text-shadow: 0 0 8px rgba(56, 189, 248, 0.5); }
+.grade-s  { color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); text-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
+.grade-a  { color: #10b981; border-color: rgba(16, 185, 129, 0.4); text-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+.grade-b  { color: #3b82f6; border-color: rgba(59, 130, 246, 0.4); }
+
+/* Scores Showcase Section */
 .osu-scores-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
-.osu-tabs-header {
+.osu-scores-section-heading {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
 }
 
-.osu-tab-switch-group {
-  display: flex;
-  gap: 6px;
-}
-
-.osu-tab-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  padding: 4px 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.osu-tab-btn.active {
-  background: rgba(6, 182, 212, 0.15);
-  border-color: var(--accent-cyan);
-  color: var(--accent-cyan);
-  font-weight: 600;
-}
-
+/* Top 1 Spotlight Box */
 .osu-top1-box {
   display: block;
   text-decoration: none;
   background-size: cover;
   background-position: center;
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 22px 24px;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.2s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s ease;
 }
 
 .osu-top1-box:hover {
   border-color: var(--border-focus);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -6px rgba(6, 182, 212, 0.2);
 }
 
 .osu-top1-inner {
@@ -752,30 +847,34 @@ body {
   justify-content: space-between;
   position: relative;
   z-index: 2;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .top1-meta-left {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  flex: 1;
 }
 
 .top1-badge-tag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 800;
   color: var(--accent-gold);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .top1-song-title {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 800;
   color: #fff;
+  letter-spacing: -0.01em;
 }
 
 .top1-song-artist {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   color: var(--text-secondary);
 }
 
@@ -783,102 +882,123 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 6px;
 }
 
 .top1-pp-val {
   font-family: var(--font-mono);
-  font-size: 1.3rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 900;
   color: var(--accent-cyan-light);
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
 }
 
 .top1-pills-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 
-.osu-stat-badge {
+.osu-stat-pill {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
 }
 
-.osu-stat-badge.rank-a { color: var(--accent-emerald); font-weight: 700; }
-.osu-stat-badge.rank-s { color: var(--accent-gold); font-weight: 700; }
-
+/* Full Top 5 Leaderboard List */
 .osu-top5-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 
 .osu-score-row-item {
-  background: rgba(8, 13, 24, 0.7);
+  background: rgba(8, 13, 24, 0.75);
   border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-  padding: 10px 14px;
+  border-radius: 12px;
+  padding: 12px 18px;
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  transition: all 0.2s ease;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.22s ease;
 }
 
 .osu-score-row-item:hover {
-  background: rgba(14, 23, 42, 0.9);
+  background: rgba(14, 23, 42, 0.95);
   border-color: var(--border-focus);
+  transform: translateX(4px);
 }
 
-.score-rank-icon {
+.score-rank-badge {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 800;
   color: var(--text-muted);
-  width: 24px;
+  width: 28px;
+  flex-shrink: 0;
 }
 
-.score-rank-icon.gold { color: #f59e0b; }
-.score-rank-icon.silver { color: #cbd5e1; }
-.score-rank-icon.bronze { color: #b45309; }
+.score-rank-badge.gold { color: #f59e0b; text-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
+.score-rank-badge.silver { color: #cbd5e1; }
+.score-rank-badge.bronze { color: #d97706; }
 
 .score-detail-text {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .score-title-text {
-  font-size: 0.84rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .score-diff-text {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+}
+
+.score-diff-highlight {
+  color: var(--accent-cyan-light);
+  font-weight: 600;
 }
 
 .score-metric-text {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  gap: 4px;
   font-family: var(--font-mono);
 }
 
 .score-pp-val {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.92rem;
+  font-weight: 800;
   color: var(--accent-cyan-light);
 }
 
-.score-acc-mods {
+.score-tags-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.score-acc-text {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.score-combo-text {
   font-size: 0.68rem;
   color: var(--text-muted);
 }

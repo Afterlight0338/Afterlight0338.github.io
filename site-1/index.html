@@ -343,8 +343,19 @@
         <!-- User Bar -->
         <div class="osu-user-bar">
           <div class="osu-profile-tag">
-            <span class="osu-username-text" id="osu-username-display">RyoYamada</span>
-            <span class="osu-flag-pill" id="osu-country-flag">MY</span>
+            <img class="osu-avatar-mini" id="osu-avatar-img" src="https://a.ppy.sh/14671577" alt="osu! Avatar">
+            <div class="osu-user-meta">
+              <div class="osu-user-title-row">
+                <a class="osu-username-text" id="osu-username-display" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">
+                  RyoYamada
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+              </div>
+              <div class="osu-user-sub-row">
+                <span class="osu-flag-pill" id="osu-country-flag">🇲🇾 MY #146</span>
+                <span class="osu-level-pill" id="osu-level-pill">Lv. 101</span>
+              </div>
+            </div>
           </div>
           <div class="osu-live-status-pill">
             <span class="status-dot online"></span>
@@ -357,89 +368,144 @@
           <div class="osu-metric-tile">
             <span class="metric-label">Global Rank</span>
             <span class="metric-value rose" id="osu-global-rank">#14,424</span>
+            <span class="metric-sub" id="osu-country-rank-sub">#146 MY</span>
           </div>
           <div class="osu-metric-tile">
             <span class="metric-label">Performance</span>
             <span class="metric-value cyan" id="osu-pp">8,797 pp</span>
+            <span class="metric-sub">Raw PP</span>
           </div>
           <div class="osu-metric-tile">
             <span class="metric-label">Hit Accuracy</span>
             <span class="metric-value emerald" id="osu-acc">97.19%</span>
+            <span class="metric-sub">Weighted</span>
           </div>
           <div class="osu-metric-tile">
             <span class="metric-label">Play Count</span>
             <span class="metric-value gold" id="osu-plays">44,637</span>
+            <span class="metric-sub">Ranked Standard</span>
           </div>
         </div>
 
         <!-- Scores Showcase -->
         <div class="osu-scores-section">
-          <div class="osu-tabs-header">
-            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">Personal Bests</span>
-            <div class="osu-tab-switch-group">
-              <button class="osu-tab-btn active" id="osu-tab-top1" onclick="switchOsuTab('top1')">#1 Best</button>
-              <button class="osu-tab-btn" id="osu-tab-top5" onclick="switchOsuTab('top5')">Top 5</button>
-            </div>
+          <div class="osu-scores-section-heading">
+            <span>🏆 Top #1 Spotlight</span>
           </div>
 
           <!-- Top 1 Banner -->
           <div id="osu-view-top1">
-            <a class="osu-top1-box" id="osu-top1-link" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener" style="background-image: linear-gradient(180deg, rgba(6, 12, 28, 0.8) 0%, rgba(6, 12, 28, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg');">
+            <a class="osu-top1-box" id="osu-top1-link" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener" style="background-image: linear-gradient(180deg, rgba(6, 12, 28, 0.78) 0%, rgba(6, 12, 28, 0.94) 100%), url('https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg');">
               <div class="osu-top1-inner">
                 <div class="top1-meta-left">
                   <span class="top1-badge-tag">🏆 TOP #1 RECORD</span>
                   <div class="top1-song-title" id="osu-top1-title">Power of the Dragonflame</div>
-                  <div class="top1-song-artist" id="osu-top1-artist">Rhapsody • Uri's Extreme</div>
+                  <div class="top1-song-artist" id="osu-top1-artist">Rhapsody • <span class="score-diff-highlight">[Uri's Extreme]</span></div>
                 </div>
                 <div class="top1-meta-right">
                   <div class="top1-pp-val" id="osu-top1-pp">580.1 pp</div>
                   <div class="top1-pills-row">
-                    <span class="osu-stat-badge" id="osu-top1-acc">96.21%</span>
-                    <span class="osu-stat-badge" id="osu-top1-mods">HD, HR</span>
-                    <span class="osu-stat-badge rank-a" id="osu-top1-rank">A</span>
+                    <span class="osu-stat-pill" id="osu-top1-acc">96.21%</span>
+                    <span class="osu-stat-pill" id="osu-top1-combo">1,899x</span>
+                    <span id="osu-top1-mods-wrap"><span class="mod-pill mod-hd">HD</span> <span class="mod-pill mod-hr">HR</span></span>
+                    <span id="osu-top1-rank-wrap"><span class="osu-grade-badge grade-a">A</span></span>
                   </div>
                 </div>
               </div>
             </a>
           </div>
 
+          <div class="osu-scores-section-heading" style="margin-top: 6px;">
+            <span>📊 Top 5 Personal Bests</span>
+          </div>
+
           <!-- Top 5 List -->
-          <div id="osu-view-top5" style="display:none;">
-            <div class="osu-top5-container" id="osu-top5-items">
-              <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener">
-                <span class="score-rank-icon gold">#1</span>
-                <div class="score-detail-text">
-                  <span class="score-title-text">Power of the Dragonflame</span>
-                  <span class="score-diff-text">Uri's Extreme • Rhapsody</span>
+          <div class="osu-top5-container" id="osu-top5-items">
+            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener">
+              <span class="score-rank-badge gold">#1</span>
+              <div class="score-detail-text">
+                <span class="score-title-text">Power of the Dragonflame</span>
+                <span class="score-diff-text">Rhapsody • <span class="score-diff-highlight">[Uri's Extreme]</span></span>
+              </div>
+              <div class="score-metric-text">
+                <span class="score-pp-val">580.1 pp</span>
+                <div class="score-tags-row">
+                  <span class="score-acc-text">96.21%</span>
+                  <span class="score-combo-text">(1,899x max combo)</span>
+                  <span class="mod-pill mod-hd">HD</span>
+                  <span class="mod-pill mod-hr">HR</span>
+                  <span class="osu-grade-badge grade-a">A</span>
                 </div>
-                <div class="score-metric-text">
-                  <span class="score-pp-val">580.1 pp</span>
-                  <span class="score-acc-mods">96.21% • HD,HR</span>
+              </div>
+            </a>
+            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5141310" target="_blank" rel="noopener">
+              <span class="score-rank-badge silver">#2</span>
+              <div class="score-detail-text">
+                <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
+                <span class="score-diff-text">VINXIS • <span class="score-diff-highlight">[-Tynamo's Resolution]</span></span>
+              </div>
+              <div class="score-metric-text">
+                <span class="score-pp-val">504.1 pp</span>
+                <div class="score-tags-row">
+                  <span class="score-acc-text">96.52%</span>
+                  <span class="score-combo-text">(375x max combo)</span>
+                  <span class="mod-pill mod-hd">HD</span>
+                  <span class="mod-pill mod-hr">HR</span>
+                  <span class="osu-grade-badge grade-a">A</span>
                 </div>
-              </a>
-              <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5141310" target="_blank" rel="noopener">
-                <span class="score-rank-icon silver">#2</span>
-                <div class="score-detail-text">
-                  <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
-                  <span class="score-diff-text">-Tynamo's Resolution • VINXIS</span>
+              </div>
+            </a>
+            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5061151" target="_blank" rel="noopener">
+              <span class="score-rank-badge bronze">#3</span>
+              <div class="score-detail-text">
+                <span class="score-title-text">Green Greens</span>
+                <span class="score-diff-text">Jun Ishikawa • <span class="score-diff-highlight">[Mekadon's Super Ability]</span></span>
+              </div>
+              <div class="score-metric-text">
+                <span class="score-pp-val">482.0 pp</span>
+                <div class="score-tags-row">
+                  <span class="score-acc-text">99.09%</span>
+                  <span class="score-combo-text">(512x max combo)</span>
+                  <span class="mod-pill mod-hd">HD</span>
+                  <span class="mod-pill mod-hr">HR</span>
+                  <span class="osu-grade-badge grade-sh">SH</span>
                 </div>
-                <div class="score-metric-text">
-                  <span class="score-pp-val">504.1 pp</span>
-                  <span class="score-acc-mods">96.52% • HD,HR</span>
+              </div>
+            </a>
+            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/2084862" target="_blank" rel="noopener">
+              <span class="score-rank-badge">#4</span>
+              <div class="score-detail-text">
+                <span class="score-title-text">Bass Slut (Original Mix)</span>
+                <span class="score-diff-text">S3RL • <span class="score-diff-highlight">[Intense Ecstasy]</span></span>
+              </div>
+              <div class="score-metric-text">
+                <span class="score-pp-val">478.7 pp</span>
+                <div class="score-tags-row">
+                  <span class="score-acc-text">97.63%</span>
+                  <span class="score-combo-text">(562x max combo)</span>
+                  <span class="mod-pill mod-hd">HD</span>
+                  <span class="mod-pill mod-hr">HR</span>
+                  <span class="osu-grade-badge grade-sh">SH</span>
                 </div>
-              </a>
-              <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5061151" target="_blank" rel="noopener">
-                <span class="score-rank-icon bronze">#3</span>
-                <div class="score-detail-text">
-                  <span class="score-title-text">Green Greens</span>
-                  <span class="score-diff-text">Mekadon's Super Ability • Jun Ishikawa</span>
+              </div>
+            </a>
+            <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/4943355" target="_blank" rel="noopener">
+              <span class="score-rank-badge">#5</span>
+              <div class="score-detail-text">
+                <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
+                <span class="score-diff-text">VINXIS • <span class="score-diff-highlight">[Lost]</span></span>
+              </div>
+              <div class="score-metric-text">
+                <span class="score-pp-val">470.5 pp</span>
+                <div class="score-tags-row">
+                  <span class="score-acc-text">97.04%</span>
+                  <span class="score-combo-text">(734x max combo)</span>
+                  <span class="mod-pill mod-hd">HD</span>
+                  <span class="mod-pill mod-hr">HR</span>
+                  <span class="osu-grade-badge grade-a">A</span>
                 </div>
-                <div class="score-metric-text">
-                  <span class="score-pp-val">482.0 pp</span>
-                  <span class="score-acc-mods">99.09% • HD,HR</span>
-                </div>
-              </a>
-            </div>
+              </div>
+            </a>
           </div>
         </div>
       </div>
