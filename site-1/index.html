@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Afterlight • vivlos.dev</title>
+  <meta name="description" content="Afterlight's personal developer space, NixOS & Hyprland setup, and rhythm gaming sanctuary.">
+  <meta name="theme-color" content="#060911">
+  <link rel="icon" type="image/webp" href="../assets/vivlos/racing.webp">
+
+  <!-- OpenGraph / Discord Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vivlos.dev/site-1">
+  <meta property="og:title" content="Afterlight • vivlos.dev">
+  <meta property="og:description" content="Developer • NixOS & Hyprland Rice • AOC 240Hz • SayoDevice K05 HE • Wacom CTH-670">
+  <meta property="og:image" content="https://vivlos.dev/assets/vivlos/racing.webp">
+
+  <!-- Twitter Preview -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Afterlight • vivlos.dev">
+  <meta property="twitter:description" content="Developer • NixOS & Hyprland Rice • AOC 240Hz • SayoDevice K05 HE • Wacom CTH-670">
+  <meta property="twitter:image" content="https://vivlos.dev/assets/vivlos/racing.webp">
+
+  <!-- Google Fonts & Maple Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ==========================================================
+       LEFT STAGE: FIXED / STICKY STUDIO
+       ========================================================== -->
+  <aside class="left-stage">
+
+    <!-- Vivlos Artwork Frame with Outfit Switcher -->
+    <div class="vivlos-art-card">
+      <div class="art-display-frame">
+        <div class="art-badge-overlay">
+          <span class="badge-dot"></span>
+          <span id="current-outfit-label">Racing Silks</span>
+        </div>
+        <img id="vivlos-art-image" class="vivlos-main-img" src="../assets/vivlos/racing.webp" alt="Vivlos (Umamusume)">
+      </div>
+
+      <!-- 4-Way Outfit Switcher Bar -->
+      <div class="outfit-selector-bar">
+        <button class="outfit-btn active" data-outfit="racing" aria-label="Racing Silks">
+          <span>🏁 Racing</span>
+        </button>
+        <button class="outfit-btn" data-outfit="stage" aria-label="Stage Performance">
+          <span>✨ Stage</span>
+        </button>
+        <button class="outfit-btn" data-outfit="summer" aria-label="Summer Resort">
+          <span>☀️ Summer</span>
+        </button>
+        <button class="outfit-btn" data-outfit="casual" aria-label="Casual School">
+          <span>🎓 Casual</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Identity & Profile Block -->
+    <div class="profile-meta-card">
+      <div class="profile-name-row">
+        <h1 class="profile-name">Afterlight</h1>
+        <span class="domain-pill">vivlos.dev</span>
+      </div>
+      <p class="profile-tagline">
+        Developer & NixOS enthusiast crafting declarative systems, ricing Hyprland, and clicking circles on 240Hz.
+      </p>
+
+      <!-- Live Discord Presence (Lanyard Sync) -->
+      <div class="presence-box" id="lanyard-card">
+        <div class="presence-header">
+          <div class="discord-user-pill">
+            <span class="status-dot" id="avatar-pip"></span>
+            <span>@afterlight_hd</span>
+          </div>
+          <div class="device-badges" id="device-badges">
+            <span title="Desktop">💻</span>
+          </div>
+        </div>
+
+        <!-- Custom Status -->
+        <div class="presence-status-label" id="discord-custom-status" style="display:none;">
+          <span id="custom-emoji">💬</span> <span id="custom-status-val">...</span>
+        </div>
+
+        <!-- Activity / Game / Spotify Body -->
+        <div class="presence-activity-body" id="activity-body">
+          <img class="activity-icon-img" id="activity-icon" src="../assets/vivlos/racing.webp" alt="Activity Icon">
+          <div class="activity-text-group">
+            <span class="activity-type-label" id="activity-type">STATUS</span>
+            <span class="activity-title" id="activity-name">Active on NixOS</span>
+            <span class="activity-subtitle" id="activity-state">Hyprland • 240Hz</span>
+          </div>
+        </div>
+
+        <!-- Spotify Track Bar -->
+        <div class="spotify-progress-container" id="spotify-progress-wrap" style="display:none;">
+          <div class="spotify-track-bar">
+            <div class="spotify-track-fill" id="spotify-fill"></div>
+          </div>
+          <div class="spotify-time-row">
+            <span id="spotify-cur">0:00</span>
+            <span id="spotify-tot">0:00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jump Navigation -->
+      <nav class="nav-jump-list">
+        <a href="#about" class="nav-jump-item"><span>01 // About</span><span>→</span></a>
+        <a href="#projects" class="nav-jump-item"><span>02 // Projects</span><span>→</span></a>
+        <a href="#specs" class="nav-jump-item"><span>03 // System & Gear</span><span>→</span></a>
+        <a href="#osu" class="nav-jump-item"><span>04 // osu! Performance</span><span>→</span></a>
+      </nav>
+
+      <!-- Socials Row -->
+      <div class="socials-bar">
+        <a class="social-link-btn" href="https://github.com/Afterlight0338" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.02-.01-1.86-2.78.62-3.37-1.22-3.37-1.22-.46-1.19-1.11-1.51-1.11-1.51-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.92 0 1.39-.01 2.51-.01 2.85 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+        </a>
+        <button class="social-link-btn" onclick="copyDiscordTag()" aria-label="Copy Discord Tag">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 5.4A17.5 17.5 0 0 0 15.9 4c-.2.4-.5.9-.6 1.3a16.5 16.5 0 0 0-4.8 0A9 9 0 0 0 9.8 4a17.6 17.6 0 0 0-4.4 1.4C2.6 9 1.9 12.5 2.2 16a17.7 17.7 0 0 0 5.3 2.7c.4-.6.8-1.2 1.1-1.9-.6-.2-1.2-.5-1.7-.9l.4-.3c3.3 1.5 6.9 1.5 10.2 0l.4.3c-.5.4-1.1.7-1.7.9.3.7.7 1.3 1.1 1.9a17.6 17.6 0 0 0 5.3-2.7c.4-4-.6-7.5-2.3-10.6ZM9.7 13.9c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm4.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
+        </button>
+        <a class="social-link-btn" href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener" aria-label="Twitch">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+        </a>
+        <a class="social-link-btn" href="https://www.tiktok.com/@afterlight_1337" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.36-1.5V4h-2.62v13.1a2.7 2.7 0 1 1-2.19-2.66V11.9a5.3 5.3 0 1 0 4.81 5.28V9.4a6.9 6.9 0 0 0 4.36 1.56V8.36c-.34 0-.68-.03-1-.09Z"/></svg>
+        </a>
+        <a class="social-link-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" aria-label="osu! Profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
+        </a>
+      </div>
+
+      <!-- Live Clock -->
+      <div class="clock-display">
+        <span>🕒</span>
+        <span id="live-clock-text">--:--:-- UTC+8</span>
+      </div>
+    </div>
+
+  </aside>
+
+
+  <!-- ==========================================================
+       RIGHT FEED: SCROLLABLE STREAM
+       ========================================================== -->
+  <main class="right-feed">
+
+    <!-- SECTION 1: ABOUT & STATEMENT -->
+    <section class="section-block" id="about">
+      <div class="section-title-wrap">
+        <h2 class="section-heading">
+          <span class="section-index-num">01 //</span> About & Overview
+        </h2>
+        <span class="section-pill-tag">Profile</span>
+      </div>
+
+      <div class="statement-card">
+        <p class="statement-text">
+          Hey, I'm <strong>Afterlight</strong>. I build clean web software, maintain declarative <strong>NixOS</strong> configs on <strong>Hyprland</strong>, and play competitive rhythm games at 240Hz.
+        </p>
+        <p class="statement-text">
+          This domain is named after <strong>Vivlos (ヴィブロス)</strong> from <em>Umamusume: Pretty Derby</em>—embodying speed, elegance, and precision.
+        </p>
+        <div class="statement-chips">
+          <span class="chip-tag">NixOS 26.05</span>
+          <span class="chip-tag">Hyprland Wayland</span>
+          <span class="chip-tag">240Hz Fast-IPS</span>
+          <span class="chip-tag gold">SayoDevice Rapid Trigger</span>
+          <span class="chip-tag">Wacom CTH-670</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECTION 2: FEATURED PROJECTS -->
+    <section class="section-block" id="projects">
+      <div class="section-title-wrap">
+        <h2 class="section-heading">
+          <span class="section-index-num">02 //</span> Featured Repositories
+        </h2>
+        <a href="https://github.com/Afterlight0338?tab=repositories" target="_blank" rel="noopener" class="section-pill-tag" style="color:var(--accent-cyan); text-decoration:none;">View All GitHub →</a>
+      </div>
+
+      <div class="projects-list">
+        <!-- Project 1 -->
+        <a class="project-row-item" href="https://github.com/Afterlight0338/my-nix-setup" target="_blank" rel="noopener">
+          <div class="project-info-group">
+            <div class="project-title-row">
+              <span class="project-name">my-nix-setup</span>
+              <span class="project-badge">NixOS / Hyprland</span>
+            </div>
+            <p class="project-desc-text">Declarative NixOS flake, Hyprland Wayland rice, OpenTabletDriver area configuration, and WebHID hardware udev rules.</p>
+          </div>
+          <div class="project-action-icon">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+        </a>
+
+        <!-- Project 2 -->
+        <a class="project-row-item" href="https://github.com/Afterlight0338/osu-skins" target="_blank" rel="noopener">
+          <div class="project-info-group">
+            <div class="project-title-row">
+              <span class="project-name">osu-skins</span>
+              <span class="project-badge">osu! / 240Hz</span>
+            </div>
+            <p class="project-desc-text">Curated high-readability osu! standard skin collection optimized for high-refresh competitive gameplay and minimal visual distraction.</p>
+          </div>
+          <div class="project-action-icon">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+        </a>
+
+        <!-- Project 3 -->
+        <a class="project-row-item" href="https://github.com/Afterlight0338/roxy-fastfetch" target="_blank" rel="noopener">
+          <div class="project-info-group">
+            <div class="project-title-row">
+              <span class="project-name">roxy-fastfetch</span>
+              <span class="project-badge">Fastfetch / CLI</span>
+            </div>
+            <p class="project-desc-text">Clean terminal fastfetch configuration featuring customized ASCII art layouts and comprehensive hardware diagnostic output.</p>
+          </div>
+          <div class="project-action-icon">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+        </a>
+
+        <!-- Project 4 -->
+        <a class="project-row-item" href="https://github.com/Afterlight0338/Afterlight0338.github.io" target="_blank" rel="noopener">
+          <div class="project-info-group">
+            <div class="project-title-row">
+              <span class="project-name">vivlos.dev</span>
+              <span class="project-badge">Web / Cloudflare</span>
+            </div>
+            <p class="project-desc-text">Source code for this website featuring real-time Lanyard WebSocket integration, Cloudflare Worker API proxy, and modular styling.</p>
+          </div>
+          <div class="project-action-icon">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- SECTION 3: SYSTEM SETUP & GEAR SPECS -->
+    <section class="section-block" id="specs">
+      <div class="section-title-wrap">
+        <h2 class="section-heading">
+          <span class="section-index-num">03 //</span> System Setup & Hardware
+        </h2>
+        <span class="section-pill-tag">Specifications</span>
+      </div>
+
+      <div class="specs-split-grid">
+        <!-- Machine Specs -->
+        <div class="spec-category-card">
+          <div class="spec-card-header">
+            <span>Machine & OS</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          </div>
+          <div class="spec-table">
+            <div class="spec-row">
+              <span class="spec-key">Host Laptop</span>
+              <span class="spec-val cyan">Acer Nitro V 15</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Processor</span>
+              <span class="spec-val">Ryzen 5 7535HS (6C/12T)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Graphics</span>
+              <span class="spec-val">RTX 3050 6GB • 680M</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Memory</span>
+              <span class="spec-val">32GB DDR5 4800MHz</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Operating System</span>
+              <span class="spec-val emerald">NixOS 26.05</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Compositor</span>
+              <span class="spec-val">Hyprland (Wayland)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Display</span>
+              <span class="spec-val gold">AOC 24G11ZE 240Hz</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input & Peripherals Specs -->
+        <div class="spec-category-card">
+          <div class="spec-card-header">
+            <span>Peripherals & Input</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"></path></svg>
+          </div>
+          <div class="spec-table">
+            <div class="spec-row">
+              <span class="spec-key">Rhythm Keypad</span>
+              <span class="spec-val gold">SayoDevice K05 HE</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Trigger Point</span>
+              <span class="spec-val">1.5 mm (Rapid Trigger)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">RT Actuation / Rel</span>
+              <span class="spec-val">0.2 mm / 0.3 mm</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Aiming Tablet</span>
+              <span class="spec-val cyan">Wacom Intuos CTH-670</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Tablet Active Area</span>
+              <span class="spec-val">67.67 × 39.39 mm</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Area Aspect Ratio</span>
+              <span class="spec-val">1.718 : 1</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-key">Main Keyboard</span>
+              <span class="spec-val">Everglide AE68 PRO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECTION 4: OSU! PERFORMANCE -->
+    <section class="section-block" id="osu">
+      <div class="section-title-wrap">
+        <h2 class="section-heading">
+          <span class="section-index-num">04 //</span> osu! Performance
+        </h2>
+        <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" class="section-pill-tag" style="color:var(--accent-cyan); text-decoration:none;">Profile #14671577 ↗</a>
+      </div>
+
+      <div class="osu-performance-card">
+        <!-- User Bar -->
+        <div class="osu-user-bar">
+          <div class="osu-profile-tag">
+            <span class="osu-username-text" id="osu-username-display">RyoYamada</span>
+            <span class="osu-flag-pill" id="osu-country-flag">MY</span>
+          </div>
+          <div class="osu-live-status-pill">
+            <span class="status-dot online"></span>
+            <span id="osu-live-tag">STD • LIVE</span>
+          </div>
+        </div>
+
+        <!-- 4 Metrics Tiles -->
+        <div class="osu-metrics-grid">
+          <div class="osu-metric-tile">
+            <span class="metric-label">Global Rank</span>
+            <span class="metric-value rose" id="osu-global-rank">#14,424</span>
+          </div>
+          <div class="osu-metric-tile">
+            <span class="metric-label">Performance</span>
+            <span class="metric-value cyan" id="osu-pp">8,797 pp</span>
+          </div>
+          <div class="osu-metric-tile">
+            <span class="metric-label">Hit Accuracy</span>
+            <span class="metric-value emerald" id="osu-acc">97.19%</span>
+          </div>
+          <div class="osu-metric-tile">
+            <span class="metric-label">Play Count</span>
+            <span class="metric-value gold" id="osu-plays">44,637</span>
+          </div>
+        </div>
+
+        <!-- Scores Showcase -->
+        <div class="osu-scores-section">
+          <div class="osu-tabs-header">
+            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">Top Plays</span>
+            <div class="osu-tab-switch-group">
+              <button class="osu-tab-btn active" id="osu-tab-top1" onclick="switchOsuTab('top1')">#1 Best</button>
+              <button class="osu-tab-btn" id="osu-tab-top5" onclick="switchOsuTab('top5')">Top 5</button>
+            </div>
+          </div>
+
+          <!-- Top 1 Banner -->
+          <div id="osu-view-top1">
+            <a class="osu-top1-box" id="osu-top1-link" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener" style="background-image: linear-gradient(180deg, rgba(6, 12, 28, 0.8) 0%, rgba(6, 12, 28, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg');">
+              <div class="osu-top1-inner">
+                <div class="top1-meta-left">
+                  <span class="top1-badge-tag">🏆 TOP #1 RECORD</span>
+                  <div class="top1-song-title" id="osu-top1-title">Power of the Dragonflame</div>
+                  <div class="top1-song-artist" id="osu-top1-artist">Rhapsody • Uri's Extreme</div>
+                </div>
+                <div class="top1-meta-right">
+                  <div class="top1-pp-val" id="osu-top1-pp">580.1 pp</div>
+                  <div class="top1-pills-row">
+                    <span class="osu-stat-badge" id="osu-top1-acc">96.21%</span>
+                    <span class="osu-stat-badge" id="osu-top1-mods">HD, HR</span>
+                    <span class="osu-stat-badge rank-a" id="osu-top1-rank">A</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Top 5 List -->
+          <div id="osu-view-top5" style="display:none;">
+            <div class="osu-top5-container" id="osu-top5-items">
+              <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener">
+                <span class="score-rank-icon gold">#1</span>
+                <div class="score-detail-text">
+                  <span class="score-title-text">Power of the Dragonflame</span>
+                  <span class="score-diff-text">Uri's Extreme • Rhapsody</span>
+                </div>
+                <div class="score-metric-text">
+                  <span class="score-pp-val">580.1 pp</span>
+                  <span class="score-acc-mods">96.21% • HD,HR</span>
+                </div>
+              </a>
+              <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5141310" target="_blank" rel="noopener">
+                <span class="score-rank-icon silver">#2</span>
+                <div class="score-detail-text">
+                  <span class="score-title-text">Sidetracked Day (Short Ver.)</span>
+                  <span class="score-diff-text">-Tynamo's Resolution • VINXIS</span>
+                </div>
+                <div class="score-metric-text">
+                  <span class="score-pp-val">504.1 pp</span>
+                  <span class="score-acc-mods">96.52% • HD,HR</span>
+                </div>
+              </a>
+              <a class="osu-score-row-item" href="https://osu.ppy.sh/beatmaps/5061151" target="_blank" rel="noopener">
+                <span class="score-rank-icon bronze">#3</span>
+                <div class="score-detail-text">
+                  <span class="score-title-text">Green Greens</span>
+                  <span class="score-diff-text">Mekadon's Super Ability • Jun Ishikawa</span>
+                </div>
+                <div class="score-metric-text">
+                  <span class="score-pp-val">482.0 pp</span>
+                  <span class="score-acc-mods">99.09% • HD,HR</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <span>© Afterlight • vivlos.dev</span>
+      <div class="footer-gateway-status">
+        <span class="status-dot online" id="lanyard-ping-dot"></span>
+        <span id="lanyard-status-note">Gateway Connected</span>
+      </div>
+    </footer>
+
+  </main>
+
+</div>
+
+<!-- Toast Popup -->
+<div id="toast-box" class="toast-popup">Copied to clipboard</div>
+
+<!-- Scripts -->
+<script>
+  window.VIVLOS_AVATAR_SRC = '../assets/vivlos/racing.webp';
+</script>
+<script src="app.js" defer></script>
+<script src="../js/lanyard.js" defer></script>
+<script src="../js/osu.js" defer></script>
+
+</body>
+</html>

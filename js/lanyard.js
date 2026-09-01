@@ -51,19 +51,19 @@
     if (avatarPip) avatarPip.className = 'avatar-status-pip ' + rawStatus;
 
     const statusLabels = {
-      online: 'Online in Sanctuary',
-      idle: 'Idle / AFK',
+      online: 'Online',
+      idle: 'Idle',
       dnd: 'Do Not Disturb',
-      offline: 'Offline in Sanctuary'
+      offline: 'Offline'
     };
-    if (statusText) statusText.innerText = statusLabels[rawStatus] || 'Water Holy Class';
+    if (statusText) statusText.innerText = statusLabels[rawStatus] || 'Online';
 
     // Device Badges
     let devicesHTML = '';
     if (d.active_on_discord_desktop) devicesHTML += '<span title="Desktop App">💻</span>';
     if (d.active_on_discord_mobile) devicesHTML += '<span title="Mobile App">📱</span>';
     if (d.active_on_discord_web) devicesHTML += '<span title="Web Client">🌐</span>';
-    if (deviceBadges) deviceBadges.innerHTML = devicesHTML || '<span title="Sanctuary">🌊</span>';
+    if (deviceBadges) deviceBadges.innerHTML = devicesHTML || '<span title="Active">✨</span>';
 
     // Custom Status
     if (d.activities && d.activities.length > 0) {
@@ -129,18 +129,18 @@
           activityIcon.src = `https://cdn.discordapp.com/app-assets/${gameActivity.application_id}/${gameActivity.assets.large_image}.png`;
         }
       } else if (activityIcon) {
-        activityIcon.src = 'roxy-ff.png';
+        activityIcon.src = (window.VIVLOS_AVATAR_SRC || 'assets/vivlos/racing.webp');
       }
       return;
     }
 
-    // Fallback: Idle / Sanctuary Default
+    // Fallback: Idle / Default
     if (spotifyWrap) spotifyWrap.style.display = 'none';
-    if (activityType) activityType.innerText = 'SANCTUARY STATUS';
-    if (activityName) activityName.innerText = rawStatus === 'offline' ? 'Resting in Sanctuary' : 'Exploring NixOS & Roxy Arts';
-    if (activityState) activityState.innerText = 'Water Holy Class Mage';
-    if (activityTime) activityTime.innerText = 'Live • NixOS 26.05';
-    if (activityIcon) activityIcon.src = 'roxy-ff.png';
+    if (activityType) activityType.innerText = 'STATUS';
+    if (activityName) activityName.innerText = rawStatus === 'offline' ? 'Offline' : 'Active on NixOS';
+    if (activityState) activityState.innerText = 'Developer • osu! Standard';
+    if (activityTime) activityTime.innerText = 'Hyprland • 240Hz';
+    if (activityIcon) activityIcon.src = (window.VIVLOS_AVATAR_SRC || 'assets/vivlos/racing.webp');
   }
 
   function initLanyardREST() {

@@ -1,0 +1,593 @@
+/* ===== VIVLOS.DEV - STYLE 2: CLEAN LINEAR EDITORIAL STREAM ===== */
+:root {
+  --bg-main: #060911;
+  --bg-surface: #0b101c;
+  --bg-card: rgba(14, 21, 37, 0.6);
+  --bg-card-hover: rgba(20, 30, 52, 0.8);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(6, 182, 212, 0.4);
+  --border-gold: rgba(251, 191, 36, 0.35);
+
+  --accent-cyan: #06b6d4;
+  --accent-cyan-light: #38bdf8;
+  --accent-cyan-glow: rgba(6, 182, 212, 0.12);
+  --accent-gold: #fbbf24;
+  --accent-gold-glow: rgba(251, 191, 36, 0.12);
+  --accent-emerald: #10b981;
+  --accent-rose: #f43f5e;
+  --accent-violet: #a78bfa;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --font-sans: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(251, 191, 36, 0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Sticky Minimal Nav */
+.top-nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(6, 9, 17, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.top-nav-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent-cyan);
+}
+
+.nav-presence-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+/* Master Stream Container */
+.stream-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 24px 80px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Hero Section */
+.editorial-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero-art-strip {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+
+.art-col {
+  position: relative;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.15) 0%, rgba(11, 16, 28, 0.95) 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 280px;
+  overflow: hidden;
+}
+
+.art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.hero-info-col {
+  padding: 24px 24px 24px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hero-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hero-name {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.hero-bio {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* Outfit Selector Pill Group */
+.outfit-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.outfit-pill-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 5px 12px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.outfit-pill-btn:hover {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: var(--border-focus);
+  color: var(--text-primary);
+}
+
+.outfit-pill-btn.active {
+  background: rgba(6, 182, 212, 0.18);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* Socials & Live Presence Strip */
+.hero-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.social-icons-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-icon-link {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.social-icon-link:hover {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--border-focus);
+  color: var(--accent-cyan);
+}
+
+.social-icon-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Section Wrapper */
+.editorial-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section-divider-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+/* About Block */
+.about-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-text {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+
+.about-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.about-chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  color: var(--accent-cyan-light);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.about-chip.gold {
+  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.25);
+  color: var(--accent-gold);
+}
+
+/* Projects Directory */
+.projects-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.project-stream-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 20px 22px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.project-stream-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+  transform: translateX(4px);
+}
+
+.proj-meta-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.proj-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.proj-heading {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.proj-tag-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-cyan);
+}
+
+.proj-desc {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+
+/* Specs Multi-Column */
+.specs-stream-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.spec-stream-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.spec-panel-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spec-panel-title svg {
+  color: var(--accent-cyan);
+}
+
+.spec-stream-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-stream-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.spec-stream-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.spec-k {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.spec-v {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.spec-v.cyan { color: var(--accent-cyan-light); }
+.spec-v.emerald { color: var(--accent-emerald); }
+.spec-v.gold { color: var(--accent-gold); }
+
+/* osu! Performance Module */
+.osu-stream-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.osu-stream-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.osu-user-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.osu-stats-row-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.osu-stat-block {
+  background: rgba(6, 10, 19, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.osu-stat-k {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.osu-stat-v {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.osu-stat-v.cyan { color: var(--accent-cyan-light); }
+.osu-stat-v.emerald { color: var(--accent-emerald); }
+.osu-stat-v.rose { color: var(--accent-rose); }
+.osu-stat-v.gold { color: var(--accent-gold); }
+
+/* Top 1 / Top 5 Controls */
+.top-score-stream-banner {
+  display: block;
+  text-decoration: none;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: border-color 0.2s ease;
+}
+
+.top-score-stream-banner:hover {
+  border-color: var(--border-focus);
+}
+
+.top-score-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-score-pp {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent-cyan-light);
+}
+
+/* Footer */
+.stream-footer {
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Status Dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  display: inline-block;
+}
+
+.status-dot.online { background: var(--accent-emerald); box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+.status-dot.idle { background: var(--accent-gold); box-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
+.status-dot.dnd { background: var(--accent-rose); box-shadow: 0 0 8px rgba(244, 63, 94, 0.5); }
+.status-dot.offline { background: var(--text-muted); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-art-strip {
+    grid-template-columns: 1fr;
+  }
+  .art-col {
+    height: 240px;
+  }
+  .hero-info-col {
+    padding: 0 20px 20px 20px;
+  }
+  .specs-stream-grid {
+    grid-template-columns: 1fr;
+  }
+  .osu-stats-row-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

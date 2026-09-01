@@ -1,0 +1,330 @@
+/* ===== VIVLOS.DEV - STYLE 3: TABBED CODEX / DESK LAYOUT ===== */
+:root {
+  --bg-main: #070a12;
+  --bg-surface: #0c1220;
+  --bg-card: rgba(14, 21, 37, 0.7);
+  --bg-card-hover: rgba(22, 33, 58, 0.9);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(6, 182, 212, 0.4);
+
+  --accent-cyan: #06b6d4;
+  --accent-cyan-light: #38bdf8;
+  --accent-gold: #fbbf24;
+  --accent-emerald: #10b981;
+  --accent-rose: #f43f5e;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --font-sans: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Maple Mono', ui-monospace, monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+.desk-wrapper {
+  width: 100%;
+  max-width: 980px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Master Header Card */
+.deck-header-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 24px 28px;
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.deck-identity-flex {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.deck-art-frame {
+  width: 90px;
+  height: 90px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.2) 0%, rgba(12, 18, 32, 0.9) 100%);
+  border: 1px solid var(--border-focus);
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.deck-art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  transition: opacity 0.25s ease;
+}
+
+.deck-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deck-name {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.deck-subline {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.deck-outfit-mini-row {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.deck-outfit-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deck-outfit-pill:hover {
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+.deck-outfit-pill.active {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* Lanyard Status Badge in Deck */
+.deck-lanyard-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.deck-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Segmented Tab Controls */
+.tab-segmented-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: rgba(12, 18, 32, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 5px;
+  gap: 6px;
+}
+
+.tab-nav-btn {
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.tab-nav-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-nav-btn.active {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent-cyan);
+  font-weight: 600;
+  border: 1px solid var(--border-focus);
+}
+
+/* Tab Panes */
+.tab-content-container {
+  min-height: 380px;
+}
+
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pane Cards */
+.pane-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Projects Grid in Pane */
+.projects-deck-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.project-deck-item {
+  background: rgba(6, 10, 19, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 18px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.project-deck-item:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+}
+
+/* Specs 2-Col */
+.specs-deck-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.spec-deck-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-deck-row {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.82rem;
+}
+
+.spec-deck-row:last-child { border-bottom: none; }
+
+.spec-deck-k { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+.spec-deck-v { font-family: var(--font-mono); font-weight: 600; color: var(--text-primary); }
+
+/* osu! in Pane */
+.osu-deck-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.osu-deck-tile {
+  background: rgba(6, 10, 19, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Status Dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.status-dot.online { background: var(--accent-emerald); }
+.status-dot.idle { background: var(--accent-gold); }
+.status-dot.dnd { background: var(--accent-rose); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .deck-header-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .deck-lanyard-box {
+    align-items: flex-start;
+  }
+  .tab-segmented-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .projects-deck-grid, .specs-deck-grid, .osu-deck-metrics {
+    grid-template-columns: 1fr;
+  }
+}

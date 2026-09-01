@@ -7,7 +7,7 @@
 
   // Primary live endpoint and static data fallback
   const PRIMARY_ENDPOINT = window.OSU_API_ENDPOINT || `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=${OSU_USER_ID}`;
-  const FALLBACK_ENDPOINT = "data/osu.json";
+  const FALLBACK_ENDPOINT = window.OSU_FALLBACK_ENDPOINT || (window.location.pathname.includes('/site-') ? '../data/osu.json' : 'data/osu.json');
 
   // Global tab switcher for UI buttons
   window.switchOsuTab = function(tabName) {
