@@ -1,7 +1,7 @@
 // ===== LIVE OSU! API PROFILE & TOP PLAYS INTEGRATION =====
 (function initOsu() {
   const OSU_USER_ID = "14671577";
-  const CACHE_KEY = "osu_profile_cache_v4";
+  const CACHE_KEY = "osu_profile_cache_v5";
   const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 
   // Primary live endpoint and static fallback
@@ -10,8 +10,10 @@
 
   let currentAudio = null;
   let currentPlayingSetId = null;
+  let allTopScores = [];
+  let isScoresExpanded = false;
 
-  // Global audio preview handler (plays soft, low volume)
+  // Global audio preview handler (soft, comfortable volume)
   window.toggleAudioPreview = function(beatmapsetId, btnEl, e) {
     if (e) {
       if (typeof e.preventDefault === 'function') e.preventDefault();
@@ -37,7 +39,7 @@
 
     const previewUrl = `https://b.ppy.sh/preview/${targetId}.mp3`;
     currentAudio = new Audio(previewUrl);
-    currentAudio.volume = 0.18; // Soft volume to prevent loud blasts
+    currentAudio.volume = 0.18; // Soft volume
     currentPlayingSetId = targetId;
     updateAudioButtons(currentPlayingSetId);
 
@@ -58,6 +60,12 @@
     };
 
     return false;
+  };
+
+  // Global scores expand toggle handler
+  window.toggleScoresExpand = function() {
+    isScoresExpanded = !isScoresExpanded;
+    renderScoresList();
   };
 
   function updateAudioButtons(activeSetId) {
@@ -156,13 +164,15 @@
     }
   }
 
-  function renderTop5List(scores) {
-    if (!scores || !Array.isArray(scores) || scores.length === 0) return;
+  function renderScoresList() {
     const container = document.getElementById('osu-top5-items');
-    if (!container) return;
+    const expandWrap = document.getElementById('osu-expand-container');
+    if (!container || !allTopScores || allTopScores.length === 0) return;
 
-    const rankBadges = ['gold', 'silver', 'bronze', '', ''];
-    container.innerHTML = scores.map((s, idx) => {
+    const rankBadges = ['gold', 'silver', 'bronze'];
+    const scoresToRender = isScoresExpanded ? allTopScores : allTopScores.slice(0, 5);
+
+    container.innerHTML = scoresToRender.map((s, idx) => {
       const badgeClass = rankBadges[idx] || '';
       const setId = s.beatmapset_id || 2401111;
       const coverUrl = s.cover_url || `https://assets.ppy.sh/beatmaps/${setId}/covers/cover.jpg`;
@@ -203,6 +213,24 @@
         </div>
       `;
     }).join('');
+
+    // Render / update expand button if more than 5 plays exist
+    if (expandWrap && allTopScores.length > 5) {
+      expandWrap.innerHTML = `
+        <div class="osu-expand-btn-wrap">
+          <button class="osu-expand-btn ${isScoresExpanded ? 'expanded' : ''}" onclick="window.toggleScoresExpand()">
+            <span>${isScoresExpanded ? 'Show Top 5 Only' : `View All Top ${allTopScores.length} Plays`}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function renderTop5List(scores) {
+    if (!scores || !Array.isArray(scores) || scores.length === 0) return;
+    allTopScores = scores;
+    renderScoresList();
   }
 
   function updateOsuUI(data, isLive = true) {
@@ -312,27 +340,34 @@
     }
 
     // 2. Try primary live proxy
+    let liveProfile = null;
     try {
       const json = await fetchWithTimeout(PRIMARY_ENDPOINT, 4000);
-      const profile = (json && json.data) ? json.data : json;
-      if (profile && (profile.global_rank || profile.pp)) {
-        setCachedProfile(profile);
-        updateOsuUI(profile, true);
-        return;
-      }
+      liveProfile = (json && json.data) ? json.data : json;
     } catch (primaryErr) {
       console.log('Primary live proxy notice:', primaryErr.message || primaryErr);
     }
 
-    // 3. Fallback to synced data/osu.json
+    // 3. Fallback to synced data/osu.json for scores/fallback
+    let fallbackData = null;
     try {
-      const fallbackData = await fetchWithTimeout(FALLBACK_ENDPOINT, 3000);
-      if (fallbackData && (fallbackData.global_rank || fallbackData.pp)) {
-        setCachedProfile(fallbackData);
-        updateOsuUI(fallbackData, true);
-      }
+      fallbackData = await fetchWithTimeout(FALLBACK_ENDPOINT, 3000);
     } catch (fallbackErr) {
       console.log('Fallback data notice:', fallbackErr.message || fallbackErr);
+    }
+
+    // Merge live user stats with 50 top scores
+    const finalData = {
+      ...(fallbackData || {}),
+      ...(liveProfile || {})
+    };
+    if (fallbackData && fallbackData.top_scores && (!finalData.top_scores || finalData.top_scores.length === 0)) {
+      finalData.top_scores = fallbackData.top_scores;
+    }
+
+    if (finalData && (finalData.global_rank || finalData.pp)) {
+      setCachedProfile(finalData);
+      updateOsuUI(finalData, !!liveProfile);
     }
   }
 

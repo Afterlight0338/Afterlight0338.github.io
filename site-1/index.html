@@ -424,10 +424,10 @@
           </div>
 
           <div class="osu-scores-section-heading" style="margin-top: 6px;">
-            <span>📊 Top 5 Personal Bests</span>
+            <span>📊 Personal Bests (Top 50)</span>
           </div>
 
-          <!-- Top 5 List: Clean Dark Cards with Framed Thumbnails -->
+          <!-- Top 50 List: Clean Dark Cards with Framed Thumbnails -->
           <div class="osu-top5-container" id="osu-top5-items">
             <!-- Item 1 -->
             <div class="osu-score-card-item">
@@ -559,6 +559,17 @@
               </a>
             </div>
           </div>
+
+          <!-- Expand / Collapse Button Container -->
+          <div id="osu-expand-container">
+            <div class="osu-expand-btn-wrap">
+              <button class="osu-expand-btn" onclick="window.toggleScoresExpand()">
+                <span>View All Top 50 Plays</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
     </section>

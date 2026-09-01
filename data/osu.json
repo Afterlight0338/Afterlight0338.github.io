@@ -21,15 +21,18 @@
       "artist": "Rhapsody",
       "difficulty": "Uri's Extreme",
       "pp": 580.1,
-      "accuracy": 96.21,
+      "accuracy": 96.48,
       "rank": "A",
-      "mods": ["HD", "HR"],
-      "mod_str": "HD, HR",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
       "max_combo": 1899,
       "beatmap_id": 5258382,
       "beatmapset_id": 2401111,
-      "cover_url": "https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg",
-      "list_cover_url": "https://assets.ppy.sh/beatmaps/2401111/covers/list.jpg"
+      "cover_url": "https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg?1774462411",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2401111/covers/list.jpg?1774462411"
     },
     {
       "rank_index": 2,
@@ -37,31 +40,37 @@
       "artist": "VINXIS",
       "difficulty": "-Tynamo's Resolution",
       "pp": 504.1,
-      "accuracy": 96.52,
+      "accuracy": 96.88,
       "rank": "A",
-      "mods": ["HD", "HR"],
-      "mod_str": "HD, HR",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
       "max_combo": 375,
       "beatmap_id": 5141310,
       "beatmapset_id": 2310753,
-      "cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/cover.jpg",
-      "list_cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/list.jpg"
+      "cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/cover.jpg?1749171342",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/list.jpg?1749171342"
     },
     {
       "rank_index": 3,
       "title": "Green Greens",
       "artist": "Jun Ishikawa",
       "difficulty": "Mekadon's Super Ability",
-      "pp": 482.0,
-      "accuracy": 99.09,
+      "pp": 482,
+      "accuracy": 99.16,
       "rank": "SH",
-      "mods": ["HD", "HR"],
-      "mod_str": "HD, HR",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
       "max_combo": 512,
       "beatmap_id": 5061151,
       "beatmapset_id": 2341780,
-      "cover_url": "https://assets.ppy.sh/beatmaps/2341780/covers/cover.jpg",
-      "list_cover_url": "https://assets.ppy.sh/beatmaps/2341780/covers/list.jpg"
+      "cover_url": "https://assets.ppy.sh/beatmaps/2341780/covers/cover.jpg?1751506308",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2341780/covers/list.jpg?1751506308"
     },
     {
       "rank_index": 4,
@@ -69,15 +78,18 @@
       "artist": "S3RL",
       "difficulty": "Intense Ecstasy",
       "pp": 478.7,
-      "accuracy": 97.63,
+      "accuracy": 97.54,
       "rank": "SH",
-      "mods": ["HD", "HR"],
-      "mod_str": "HD, HR",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
       "max_combo": 562,
       "beatmap_id": 2084862,
       "beatmapset_id": 983911,
-      "cover_url": "https://assets.ppy.sh/beatmaps/983911/covers/cover.jpg",
-      "list_cover_url": "https://assets.ppy.sh/beatmaps/983911/covers/list.jpg"
+      "cover_url": "https://assets.ppy.sh/beatmaps/983911/covers/cover.jpg?1650683411",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/983911/covers/list.jpg?1650683411"
     },
     {
       "rank_index": 5,
@@ -85,15 +97,852 @@
       "artist": "VINXIS",
       "difficulty": "Lost",
       "pp": 470.5,
-      "accuracy": 97.04,
+      "accuracy": 97.34,
       "rank": "A",
-      "mods": ["HD", "HR"],
-      "mod_str": "HD, HR",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
       "max_combo": 734,
       "beatmap_id": 4943355,
       "beatmapset_id": 2310753,
-      "cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/cover.jpg",
-      "list_cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/list.jpg"
+      "cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/cover.jpg?1749171342",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2310753/covers/list.jpg?1749171342"
+    },
+    {
+      "rank_index": 6,
+      "title": "Sidetracked Day",
+      "artist": "VINXIS",
+      "difficulty": "Distraction",
+      "pp": 467.5,
+      "accuracy": 97.27,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 536,
+      "beatmap_id": 4746232,
+      "beatmapset_id": 2162554,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2162554/covers/cover.jpg?1726578127",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2162554/covers/list.jpg?1726578127"
+    },
+    {
+      "rank_index": 7,
+      "title": "Heartless (Cut Ver.)",
+      "artist": "Pythia",
+      "difficulty": "Indifference",
+      "pp": 454.5,
+      "accuracy": 96.92,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 302,
+      "beatmap_id": 5671885,
+      "beatmapset_id": 2554421,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2554421/covers/cover.jpg?1780696546",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2554421/covers/list.jpg?1780696546"
+    },
+    {
+      "rank_index": 8,
+      "title": "Higan Kikou ~ View of The River Styx",
+      "artist": "Demetori",
+      "difficulty": "River Mist: Distance Becomes Strange",
+      "pp": 447.1,
+      "accuracy": 96.69,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 1165,
+      "beatmap_id": 4894158,
+      "beatmapset_id": 2171371,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2171371/covers/cover.jpg?1742331455",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2171371/covers/list.jpg?1742331455"
+    },
+    {
+      "rank_index": 9,
+      "title": "Flight of the Bumblebee (RST Classic)",
+      "artist": "SHK",
+      "difficulty": "Professional",
+      "pp": 436.6,
+      "accuracy": 96.42,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 260,
+      "beatmap_id": 4549701,
+      "beatmapset_id": 879890,
+      "cover_url": "https://assets.ppy.sh/beatmaps/879890/covers/cover.jpg?1717594056",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/879890/covers/list.jpg?1717594056"
+    },
+    {
+      "rank_index": 10,
+      "title": "Motto, Nee Motto (TV Size)",
+      "artist": "Erabareshi",
+      "difficulty": "Fanservice",
+      "pp": 430.5,
+      "accuracy": 97.04,
+      "rank": "SH",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 306,
+      "beatmap_id": 5521635,
+      "beatmapset_id": 2507217,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2507217/covers/cover.jpg?1771284084",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2507217/covers/list.jpg?1771284084"
+    },
+    {
+      "rank_index": 11,
+      "title": "Pure Ruby (Game Ver.)",
+      "artist": "SHIKI",
+      "difficulty": "Collab Another",
+      "pp": 425.1,
+      "accuracy": 97,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 436,
+      "beatmap_id": 4961220,
+      "beatmapset_id": 2179269,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2179269/covers/cover.jpg?1744304118",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2179269/covers/list.jpg?1744304118"
+    },
+    {
+      "rank_index": 12,
+      "title": "look at me tenderly",
+      "artist": "goreshit",
+      "difficulty": "(>///<)",
+      "pp": 421.5,
+      "accuracy": 98.96,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 2555,
+      "beatmap_id": 5080973,
+      "beatmapset_id": 150360,
+      "cover_url": "https://assets.ppy.sh/beatmaps/150360/covers/cover.jpg?1745265575",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/150360/covers/list.jpg?1745265575"
+    },
+    {
+      "rank_index": 13,
+      "title": "bbydoll (nightcore & cut ver.)",
+      "artist": "Aziya",
+      "difficulty": "love me",
+      "pp": 417.4,
+      "accuracy": 98.24,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 144,
+      "beatmap_id": 5127729,
+      "beatmapset_id": 2374386,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2374386/covers/cover.jpg?1749993995",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2374386/covers/list.jpg?1749993995"
+    },
+    {
+      "rank_index": 14,
+      "title": "Save Me",
+      "artist": "Avenged Sevenfold",
+      "difficulty": "Nightmare",
+      "pp": 414.5,
+      "accuracy": 98.16,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 2129,
+      "beatmap_id": 1811527,
+      "beatmapset_id": 866472,
+      "cover_url": "https://assets.ppy.sh/beatmaps/866472/covers/cover.jpg?1622149359",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/866472/covers/list.jpg?1622149359"
+    },
+    {
+      "rank_index": 15,
+      "title": "Power of the Dragonflame",
+      "artist": "Rhapsody",
+      "difficulty": "Tharos' Requiem of Sanguine Fury",
+      "pp": 411.4,
+      "accuracy": 94.94,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 714,
+      "beatmap_id": 5576887,
+      "beatmapset_id": 2401111,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg?1774462411",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2401111/covers/list.jpg?1774462411"
+    },
+    {
+      "rank_index": 16,
+      "title": "Humiliation Supreme",
+      "artist": "Manticora",
+      "difficulty": "Extreme",
+      "pp": 407.9,
+      "accuracy": 97.53,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 957,
+      "beatmap_id": 5119288,
+      "beatmapset_id": 2364885,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2364885/covers/cover.jpg?1759163480",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2364885/covers/list.jpg?1759163480"
+    },
+    {
+      "rank_index": 17,
+      "title": "Slider",
+      "artist": "Koji Kondo",
+      "difficulty": "FREEDOM DiVE",
+      "pp": 405.5,
+      "accuracy": 96.76,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 710,
+      "beatmap_id": 4064320,
+      "beatmapset_id": 1961109,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1961109/covers/cover.jpg?1693083197",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1961109/covers/list.jpg?1693083197"
+    },
+    {
+      "rank_index": 18,
+      "title": "Doki-Doki",
+      "artist": "Thaehan",
+      "difficulty": "Rhythmic Pulse",
+      "pp": 403,
+      "accuracy": 98.7,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 625,
+      "beatmap_id": 2467744,
+      "beatmapset_id": 713926,
+      "cover_url": "https://assets.ppy.sh/beatmaps/713926/covers/cover.jpg?1650663546",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/713926/covers/list.jpg?1650663546"
+    },
+    {
+      "rank_index": 19,
+      "title": "Bluenation",
+      "artist": "yaseta",
+      "difficulty": "Grace",
+      "pp": 397.6,
+      "accuracy": 97.91,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 1886,
+      "beatmap_id": 1494828,
+      "beatmapset_id": 707032,
+      "cover_url": "https://assets.ppy.sh/beatmaps/707032/covers/cover.jpg?1645783903",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/707032/covers/list.jpg?1645783903"
+    },
+    {
+      "rank_index": 20,
+      "title": "Pretty Little Psycho (Nightcore & Cut Ver.)",
+      "artist": "Porcelain Black",
+      "difficulty": "Ram's Extra",
+      "pp": 397.3,
+      "accuracy": 96.94,
+      "rank": "A",
+      "mods": [
+        "DT",
+        "HD"
+      ],
+      "mod_str": "DT, HD",
+      "max_combo": 183,
+      "beatmap_id": 5222182,
+      "beatmapset_id": 2390209,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2390209/covers/cover.jpg?1760399535",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2390209/covers/list.jpg?1760399535"
+    },
+    {
+      "rank_index": 21,
+      "title": "Last Goodbye",
+      "artist": "toby fox",
+      "difficulty": "Fatfan's SAVE (Encore)",
+      "pp": 397.1,
+      "accuracy": 97.77,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 373,
+      "beatmap_id": 4662519,
+      "beatmapset_id": 2202726,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2202726/covers/cover.jpg?1723763714",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2202726/covers/list.jpg?1723763714"
+    },
+    {
+      "rank_index": 22,
+      "title": "Waldschrein",
+      "artist": "Equilibrium",
+      "difficulty": "Mein Land",
+      "pp": 387.8,
+      "accuracy": 98.71,
+      "rank": "SH",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 2035,
+      "beatmap_id": 809469,
+      "beatmapset_id": 369354,
+      "cover_url": "https://assets.ppy.sh/beatmaps/369354/covers/cover.jpg?1622095406",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/369354/covers/list.jpg?1622095406"
+    },
+    {
+      "rank_index": 23,
+      "title": "Bubblegum Bitch (Nightcore & Cut Ver.)",
+      "artist": "Marina and the Diamonds",
+      "difficulty": "PikA's Extra",
+      "pp": 385.1,
+      "accuracy": 97.73,
+      "rank": "A",
+      "mods": [
+        "DT",
+        "HD"
+      ],
+      "mod_str": "DT, HD",
+      "max_combo": 200,
+      "beatmap_id": 4919915,
+      "beatmapset_id": 2282704,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2282704/covers/cover.jpg?1756038849",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2282704/covers/list.jpg?1756038849"
+    },
+    {
+      "rank_index": 24,
+      "title": "bbydoll (nightcore & cut ver.)",
+      "artist": "Aziya",
+      "difficulty": "choose me",
+      "pp": 384.9,
+      "accuracy": 98.54,
+      "rank": "SH",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 334,
+      "beatmap_id": 5127725,
+      "beatmapset_id": 2374386,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2374386/covers/cover.jpg?1749993995",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2374386/covers/list.jpg?1749993995"
+    },
+    {
+      "rank_index": 25,
+      "title": "Pure Ruby (Game Ver.)",
+      "artist": "SHIKI",
+      "difficulty": "Extreme",
+      "pp": 383.7,
+      "accuracy": 98.33,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 527,
+      "beatmap_id": 4968396,
+      "beatmapset_id": 2179269,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2179269/covers/cover.jpg?1744304118",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2179269/covers/list.jpg?1744304118"
+    },
+    {
+      "rank_index": 26,
+      "title": "Daidai Genome",
+      "artist": "*namirin",
+      "difficulty": "Love & Lust",
+      "pp": 381.4,
+      "accuracy": 97.64,
+      "rank": "SH",
+      "mods": [
+        "DT",
+        "HD"
+      ],
+      "mod_str": "DT, HD",
+      "max_combo": 672,
+      "beatmap_id": 4583961,
+      "beatmapset_id": 2171754,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2171754/covers/cover.jpg?1718659799",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2171754/covers/list.jpg?1718659799"
+    },
+    {
+      "rank_index": 27,
+      "title": "Bubblegum Bitch (Nightcore Mix)",
+      "artist": "Marina and the Diamonds",
+      "difficulty": "Steal Me With a Kiss",
+      "pp": 378.5,
+      "accuracy": 98.54,
+      "rank": "SH",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 850,
+      "beatmap_id": 4019123,
+      "beatmapset_id": 1943000,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1943000/covers/cover.jpg?1739821565",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1943000/covers/list.jpg?1739821565"
+    },
+    {
+      "rank_index": 28,
+      "title": "Seijouki no Pierrot ~ The MadPiero Laughs",
+      "artist": "Demetori",
+      "difficulty": "Extra Stage",
+      "pp": 377.6,
+      "accuracy": 96.88,
+      "rank": "SH",
+      "mods": [
+        "HD",
+        "CL"
+      ],
+      "mod_str": "HD, CL",
+      "max_combo": 1524,
+      "beatmap_id": 1391631,
+      "beatmapset_id": 656918,
+      "cover_url": "https://assets.ppy.sh/beatmaps/656918/covers/cover.jpg?1650653233",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/656918/covers/list.jpg?1650653233"
+    },
+    {
+      "rank_index": 29,
+      "title": "Tower Of Heaven (You Are Slaves) (Cut Ver.)",
+      "artist": "Feint",
+      "difficulty": "Acme",
+      "pp": 377.5,
+      "accuracy": 95.73,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 737,
+      "beatmap_id": 4137259,
+      "beatmapset_id": 1991315,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1991315/covers/cover.jpg?1695404998",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1991315/covers/list.jpg?1695404998"
+    },
+    {
+      "rank_index": 30,
+      "title": "Motto, Nee Motto (TV Size)",
+      "artist": "Erabareshi",
+      "difficulty": "Yuri",
+      "pp": 376,
+      "accuracy": 93.65,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 111,
+      "beatmap_id": 4958758,
+      "beatmapset_id": 2250201,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2250201/covers/cover.jpg?1739479627",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2250201/covers/list.jpg?1739479627"
+    },
+    {
+      "rank_index": 31,
+      "title": "Mynarco",
+      "artist": "positive MAD-crew",
+      "difficulty": "Withdrawals",
+      "pp": 372.9,
+      "accuracy": 97.53,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 773,
+      "beatmap_id": 1726994,
+      "beatmapset_id": 824205,
+      "cover_url": "https://assets.ppy.sh/beatmaps/824205/covers/cover.jpg?1650675634",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/824205/covers/list.jpg?1650675634"
+    },
+    {
+      "rank_index": 32,
+      "title": "Humiliation Supreme",
+      "artist": "Manticora",
+      "difficulty": "Dignity",
+      "pp": 371.6,
+      "accuracy": 92.66,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 312,
+      "beatmap_id": 5329312,
+      "beatmapset_id": 2364885,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2364885/covers/cover.jpg?1759163480",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2364885/covers/list.jpg?1759163480"
+    },
+    {
+      "rank_index": 33,
+      "title": "Age of Tyranny",
+      "artist": "Victorius",
+      "difficulty": "shoyeu's Extra",
+      "pp": 367.9,
+      "accuracy": 97.28,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 1596,
+      "beatmap_id": 4704022,
+      "beatmapset_id": 2219231,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2219231/covers/cover.jpg?1739205113",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2219231/covers/list.jpg?1739205113"
+    },
+    {
+      "rank_index": 34,
+      "title": "Determinate (Nightcore & Cut Ver.)",
+      "artist": "Bridgit Mendler, Adam Hicks, Naomi Scott and Hayley Kiyoko",
+      "difficulty": "Reform's Expert",
+      "pp": 365.9,
+      "accuracy": 96.45,
+      "rank": "A",
+      "mods": [
+        "DT",
+        "HD"
+      ],
+      "mod_str": "DT, HD",
+      "max_combo": 178,
+      "beatmap_id": 5295320,
+      "beatmapset_id": 2425417,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2425417/covers/cover.jpg?1761335172",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2425417/covers/list.jpg?1761335172"
+    },
+    {
+      "rank_index": 35,
+      "title": "Cherry Bomb",
+      "artist": "Poppin'Party",
+      "difficulty": "Sakura Blossom",
+      "pp": 364.7,
+      "accuracy": 98.67,
+      "rank": "SH",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 615,
+      "beatmap_id": 2033294,
+      "beatmapset_id": 971051,
+      "cover_url": "https://assets.ppy.sh/beatmaps/971051/covers/cover.jpg?1650681578",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/971051/covers/list.jpg?1650681578"
+    },
+    {
+      "rank_index": 36,
+      "title": "Sidetracked Day",
+      "artist": "wuk",
+      "difficulty": "PixelGlory's Elegy",
+      "pp": 363.9,
+      "accuracy": 98.4,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 373,
+      "beatmap_id": 5211120,
+      "beatmapset_id": 2191876,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2191876/covers/cover.jpg?1761462050",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2191876/covers/list.jpg?1761462050"
+    },
+    {
+      "rank_index": 37,
+      "title": "Guitar to Kodoku to Aoi Hoshi",
+      "artist": "kessoku band",
+      "difficulty": "guitarhero",
+      "pp": 362.8,
+      "accuracy": 96.75,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 799,
+      "beatmap_id": 3870286,
+      "beatmapset_id": 1880007,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1880007/covers/cover.jpg?1670740849",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1880007/covers/list.jpg?1670740849"
+    },
+    {
+      "rank_index": 38,
+      "title": "Seijouki no Pierrot ~ The MadPiero Laughs",
+      "artist": "Demetori",
+      "difficulty": "Stage 5: Clownpiece",
+      "pp": 361.1,
+      "accuracy": 95.24,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 550,
+      "beatmap_id": 3986984,
+      "beatmapset_id": 1930121,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1930121/covers/cover.jpg?1702222247",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1930121/covers/list.jpg?1702222247"
+    },
+    {
+      "rank_index": 39,
+      "title": "Unwelcome School",
+      "artist": "Mitsukiyo",
+      "difficulty": "Cleaning & Clearing",
+      "pp": 361.1,
+      "accuracy": 97.77,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 661,
+      "beatmap_id": 3150892,
+      "beatmapset_id": 1541421,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1541421/covers/cover.jpg?1634853107",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1541421/covers/list.jpg?1634853107"
+    },
+    {
+      "rank_index": 40,
+      "title": "10 Things I Hate About You (Sped Up & Cut Ver.)",
+      "artist": "Leah Kate",
+      "difficulty": "Mommy Issues",
+      "pp": 360.7,
+      "accuracy": 96.97,
+      "rank": "SH",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 593,
+      "beatmap_id": 3873445,
+      "beatmapset_id": 1881428,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1881428/covers/cover.jpg?1669861204",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1881428/covers/list.jpg?1669861204"
+    },
+    {
+      "rank_index": 41,
+      "title": "Da Nu Nuttah",
+      "artist": "Renard",
+      "difficulty": "Nogard",
+      "pp": 357.2,
+      "accuracy": 98.01,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 621,
+      "beatmap_id": 4859632,
+      "beatmapset_id": 2094442,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2094442/covers/cover.jpg?1741727926",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2094442/covers/list.jpg?1741727926"
+    },
+    {
+      "rank_index": 42,
+      "title": "Mou Ii kai?",
+      "artist": "THE ORAL CIGARETTES",
+      "difficulty": "Rain",
+      "pp": 356.9,
+      "accuracy": 95.68,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 526,
+      "beatmap_id": 1695382,
+      "beatmapset_id": 807850,
+      "cover_url": "https://assets.ppy.sh/beatmaps/807850/covers/cover.jpg?1650666409",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/807850/covers/list.jpg?1650666409"
+    },
+    {
+      "rank_index": 43,
+      "title": "Higan Kikou ~ View of The River Styx",
+      "artist": "Demetori",
+      "difficulty": "Extra Stage",
+      "pp": 355.6,
+      "accuracy": 95.66,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 1678,
+      "beatmap_id": 4975644,
+      "beatmapset_id": 2171371,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2171371/covers/cover.jpg?1742331455",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2171371/covers/list.jpg?1742331455"
+    },
+    {
+      "rank_index": 44,
+      "title": "Glory Days",
+      "artist": "Fellowship",
+      "difficulty": "AnedeuwuAAa's Extreme Collab",
+      "pp": 355.5,
+      "accuracy": 96.57,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 814,
+      "beatmap_id": 3666536,
+      "beatmapset_id": 1781620,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1781620/covers/cover.jpg?1660851627",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1781620/covers/list.jpg?1660851627"
+    },
+    {
+      "rank_index": 45,
+      "title": "Sentou! Champion Iris",
+      "artist": "Junichi Masuda",
+      "difficulty": "Dragon Queen",
+      "pp": 352.6,
+      "accuracy": 97.4,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 584,
+      "beatmap_id": 4758850,
+      "beatmapset_id": 2239337,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2239337/covers/cover.jpg?1725656188",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2239337/covers/list.jpg?1725656188"
+    },
+    {
+      "rank_index": 46,
+      "title": "ENTANGLE NIGHT",
+      "artist": "DJ SHARPNEL",
+      "difficulty": "-TYNAMO'S 1025 DREAMS",
+      "pp": 351.8,
+      "accuracy": 98.37,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 1448,
+      "beatmap_id": 5655963,
+      "beatmapset_id": 2454522,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2454522/covers/cover.jpg?1781106369",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2454522/covers/list.jpg?1781106369"
+    },
+    {
+      "rank_index": 47,
+      "title": "Mou Ii kai?",
+      "artist": "THE ORAL CIGARETTES",
+      "difficulty": "NiVo's Extra",
+      "pp": 351.3,
+      "accuracy": 96.68,
+      "rank": "A",
+      "mods": [
+        "HR",
+        "HD"
+      ],
+      "mod_str": "HR, HD",
+      "max_combo": 543,
+      "beatmap_id": 1702172,
+      "beatmapset_id": 807850,
+      "cover_url": "https://assets.ppy.sh/beatmaps/807850/covers/cover.jpg?1650666409",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/807850/covers/list.jpg?1650666409"
+    },
+    {
+      "rank_index": 48,
+      "title": "Glory Days",
+      "artist": "Fellowship",
+      "difficulty": "Relentless Heartache",
+      "pp": 348.9,
+      "accuracy": 97.12,
+      "rank": "A",
+      "mods": [
+        "HD"
+      ],
+      "mod_str": "HD",
+      "max_combo": 1202,
+      "beatmap_id": 3648544,
+      "beatmapset_id": 1781620,
+      "cover_url": "https://assets.ppy.sh/beatmaps/1781620/covers/cover.jpg?1660851627",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/1781620/covers/list.jpg?1660851627"
+    },
+    {
+      "rank_index": 49,
+      "title": "I Don't Know (Nightcore & Cut Ver.)",
+      "artist": "Erika",
+      "difficulty": "Kumocha's Extra",
+      "pp": 348.4,
+      "accuracy": 94.43,
+      "rank": "A",
+      "mods": [
+        "DT",
+        "HD"
+      ],
+      "mod_str": "DT, HD",
+      "max_combo": 180,
+      "beatmap_id": 5463158,
+      "beatmapset_id": 2479183,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2479183/covers/cover.jpg?1768172625",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2479183/covers/list.jpg?1768172625"
+    },
+    {
+      "rank_index": 50,
+      "title": "GRIM (NIGHTCORE & CUT VER.)",
+      "artist": "FLORE",
+      "difficulty": "KUMOCHA'S EXTRA",
+      "pp": 344.7,
+      "accuracy": 93.54,
+      "rank": "A",
+      "mods": [
+        "DT",
+        "HD"
+      ],
+      "mod_str": "DT, HD",
+      "max_combo": 217,
+      "beatmap_id": 5556336,
+      "beatmapset_id": 2513672,
+      "cover_url": "https://assets.ppy.sh/beatmaps/2513672/covers/cover.jpg?1772985710",
+      "list_cover_url": "https://assets.ppy.sh/beatmaps/2513672/covers/list.jpg?1772985710"
     }
   ]
 }
