@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>Afterlight | Roxy's Sanctuary</title>
+<meta name="description" content="Afterlight's personal sanctuary & system dashboard - Water Holy Class Mage & Roxy Migurdia Enthusiast">
+<meta name="theme-color" content="#050914">
+<link rel="icon" type="image/png" href="../roxy-ff.png">
+
+<!-- OpenGraph / Discord Preview -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vivlos.dev/roxy/">
+<meta property="og:title" content="Afterlight | Roxy's Sanctuary">
+<meta property="og:description" content="Water Holy Class Mage & NixOS / Hyprland Rice • AOC 24G11ZE 240Hz • SayoDevice K05 HE • Wacom CTH-670">
+<meta property="og:image" content="https://vivlos.dev/roxy/roxy-ff.png">
+
+<!-- Twitter / X Preview -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://vivlos.dev/roxy/">
+<meta property="twitter:title" content="Afterlight | Roxy's Sanctuary">
+<meta property="twitter:description" content="Water Holy Class Mage & NixOS / Hyprland Rice • AOC 24G11ZE 240Hz • SayoDevice K05 HE • Wacom CTH-670">
+<meta property="twitter:image" content="https://vivlos.dev/roxy/roxy-ff.png">
+
+<!-- Google Fonts & Maple Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
+
+<!-- Modular Style System -->
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/bento.css">
+<link rel="stylesheet" href="../css/hero.css">
+<link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+<!-- Splash Intro Screen -->
+<div id="splash" aria-hidden="true">
+  <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+    <div class="splash-ring"></div>
+    <div class="splash-ring"></div>
+    <div class="splash-ring"></div>
+    <img class="splash-avatar" src="../roxy-ff.png" alt="">
+  </div>
+  <div class="splash-name">Afterlight</div>
+  <div class="splash-sub">Water Holy Class Mage</div>
+  <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
+</div>
+
+<!-- Ambient Glow Orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Water Magic Particle Canvas -->
+<canvas id="net" aria-hidden="true"></canvas>
+
+<div class="container">
+  
+  <!-- LEFT: Hero Profile Bento Card -->
+  <div class="bento-card profile-hero" id="card-hero">
+    <div class="sheen"></div>
+    <div class="profile-top">
+      
+      <!-- Live Status Badge (Synced with Lanyard) -->
+      <div class="status-badge dnd" id="discord-status-badge">
+        <span class="status-dot"></span>
+        <span id="discord-status-text">Do Not Disturb</span>
+      </div>
+
+      <!-- Avatar with Live Status Pip -->
+      <div class="avatar-container">
+        <img class="avatar-img" src="../roxy-ff.png" alt="Afterlight Avatar">
+        <div class="avatar-status-pip dnd" id="avatar-pip" title="Discord Status"></div>
+      </div>
+
+      <h1 class="name-title">Afterlight</h1>
+      <div class="tagline-pill">Roxy Migurdia my beloved <span class="heart">♥</span></div>
+    </div>
+
+    <!-- Live Clock -->
+    <div class="clock-widget">
+      <span>🕒</span> <span id="live-clock">00:00:00 UTC+8</span>
+    </div>
+
+    <!-- Live Discord Presence / Activity Card -->
+    <div class="discord-activity-card" id="lanyard-card">
+      <div class="discord-header">
+        <div class="discord-user-info">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.3 5.4A17.5 17.5 0 0 0 15.9 4c-.2.4-.5.9-.6 1.3a16.5 16.5 0 0 0-4.8 0A9 9 0 0 0 9.8 4a17.6 17.6 0 0 0-4.4 1.4C2.6 9 1.9 12.5 2.2 16a17.7 17.7 0 0 0 5.3 2.7c.4-.6.8-1.2 1.1-1.9-.6-.2-1.2-.5-1.7-.9l.4-.3c3.3 1.5 6.9 1.5 10.2 0l.4.3c-.5.4-1.1.7-1.7.9.3.7.7 1.3 1.1 1.9a17.6 17.6 0 0 0 5.3-2.7c.4-4-.6-7.5-2.3-10.6ZM9.7 13.9c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm4.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
+          <span class="discord-tag-pill">@afterlight_hd</span>
+        </div>
+        <div class="device-badges" id="device-badges">
+          <span title="Desktop App">💻</span>
+        </div>
+      </div>
+
+      <!-- Custom Status -->
+      <div class="custom-status-text" id="discord-custom-status" style="display:none;">
+        <span id="custom-emoji">💬</span>
+        <span id="custom-status-val">...</span>
+      </div>
+
+      <!-- Rich Presence Activity / Spotify -->
+      <div class="activity-body" id="activity-body">
+        <div class="activity-icon-wrap" id="activity-icon-wrap">
+          <img class="activity-icon" id="activity-icon" src="../roxy-ff.png" alt="Activity">
+        </div>
+        <div class="activity-details">
+          <span class="activity-type" id="activity-type">SANCTUARY STATUS</span>
+          <span class="activity-name" id="activity-name">Chilling in Roxy's Sanctuary</span>
+          <span class="activity-state" id="activity-state">Water Holy Class Mage</span>
+          <span class="activity-time" id="activity-time">Live • NixOS 26.05</span>
+        </div>
+      </div>
+
+      <!-- Spotify Live Progress -->
+      <div class="spotify-progress-wrap" id="spotify-progress-wrap" style="display:none;">
+        <div class="spotify-progress-bar">
+          <div class="spotify-progress-fill" id="spotify-fill"></div>
+        </div>
+        <div class="spotify-timestamps">
+          <span id="spotify-cur">0:00</span>
+          <span id="spotify-tot">0:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Buttons Grid -->
+    <div class="social-grid">
+      <!-- GitHub -->
+      <a class="social-btn" href="https://github.com/Afterlight0338" target="_blank" rel="noopener" aria-label="GitHub (@Afterlight0338)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.02-.01-1.86-2.78.62-3.37-1.22-3.37-1.22-.46-1.19-1.11-1.51-1.11-1.51-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.92 0 1.39-.01 2.51-.01 2.85 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+      </a>
+      <!-- Discord Copy -->
+      <button class="social-btn" onclick="copyDiscord()" aria-label="Copy Discord: afterlight_hd">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 5.4A17.5 17.5 0 0 0 15.9 4c-.2.4-.5.9-.6 1.3a16.5 16.5 0 0 0-4.8 0A9 9 0 0 0 9.8 4a17.6 17.6 0 0 0-4.4 1.4C2.6 9 1.9 12.5 2.2 16a17.7 17.7 0 0 0 5.3 2.7c.4-.6.8-1.2 1.1-1.9-.6-.2-1.2-.5-1.7-.9l.4-.3c3.3 1.5 6.9 1.5 10.2 0l.4.3c-.5.4-1.1.7-1.7.9.3.7.7 1.3 1.1 1.9a17.6 17.6 0 0 0 5.3-2.7c.4-4-.6-7.5-2.3-10.6ZM9.7 13.9c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm4.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
+      </button>
+      <!-- Twitch -->
+      <a class="social-btn" href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener" aria-label="Twitch (@afterlight_)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+      </a>
+      <!-- TikTok -->
+      <a class="social-btn" href="https://www.tiktok.com/@afterlight_1337" target="_blank" rel="noopener" aria-label="TikTok (@afterlight_1337)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.36-1.5V4h-2.62v13.1a2.7 2.7 0 1 1-2.19-2.66V11.9a5.3 5.3 0 1 0 4.81 5.28V9.4a6.9 6.9 0 0 0 4.36 1.56V8.36c-.34 0-.68-.03-1-.09Z"/></svg>
+      </a>
+      <!-- osu! -->
+      <a class="social-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" aria-label="osu! Profile (14671577)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Bento Grid Dashboard -->
+  <div class="bento-right">
+    
+    <!-- osu! Highlight Player Sanctuary (Span 2 - 2nd Top Highlight) -->
+    <div class="bento-card span-2" id="card-osu">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
+          <span>osu! Player Sanctuary</span>
+        </div>
+        <span class="bento-header-tag" id="osu-live-tag" style="color:var(--accent-emerald);">STD • LIVE</span>
+      </div>
+
+      <div class="osu-highlight-grid">
+        <!-- Left: Profile Info & Live Stats -->
+        <div class="osu-profile-panel">
+          <div>
+            <div class="osu-user-header">
+              <div class="osu-user-title-wrap">
+                <span class="osu-username" id="osu-username-display">RyoYamada</span>
+                <span class="osu-country-flag" id="osu-country-flag">MY</span>
+              </div>
+              <span class="osu-id-tag">UID: #14671577</span>
+            </div>
+            <p class="osu-bio-text" style="margin-top: 6px;">
+              Competitive standard mode player aiming with Wacom CTH-670 on AOC 24G11ZE 240Hz.
+            </p>
+          </div>
+
+          <!-- Live Performance & Rank Stats Grid -->
+          <div class="osu-stats-grid">
+            <div class="osu-stat-tile">
+              <span class="osu-stat-label">Global Rank</span>
+              <span class="osu-stat-val spec-rose" id="osu-global-rank">#14,424</span>
+            </div>
+            <div class="osu-stat-tile">
+              <span class="osu-stat-label">Performance</span>
+              <span class="osu-stat-val spec-highlight" id="osu-pp">8,797 pp</span>
+            </div>
+            <div class="osu-stat-tile">
+              <span class="osu-stat-label">Hit Accuracy</span>
+              <span class="osu-stat-val spec-emerald" id="osu-acc">97.19%</span>
+            </div>
+            <div class="osu-stat-tile">
+              <span class="osu-stat-label">Play Count</span>
+              <span class="osu-stat-val spec-violet" id="osu-plays">44,637</span>
+            </div>
+          </div>
+
+          <div class="osu-actions-row">
+            <a class="osu-open-btn" href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">
+              <span>View osu! Profile</span>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Top Play Showcase & Top 5 View -->
+        <div class="osu-scores-panel">
+          <div class="osu-scores-header">
+            <div class="osu-scores-title">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>Personal Best Plays</span>
+            </div>
+            <div class="osu-tab-controls">
+              <button class="osu-tab-btn active" id="osu-tab-top1" onclick="switchOsuTab('top1')">#1 Best</button>
+              <button class="osu-tab-btn" id="osu-tab-top5" onclick="switchOsuTab('top5')">Top 5</button>
+            </div>
+          </div>
+
+          <!-- Tab 1: #1 Featured Top Play Banner -->
+          <div class="osu-top1-showcase" id="osu-view-top1">
+            <a class="osu-top1-banner" id="osu-top1-link" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener" style="background-image: linear-gradient(180deg, rgba(6, 12, 28, 0.75) 0%, rgba(6, 12, 28, 0.95) 100%), url('https://assets.ppy.sh/beatmaps/2401111/covers/cover.jpg');">
+              <div class="osu-top1-content">
+                <div>
+                  <span class="osu-top1-badge">🏆 TOP #1 RECORD</span>
+                  <h4 class="osu-top1-title" id="osu-top1-title">Power of the Dragonflame</h4>
+                  <p class="osu-top1-artist" id="osu-top1-artist">Rhapsody • Uri's Extreme</p>
+                </div>
+                <div class="osu-top1-stats">
+                  <div class="osu-top1-pp" id="osu-top1-pp">580.1 pp</div>
+                  <div class="osu-top1-substats">
+                    <span class="osu-pill-acc" id="osu-top1-acc">96.21%</span>
+                    <span class="osu-pill-mods" id="osu-top1-mods">HD, HR</span>
+                    <span class="osu-pill-rank rank-a" id="osu-top1-rank">A</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Tab 2: Top 5 Scores List -->
+          <div class="osu-top5-list" id="osu-view-top5" style="display: none;">
+            <div id="osu-top5-items" class="osu-top5-items">
+              <a class="osu-score-row" href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener">
+                <span class="osu-score-rank-num gold">#1</span>
+                <div class="osu-score-info">
+                  <span class="osu-score-title">Power of the Dragonflame</span>
+                  <span class="osu-score-diff">Uri's Extreme • Rhapsody</span>
+                </div>
+                <div class="osu-score-metrics">
+                  <span class="osu-score-pp">580.1 pp</span>
+                  <div class="osu-score-sub">
+                    <span class="osu-score-acc">96.21%</span>
+                    <span class="osu-score-mods">HD,HR</span>
+                  </div>
+                </div>
+              </a>
+              <a class="osu-score-row" href="https://osu.ppy.sh/beatmaps/5141310" target="_blank" rel="noopener">
+                <span class="osu-score-rank-num silver">#2</span>
+                <div class="osu-score-info">
+                  <span class="osu-score-title">Sidetracked Day (Short Ver.)</span>
+                  <span class="osu-score-diff">-Tynamo's Resolution • VINXIS</span>
+                </div>
+                <div class="osu-score-metrics">
+                  <span class="osu-score-pp">504.1 pp</span>
+                  <div class="osu-score-sub">
+                    <span class="osu-score-acc">96.52%</span>
+                    <span class="osu-score-mods">HD,HR</span>
+                  </div>
+                </div>
+              </a>
+              <a class="osu-score-row" href="https://osu.ppy.sh/beatmaps/5061151" target="_blank" rel="noopener">
+                <span class="osu-score-rank-num bronze">#3</span>
+                <div class="osu-score-info">
+                  <span class="osu-score-title">Green Greens</span>
+                  <span class="osu-score-diff">Mekadon's Super Ability • Jun Ishikawa</span>
+                </div>
+                <div class="osu-score-metrics">
+                  <span class="osu-score-pp">482.0 pp</span>
+                  <div class="osu-score-sub">
+                    <span class="osu-score-acc">99.09%</span>
+                    <span class="osu-score-mods">HD,HR</span>
+                  </div>
+                </div>
+              </a>
+              <a class="osu-score-row" href="https://osu.ppy.sh/beatmaps/2084862" target="_blank" rel="noopener">
+                <span class="osu-score-rank-num">#4</span>
+                <div class="osu-score-info">
+                  <span class="osu-score-title">Bass Slut (Original Mix)</span>
+                  <span class="osu-score-diff">Intense Ecstasy • S3RL</span>
+                </div>
+                <div class="osu-score-metrics">
+                  <span class="osu-score-pp">478.7 pp</span>
+                  <div class="osu-score-sub">
+                    <span class="osu-score-acc">97.63%</span>
+                    <span class="osu-score-mods">HD,HR</span>
+                  </div>
+                </div>
+              </a>
+              <a class="osu-score-row" href="https://osu.ppy.sh/beatmaps/4943355" target="_blank" rel="noopener">
+                <span class="osu-score-rank-num">#5</span>
+                <div class="osu-score-info">
+                  <span class="osu-score-title">Sidetracked Day (Short Ver.)</span>
+                  <span class="osu-score-diff">Lost • VINXIS</span>
+                </div>
+                <div class="osu-score-metrics">
+                  <span class="osu-score-pp">470.5 pp</span>
+                  <div class="osu-score-sub">
+                    <span class="osu-score-acc">97.04%</span>
+                    <span class="osu-score-mods">HD,HR</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Setup & Rig Specs Card (Span 2) -->
+    <div class="bento-card span-2" id="card-specs">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span>System Setup & Rig Specs</span>
+        </div>
+        <span class="bento-header-tag">NIXOS 26.05 • HYPRLAND</span>
+      </div>
+
+      <div class="specs-tiles">
+        <div class="spec-tile">
+          <span class="spec-label">Host Laptop</span>
+          <span class="spec-val spec-highlight">Acer Nitro V 15</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Primary Display</span>
+          <span class="spec-val spec-highlight">AOC 24G11ZE 240Hz</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Processor</span>
+          <span class="spec-val">Ryzen 5 7535HS</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Graphics Card</span>
+          <span class="spec-val spec-violet">RTX 3050 6GB</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Memory</span>
+          <span class="spec-val">32GB DDR5</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Operating System</span>
+          <span class="spec-val spec-emerald">NixOS 26.05</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Window Manager</span>
+          <span class="spec-val spec-violet">Hyprland</span>
+        </div>
+        <div class="spec-tile">
+          <span class="spec-label">Integrated GPU</span>
+          <span class="spec-val">Radeon 680M</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peripherals & Rhythm Hardware Setup (Span 2) -->
+    <div class="bento-card span-2" id="card-hardware">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"></path></svg>
+          <span>Peripherals & Input Hardware</span>
+        </div>
+        <span class="bento-header-tag" style="color:var(--accent-rose);">HALL EFFECT • RAPID TRIGGER</span>
+      </div>
+
+      <div class="gear-grid">
+        
+        <!-- Keypad: SayoDevice K05 HE -->
+        <div class="gear-tile">
+          <div>
+            <div class="gear-header">
+              <span class="gear-title">SayoDevice K05 HE</span>
+              <span class="gear-tag" style="color:#f43f5e; border-color:rgba(244,63,94,0.3); background:rgba(244,63,94,0.1);">Hall Effect</span>
+            </div>
+            <p class="gear-desc" style="margin-top: 6px;">Analog magnetic switches with continuous physical travel tracking.</p>
+          </div>
+
+          <div class="he-travel-box">
+            <div class="he-travel-header">
+              <span>0.0mm (Rest)</span>
+              <span style="color:var(--accent-cyan); font-weight:600;">1.5mm Actuation</span>
+              <span>4.0mm (Bottom)</span>
+            </div>
+            <div class="he-bar-track">
+              <div class="he-bar-fill"></div>
+              <div class="he-marker" style="left: 37.5%;" title="Trigger Point 1.5mm"></div>
+            </div>
+            <div class="he-stats-grid">
+              <div class="he-stat-item">Trigger: <strong>1.5 mm</strong></div>
+              <div class="he-stat-item">Release: <strong>0.3 mm</strong></div>
+              <div class="he-stat-item">RT Release: <strong>0.4 mm</strong></div>
+              <div class="he-stat-item">RT Actuation: <strong>0.2 mm</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tablet: Wacom CTH-670 -->
+        <div class="gear-tile">
+          <div>
+            <div class="gear-header">
+              <span class="gear-title">Wacom CTH-670</span>
+              <span class="gear-tag" style="color:var(--accent-violet); border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.1);">Tablet</span>
+            </div>
+            <p class="gear-desc" style="margin-top: 6px;">Dedicated osu! aiming tablet mapped to custom active area.</p>
+          </div>
+
+          <div class="tablet-area-box">
+            <div>
+              <div style="font-size:0.64rem; text-transform:uppercase; color:var(--text-muted); font-family:'Maple Mono', monospace;">Active Area</div>
+              <div class="tablet-dim-text">67.67 × 39.39 mm</div>
+            </div>
+            <span class="tablet-ratio-pill">1.718 : 1</span>
+          </div>
+        </div>
+
+        <!-- Keyboard: Everglide AE68 PRO -->
+        <div class="gear-tile">
+          <div>
+            <div class="gear-header">
+              <span class="gear-title">Everglide AE68 PRO</span>
+              <span class="gear-tag">Main Board</span>
+            </div>
+            <p class="gear-desc" style="margin-top: 6px;">Primary custom mechanical keyboard for daily driving and typing.</p>
+          </div>
+
+          <div class="kb-row-box">
+            <span style="font-size:0.72rem; color:var(--text-muted); font-family:'Maple Mono', monospace;">Layout</span>
+            <span style="font-size:0.72rem; color:var(--accent-emerald); font-family:'Maple Mono', monospace; font-weight:600;">68-Key Compact</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Featured Projects & Dotfiles Showcase (Span 2) -->
+    <div class="bento-card span-2" id="card-projects">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          <span>Featured Projects & Dotfiles</span>
+        </div>
+        <a href="https://github.com/Afterlight0338?tab=repositories" target="_blank" rel="noopener" style="color:var(--accent-cyan); text-decoration:none; font-size:0.72rem; font-family:'Maple Mono', monospace;">View All →</a>
+      </div>
+
+      <div class="projects-grid">
+        <!-- Project 1: roxy-fastfetch -->
+        <a class="project-card" href="https://github.com/Afterlight0338/roxy-fastfetch" target="_blank" rel="noopener">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                <span class="project-title">roxy-fastfetch</span>
+              </div>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <p class="project-desc" style="margin-top: 6px;">Roxy Migurdia themed Fastfetch configuration with custom ASCII and system spec layout.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Shell</span>
+            <span class="project-tag">Fastfetch</span>
+            <span class="project-tag">Roxy Theme</span>
+          </div>
+        </a>
+
+        <!-- Project 2: my-nix-setup (NixOS Hyprland Rice) -->
+        <a class="project-card" href="https://github.com/Afterlight0338/my-nix-setup" target="_blank" rel="noopener">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span class="project-title">my-nix-setup</span>
+              </div>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <p class="project-desc" style="margin-top: 6px;">Declarative NixOS configuration, Hyprland rice, OpenTabletDriver area, and WebHID hardware rules.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag nix">NixOS 26.05</span>
+            <span class="project-tag">Hyprland</span>
+            <span class="project-tag">240Hz</span>
+          </div>
+        </a>
+
+        <!-- Project 3: osu-skins -->
+        <a class="project-card" href="https://github.com/Afterlight0338/osu-skins" target="_blank" rel="noopener">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+                <span class="project-title">osu! Skin Collection</span>
+              </div>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <p class="project-desc" style="margin-top: 6px;">Curated high-readability osu! standard skin collection optimized for high-refresh competitive play.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag osu">osu!</span>
+            <span class="project-tag">Skins</span>
+            <span class="project-tag">240Hz</span>
+          </div>
+        </a>
+
+        <!-- Project 4: Sanctuary Web Dashboard -->
+        <a class="project-card" href="https://github.com/Afterlight0338/Afterlight0338.github.io" target="_blank" rel="noopener">
+          <div>
+            <div class="project-header">
+              <div class="project-title-wrap">
+                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+                <span class="project-title">Roxy's Sanctuary</span>
+              </div>
+              <svg class="project-link-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <p class="project-desc" style="margin-top: 6px;">Personal sanctuary website with real-time Lanyard WebSocket sync & canvas water mana physics.</p>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">HTML5 / CSS3</span>
+            <span class="project-tag">Lanyard WS</span>
+            <span class="project-tag">Canvas</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Shrine / Affiliation & Water Spellcrafting (Span 2) -->
+    <div class="bento-card span-2" id="card-shrine">
+      <div class="sheen"></div>
+      <div class="bento-header">
+        <div class="bento-header-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+          <span>Affiliation & Mastery</span>
+        </div>
+      </div>
+      <div class="shrine-content">
+        Dedicated disciple of <strong>Roxy Migurdia</strong> from <em>Mushoku Tensei</em>. Master of chantless water spellcrafting & Linux rice engineering.
+        <div class="badge-list">
+          <span class="badge-item">💧 Water Holy Class</span>
+          <span class="badge-item">❄️ Ice Magic</span>
+          <span class="badge-item">⚙️ NixOS Flake</span>
+          <span class="badge-item">🎯 osu! 240Hz</span>
+        </div>
+      </div>
+
+      <div class="cast-controls">
+        <button class="cast-btn" onclick="castWaterSurge()">
+          <span>💧 Mana Surge</span>
+        </button>
+        <button class="cast-btn secondary" onclick="castCumulonimbus()">
+          <span>❄️ Cumulonimbus</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <span>© Afterlight • Roxy's Sanctuary</span>
+      <div class="lanyard-ping-wrap">
+        <span class="ping-dot" id="lanyard-ping-dot"></span>
+        <span id="lanyard-status-note">Lanyard Gateway: Connected</span>
+      </div>
+    </footer>
+
+  </div>
+
+</div>
+
+<!-- Interactive Toast -->
+<div id="toast">Copied Discord tag: afterlight_hd</div>
+
+<!-- Modular Scripts -->
+<script src="../js/app.js" defer></script>
+<script src="../js/canvas.js" defer></script>
+<script src="../js/lanyard.js" defer></script>
+<script src="../js/osu.js" defer></script>
+<script src="../js/tilt.js" defer></script>
+
+</body>
+</html>

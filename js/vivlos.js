@@ -1,4 +1,4 @@
-// ===== VIVLOS.DEV - STYLE 1 SCRIPT =====
+// ===== VIVLOS.DEV - MAIN SITE SCRIPT =====
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Live UTC+8 Clock
   const clockEl = document.getElementById('live-clock-text');
