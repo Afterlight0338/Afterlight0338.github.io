@@ -1,6 +1,19 @@
-# vivlos.dev — Technical Specification & User Decision Record
+# vivlos.dev — Project Specification, Technical Documentation & Decision Ledger
 
-This document establishes the technical baseline of the current site, tracks all architectural and content decisions made by **Afterlight**, and provides the authoring templates for the new site.
+> **Single Source of Truth**: This document records the complete state of `vivlos.dev`, the technical baseline of the original site, the governing design principles, all user decisions, authoring templates, and the exact questions queued for **Afterlight**. Any AI agent (or Afterlight) resuming this project should start by reading this file.
+
+---
+
+## Quick Status Summary (Current State of Deployment)
+
+1. **Live Production Site (`vivlos.dev`)**:
+   * Currently wiped clean and running in **Clean Placeholder Mode** ([`index.html`](file:///home/afterlight/Afterlight0338.github.io/index.html)).
+   * All copy, descriptions, project titles, and content-specific labels are set to `placeholder` (128 placeholder tokens live).
+2. **Visual Prototype (`vivlos.dev/dir-d/` & `vivlos.dev/dir-c/`)**:
+   * Working prototype demonstrating **Direction D (Personal Digital World)**: Japanese personal web × technical archive × rhythm game instrumentation.
+   * Features: live UTC+8 clock, WebSocket Lanyard presence, interactive osu! audio preview player, and dense scores ledger.
+3. **Governing Design Document**:
+   * [`DESIGN_CONSTITUTION.md`](file:///home/afterlight/Afterlight0338.github.io/DESIGN_CONSTITUTION.md) (also symlinked as [`AGENTS.md`](file:///home/afterlight/Afterlight0338.github.io/AGENTS.md)). All assistants must strictly adhere to its rules (no generic SaaS, no floating blobs, no glassmorphism, no bubble card enclosures, restrained typography, projects as stories).
 
 ---
 
@@ -12,9 +25,9 @@ This document establishes the technical baseline of the current site, tracks all
 ```
 /home/afterlight/Afterlight0338.github.io/
 ├── CNAME                    # Domain routing to vivlos.dev
-├── .nojekyll                # Bypasses Jekyll on GitHub Pages
-├── index.html               # Main single-page document (currently in clean placeholder state)
-├── style.css                # Monolithic stylesheet (1,267 lines, 26 KB)
+├── .nojekyll                # Bypasses Jekyll on GitHub Pages (ensures raw static delivery)
+├── index.html               # Main root document (wiped clean with placeholders)
+├── style.css                # Monolithic production stylesheet (1,267 lines, 26 KB)
 ├── assets/
 │   └── vivlos/              # WebP character art: casual.webp, racing.webp, stage.webp, summer.webp
 ├── data/
@@ -33,7 +46,9 @@ This document establishes the technical baseline of the current site, tracks all
 ├── site-1/                  # [Archived] Staging prototype graduated to root in commit 2203d57
 ├── dir-c/ & dir-d/          # [Isolated Prototype] Direction D visual prototype
 ├── stripped/                # Stripped placeholder revision
-└── SPECIFICATION_INTERVIEW.md # This document
+├── DESIGN_CONSTITUTION.md   # Governing design rules & constraints
+├── AGENTS.md                # Symlink to DESIGN_CONSTITUTION.md for automatic agent ingestion
+└── SPECIFICATION_INTERVIEW.md # This master document
 ```
 
 ### 2. HTML Architecture
@@ -91,13 +106,13 @@ This document establishes the technical baseline of the current site, tracks all
 
 Status Legend:
 * `decided`: Explicitly chosen and confirmed by Afterlight.
-* `user will write`: Content that Afterlight will personally write.
+* `user will write`: Content that Afterlight will personally author.
 * `undecided`: Not yet determined.
 * `removed`: Explicitly discarded.
 
 | Area | Original Site Implementation | Afterlight's Decision / Revision | Status |
 | :--- | :--- | :--- | :--- |
-| **Site Purpose** | Portfolio + Discord card + osu! widget | "A place where I be what I want to be and for people to know what kind of person they're dealing with." | **decided** |
+| **Site Purpose** | Portfolio + Discord card + osu! widget | **"A place where I be what I want to be and for people to know what kind of person they're dealing with."** | **decided** |
 | **Page Architecture** | 1 continuous scrolling page with 4 cards | **Option 3: Single-View Perspective Tabs** (Switch perspectives without full page reloads) | **decided** |
 | **Content Scope** | Bio, Repos, Specs, osu!, Vivlos, Discord | **Keep everything** ("Honestly speaking there's nothing I would remove") | **decided** |
 | **Bio & Statements** | 3 casual paragraphs ("I build shi...", NixOS larp, Vivlos) | User will re-write based on current baseline | **user will write** |
@@ -112,66 +127,82 @@ Status Legend:
 
 # Part 3: Authoring Clues & Work-in-Progress Ledger (Original | Afterlight's Version)
 
-> **Purpose**: This table provides a clue/baseline of what currently exists alongside a dedicated space for Afterlight to provide the exact new text.
+> **Purpose**: This table provides a clue/baseline of what existed originally to serve as a side-by-side template while Afterlight writes the replacement text.
 
 | Component / Section | Original Text (Clue / Baseline) | Afterlight's Version (To Be Written) |
 | :--- | :--- | :--- |
-| **Site Title / Tagline** | `"Afterlight"`<br>`"I build stuff, mess around with techs, play way too many rhythm games, and an Arknights enjoyer."` | `placeholder — user authored` |
+| **Site Title & Tagline** | `"Afterlight"`<br>`"I build stuff, mess around with techs, play way too many rhythm games, and an Arknights enjoyer."` | `placeholder — user authored` |
 | **Bio: Opening Paragraph** | `"Hey, I'm Afterlight. I build shi, mess around with tech, and spend a questionable amount of time playing rhythm games. Most of the things I make starts with 'ts so ass im gonna make one my own', or thinking 'no one made ts yet'"` | `placeholder — user authored` |
 | **Bio: System / Linux** | `"I run NixOS with Hyprland as my daily setup, mostly because larp. It also gives me a very convenient excuse to spend hours tweaking things that were already working perfectly fine."` | `placeholder — user authored` |
-| **Bio: Vivlos / Domain Lore**| `"The name vivlos.dev comes from Vivlos (ヴィブロス) from Umamusume: Pretty Derby. There's no particularly deep meaning behind it, I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev, and i dont even play Uma."` | `placeholder — user authored` |
-| **Featured Project 1** | *Original*: `my-nix-setup`<br>*Desc*: `"My NixOS configuration, including the Hyprland setup, tablet configuration, hardware rules, and the other bits that make my system mine."` | `placeholder — user authored` |
-| **Featured Project 2** | *Original*: `osu-skins`<br>*Desc*: `"A collection of osu! skins I use or have collected, mostly an answer to 'skin name?'."` | `placeholder — user authored` |
-| **Featured Project 3** | *Original*: `roxy-fastfetch`<br>*Desc*: `"My Fastfetch setup with custom ASCII layouts and hardware information for showing off what is currently running under the hood. Its kinda broken tho so /shrug"` | `placeholder — user authored` |
-| **Featured Project 4** | *Original*: `vivlos.dev`<br>*Desc*: `"The source code for this website. Includes the frontend, Lanyard integration, Cloudflare Worker bits, and the styling used across the site."` | `placeholder — user authored` |
-| **Additional Candidates from Workspace** | 1. `veikk-s640-zero-smoothing` (Kernel tablet smoothing driver patch)<br>2. `youtube-music-cli` (React + Ink terminal UI player with MPV)<br>3. `ry5088-flasher` (Microcontroller firmware flasher)<br>4. `osu-winello` (Wine wrapper for osu!)<br>5. `choicer-online` (Deployed decision maker site) | `placeholder — user authored` |
-| **Hardware & Input Commentary** | *Current table*: Host laptop, Ryzen 5 7535HS, RTX 3050, NixOS 26.05, AOC 240Hz, SayoDevice K05 HE (Rapid Trigger 0.2/0.3mm), Wacom Bamboo CTH-670 (Area: 67.67 × 39.39 mm), Everglide AE68 PRO | `placeholder — user authored` |
-| **Rhythm Game Commentary** | *Current text*: `"Scores, stats, and other."`<br>Top 1 Spotlight: Power of the Dragonflame (580.1pp) | `placeholder — user authored` |
+| **Bio: Vivlos / Lore** | `"The name vivlos.dev comes from Vivlos (ヴィブロス) from Umamusume: Pretty Derby. There's no particularly deep meaning behind it, I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev, and i dont even play Uma."` | `placeholder — user authored` |
+| **Hardware & Input Calibration** | *Machine*: Acer Nitro V 15, Ryzen 5 7535HS, RTX 3050 6GB, 32GB DDR5 4800MHz, NixOS 26.05, Hyprland, AOC 24G11ZE 240Hz.<br>*Input*: SayoDevice K05 HE (Rapid Trigger 0.2mm actuation / 0.3mm release), Wacom Bamboo CTH-670 (Area: 67.67 × 39.39 mm, Ratio: 1.718 : 1), Everglide AE68 PRO | `placeholder — user authored` |
+| **Rhythm Game Commentary** | `"Scores, stats, and other."`<br>Top 1 Spotlight: Power of the Dragonflame (580.1pp, HDHR, 96.21%) | `placeholder — user authored` |
 
 ---
 
-# Part 4: Progressive Interview — Round 2: Perspective Tabs & Project Roster
+# Part 4: Real Project Catalog from Afterlight's Workspace
 
-Now that we have established **Option 3 (Single-View Perspective Tabs)** and agreed to retain all major areas, let's nail down how the tabs should be structured and which projects will be featured:
+> **Context for Project Selection**: These are the actual repositories and projects discovered directly in Afterlight's workspace (`/home/afterlight`):
 
-### Question 2.1: Defining the Perspective Tabs
-In Option 3, visitors switch perspectives without full-page reloads. Which tabs should exist on the site?
-* **Option A**: 4 Tabs:
-  1. `[Overview / Profile]` (Identity, Bio, Live Status, Quick Highlights)
-  2. `[Engineering / Projects]` (Deployed sites, latest work, top projects with stories)
-  3. `[Workstation / Specs]` (NixOS, Hyprland, SayoDevice rapid trigger, Wacom area)
-  4. `[Rhythm / Audio Lounge]` (osu! player profile, Top 1 banner, Top 50 scores, audio previews)
-* **Option B**: 3 Tabs:
-  1. `[Identity & Workstation]` (Bio, NixOS setup, hardware calibration, Lanyard)
-  2. `[Projects & Archive]` (All featured software and experiments)
-  3. `[Rhythm & Audio]` (osu! stats, scores ledger, audio preview player)
+1. **`veikk-s640-zero-smoothing`** (`/home/afterlight/veikk-s640-zero-smoothing`)
+   * *What it is*: Linux kernel-level input driver patch that bypasses internal drawing-tablet smoothing and interpolation filters, achieving raw 1:1 hardware polling for rhythm gaming.
+   * *Stack*: C, Linux Kernel / HID, udev rules.
+2. **`youtube-music-cli`** (`/home/afterlight/youtube-music-cli`)
+   * *What it is*: Terminal UI player for YouTube Music built with React and Ink, controlling headless MPV via Unix domain sockets (IPC) for lightweight background playback with zero browser overhead.
+   * *Stack*: TypeScript, React, Ink, MPV, Node.js.
+3. **`my-nix-setup`** (`/home/afterlight/my-nix-setup`)
+   * *What it is*: Fully declarative daily-driver configuration: NixOS, Hyprland Wayland compositor rules, custom udev permissions for magnetic switches, Wacom active area clamping, and audio routing.
+   * *Stack*: Nix, Hyprland, Wayland, Bash.
+4. **`ry5088-flasher`** (`/home/afterlight/ry5088-flasher`)
+   * *What it is*: Lightweight flashing utility for custom rhythm keypad microcontrollers over serial, bypassing proprietary vendor software.
+   * *Stack*: Rust, USB Serial, Embedded.
+5. **`choicer-online`** (`/home/afterlight/choicer-online`)
+   * *What it is*: Deployed online interactive decision-making tool.
+   * *Stack*: Web / JavaScript.
+6. **`osu-skins` / `osu-skins-repo`** (`/home/afterlight/osu-skins-repo`)
+   * *What it is*: Curated collection and archive of competitive rhythm game skins.
+7. **`osu-winello`** (`/home/afterlight/osu-winello`)
+   * *What it is*: Wine environment wrapper and audio latency optimizer for running osu! on Linux.
+8. **`hitsound-studio`** (`/home/afterlight/hitsound-studio`)
+   * *What it is*: Audio hitsound editing and testing tool for beatmap creation.
+9. **`vivlos.dev`** (`/home/afterlight/Afterlight0338.github.io`)
+   * *What it is*: This website—pure static frontend, Cloudflare Worker proxy, and Lanyard real-time WebSocket bridge.
+
+---
+
+# Part 5: Progressive Interview Queue (Ready for Afterlight)
+
+When Afterlight returns, these are the exact questions to answer:
+
+### Question 2.1: Defining the Perspective Tabs (Option 3)
+In Option 3, visitors switch views without page reloads. Which tab grouping feels right?
+* **Option A (4 Dedicated Perspectives)**:
+  1. `[Overview]` (Identity, Bio, Live Discord/Status, High-level summary)
+  2. `[Projects]` (Your featured software, tools, and deployed sites)
+  3. `[Workstation]` (NixOS configuration, machine specs, input calibration)
+  4. `[Rhythm]` (osu! player stats, Top 1 spotlight, Top 50 scores, audio previews)
+* **Option B (3 Focused Perspectives)**:
+  1. `[Profile & System]` (Bio + NixOS + Hardware specs in one technical dossier)
+  2. `[Projects]` (Dedicated software archive)
+  3. `[Rhythm & Audio]` (osu! telemetry & beatmap audio lounge)
 * **Option C**: Your own custom tab naming and grouping.
-* **Your decision**: *Which tab structure do you want?*
+
+### Question 2.2: Your Featured Project Lineup
+From the project catalog in Part 4 (or any other projects you have):
+* **Which 3 to 5 projects do you want featured?**
+* **For each project, do you want a short summary or a full story (problem → hack → outcome)?**
+
+### Question 2.3: Default View & Persistent Elements
+1. **Which perspective tab should be open by default when someone first loads `vivlos.dev`?**
+2. **Should the live telemetry bar (UTC+8 clock, NixOS status, Discord presence) stay permanently pinned at the top across all tabs?**
 
 ---
 
-### Question 2.2: The Project Roster
-You mentioned: *"Featured project is project where i actually deployed a site for it, my latest thing, and my top projects. ill decide that."*
+# Part 6: Next Steps for Implementation
 
-Looking across your workspace and GitHub, here are the real candidates:
-1. **Projects with deployed sites**:
-   * `choicer-online` (Deployed online web app)
-   * `vivlos.dev` (This personal website)
-   * `osu-skins` (osu! skins web repo)
-2. **Latest / Top engineering work**:
-   * `veikk-s640-zero-smoothing` (Linux tablet driver patch removing internal smoothing latency)
-   * `youtube-music-cli` (React + Ink TUI terminal music player with MPV IPC)
-   * `my-nix-setup` (Declarative NixOS + Hyprland daily configuration)
-   * `ry5088-flasher` (Microcontroller firmware flasher)
-   * `osu-winello` (Wine wrapper for osu!)
-   * `hitsound-studio` (Audio hitsound tool)
-
-* **Which 3–5 projects from this list (or any others) do you want to feature?**
-* **For each chosen project, do you want to write a short paragraph or a full story (problem → hack → outcome)?**
-
----
-
-### Question 2.3: Tab Interaction & Default View
-When someone loads `vivlos.dev`:
-* **Which tab should be open by default?** (e.g. `[Overview / Profile]`?)
-* **Should the live telemetry bar (UTC+8 clock, NixOS status, Discord presence) stay permanently visible across all tabs?**
+Once Afterlight answers the questions in Part 5:
+1. Lock in the tab architecture in `SPECIFICATION_INTERVIEW.md`.
+2. Construct the **Option 3 Tab Component System** in [`dir-d/`](file:///home/afterlight/Afterlight0338.github.io/dir-d/) (or directly in a prototype branch).
+3. Insert Afterlight's newly authored copy into the corresponding sections as they provide it.
+4. Verify responsiveness, keyboard navigation, and audio preview playback.
+5. Deploy to production once Afterlight gives final approval.
