@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Afterlight // vivlos.dev • 個人電脳領域</title>
+  <meta name="description" content="Afterlight's personal digital world — systems programming, NixOS, rhythm games (osu!, maimai), hardware tinkering, and tech archives.">
+  <meta name="theme-color" content="#080b12">
+  <link rel="icon" type="image/webp" href="../assets/vivlos/casual.webp">
+
+  <!-- Google Fonts: Zen Kaku Gothic New & Maple Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-canvas">
+
+  <!-- ============================================================
+       TOP TELEMETRY & STATUS RAIL
+       ============================================================ -->
+  <header class="top-status-bar">
+    <div class="status-cell host-badge">
+      <span class="indicator-dot online"></span>
+      <span class="mono-label">VIVLOS_NODE // ONLINE</span>
+    </div>
+    <div class="status-cell system-badge">
+      <span class="mono-dim">OS:</span>
+      <span class="mono-val">NixOS 26.05 [Hyprland]</span>
+    </div>
+    <div class="status-cell time-badge">
+      <span class="mono-dim">STATION_TIME:</span>
+      <span class="mono-val" id="clock-display">--:--:-- UTC+8</span>
+    </div>
+    <div class="status-cell discord-cell" id="lanyard-rail-badge">
+      <span class="mono-dim">STATUS:</span>
+      <span class="mono-val" id="discord-rail-text">Syncing...</span>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       EDITORIAL MASTHEAD (Japanese Personal Web × Modern Editorial)
+       ============================================================ -->
+  <header class="site-masthead">
+    <div class="masthead-main">
+      <div class="title-meta-line">
+        <span class="kana-rubi">アフターライト // 個人電脳領域</span>
+        <span class="domain-tag">vivlos.dev</span>
+      </div>
+      <h1 class="site-title">AFTERLIGHT</h1>
+      <p class="site-manifesto">
+        I build tools out of spite, tweak things that were already working fine, daily-drive NixOS, and spend a questionable amount of time playing rhythm games.
+      </p>
+    </div>
+
+    <!-- Live Desktop Presence Panel (Lanyard) -->
+    <aside class="station-sidecar" id="lanyard-panel">
+      <div class="sidecar-header">
+        <span class="panel-index">TERMINAL PRESENCE</span>
+        <span class="presence-badge" id="presence-badge">IDLE</span>
+      </div>
+      <div class="sidecar-body">
+        <div class="presence-avatar-wrap">
+          <img src="../assets/vivlos/casual.webp" alt="Avatar" class="avatar-small">
+          <span class="avatar-pip-dot" id="lanyard-pip"></span>
+        </div>
+        <div class="presence-meta">
+          <div class="user-handle">@afterlight_hd</div>
+          <div class="activity-title-text" id="sidecar-activity-title">osu! gaming</div>
+          <div class="activity-sub-text" id="sidecar-activity-desc">fuck osu! *plays it*</div>
+        </div>
+      </div>
+      <!-- Spotify Tracker if active -->
+      <div class="sidecar-spotify" id="sidecar-spotify" style="display: none;">
+        <div class="spotify-info-row">
+          <span class="spotify-note">🎵 Now Playing</span>
+          <span class="spotify-time" id="spotify-time">0:00 / 0:00</span>
+        </div>
+        <div class="spotify-bar-track">
+          <div class="spotify-bar-fill" id="spotify-fill"></div>
+        </div>
+      </div>
+    </aside>
+  </header>
+
+  <!-- ============================================================
+       TACTILE ARCHIVE NAVIGATION
+       ============================================================ -->
+  <nav class="archive-nav" aria-label="Archive Navigation">
+    <a href="#about" class="nav-tab">
+      <span class="tab-num">00</span>
+      <span class="tab-label">PROFILE</span>
+      <span class="tab-kanji">自己紹介</span>
+    </a>
+    <a href="#projects" class="nav-tab">
+      <span class="tab-num">01</span>
+      <span class="tab-label">PROJECTS</span>
+      <span class="tab-kanji">制作物</span>
+    </a>
+    <a href="#workstation" class="nav-tab">
+      <span class="tab-num">02</span>
+      <span class="tab-label">WORKSTATION</span>
+      <span class="tab-kanji">機器構成</span>
+    </a>
+    <a href="#rhythm" class="nav-tab">
+      <span class="tab-num">03</span>
+      <span class="tab-label">RHYTHM</span>
+      <span class="tab-kanji">音ゲー記録</span>
+    </a>
+    <a href="#lore" class="nav-tab">
+      <span class="tab-num">04</span>
+      <span class="tab-label">LORE & COLOPHON</span>
+      <span class="tab-kanji">余白</span>
+    </a>
+  </nav>
+
+  <main class="content-stream">
+
+    <!-- ============================================================
+         SECTION 00: ABOUT & OPERATING PHILOSOPHY
+         ============================================================ -->
+    <section class="archive-section" id="about">
+      <div class="section-banner">
+        <div class="section-title-wrap">
+          <span class="section-index">SECTION // 00</span>
+          <h2 class="section-heading">OPERATOR PROFILE <span class="kanji-sub">【自己紹介と方針】</span></h2>
+        </div>
+        <span class="section-tag">LOG_ENTRY #001</span>
+      </div>
+
+      <div class="narrative-grid">
+        <div class="narrative-prose">
+          <p class="lead-text">
+            Hey, I'm <strong>Afterlight</strong>. Most of the software I write starts with a very specific irritation: <em>"ts so ass im gonna make one my own"</em>, or realizing that no one made the exact tool that solves a hyper-specific annoyance.
+          </p>
+          <p>
+            My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because larp, but it became a permanent home because declarative configuration fits how my brain operates. It also gives me a very convenient excuse to spend hours tweaking kernel parameters, custom udev tablet boundaries, and window rules that were already working perfectly fine.
+          </p>
+          <p>
+            Outside of systems engineering and CLI tools, I spend a borderline degenerate amount of time playing rhythm games—primarily competitive <strong>osu!</strong> (standard) and arcade <strong>maimai</strong>.
+          </p>
+
+          <div class="links-row">
+            <a href="https://github.com/Afterlight0338" target="_blank" rel="noopener" class="text-link-btn">
+              <span>GitHub</span>
+              <span class="link-arrow">↗</span>
+            </a>
+            <button onclick="copyDiscord()" class="text-link-btn" id="discord-copy-btn">
+              <span>Discord: @afterlight_hd</span>
+              <span class="link-arrow">📋</span>
+            </button>
+            <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" class="text-link-btn">
+              <span>osu! Profile</span>
+              <span class="link-arrow">↗</span>
+            </a>
+            <a href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener" class="text-link-btn">
+              <span>Twitch</span>
+              <span class="link-arrow">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Summary Spec Box -->
+        <div class="spec-sidebar-panel">
+          <div class="sidebar-box-header">OPERATOR TELEMETRY</div>
+          <dl class="data-pair-list">
+            <div class="data-pair">
+              <dt>HANDLE</dt>
+              <dd>Afterlight / RyoYamada</dd>
+            </div>
+            <div class="data-pair">
+              <dt>LOCATION</dt>
+              <dd>Malaysia (MY / UTC+8)</dd>
+            </div>
+            <div class="data-pair">
+              <dt>PRIMARY OS</dt>
+              <dd class="val-cyan">NixOS 26.05</dd>
+            </div>
+            <div class="data-pair">
+              <dt>COMPOSITOR</dt>
+              <dd class="val-gold">Hyprland (Wayland)</dd>
+            </div>
+            <div class="data-pair">
+              <dt>STACK</dt>
+              <dd>C, TypeScript, Nix, Rust, Shell</dd>
+            </div>
+            <div class="data-pair">
+              <dt>MAIN INTERESTS</dt>
+              <dd>Rhythm games, drivers, Linux ricing</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 01: SELECTED WORKS (Stories, Not Cards)
+         ============================================================ -->
+    <section class="archive-section" id="projects">
+      <div class="section-banner">
+        <div class="section-title-wrap">
+          <span class="section-index">SECTION // 01</span>
+          <h2 class="section-heading">ENGINEERING ARCHIVE <span class="kanji-sub">【制作物・技術記録】</span></h2>
+        </div>
+        <span class="section-tag">4 WORKS DOCUMENTED</span>
+      </div>
+
+      <div class="projects-dossier">
+
+        <!-- Work 1: Tablet Smoothing Driver -->
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">PROJECT_01</span>
+            <span class="entry-status active">STABLE / DAILY USE</span>
+            <span class="entry-type">Hardware Patch</span>
+            <div class="entry-stack">
+              <span>C</span>
+              <span>Linux Kernel</span>
+              <span>HID</span>
+              <span>udev</span>
+            </div>
+            <a href="https://github.com/Afterlight0338" target="_blank" rel="noopener" class="entry-repo-link">
+              <span>Repository</span>
+              <span class="link-arrow">↗</span>
+            </a>
+          </div>
+
+          <div class="entry-body-col">
+            <h3 class="entry-title">veikk-s640-zero-smoothing</h3>
+            <p class="entry-tagline">Kernel-level input smoothing bypass for graphic tablets in competitive rhythm games.</p>
+            
+            <div class="story-block">
+              <h4 class="story-label">The Friction</h4>
+              <p>
+                Consumer drawing tablets are engineered for artists: the firmware intentionally injects algorithmic smoothing and moving averages to make hand strokes silky. In osu!, however, that smoothing translates directly into 15–30 milliseconds of input lag. When snapping to 280 BPM jump patterns, that delay turns clean hits into misses.
+              </p>
+            </div>
+
+            <div class="story-block">
+              <h4 class="story-label">The Investigation & Hack</h4>
+              <p>
+                Dissected the USB HID report packets sent across the Linux input subsystem. Traced the packet stream where raw coordinate deltas were being altered before delivery to `/dev/input/event*`. Patched the kernel input driver to strip the interpolation buffers, passing unmodified 1:1 hardware polling straight to the compositor at sub-millisecond report intervals.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Work 2: YouTube Music TUI -->
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">PROJECT_02</span>
+            <span class="entry-status active">ACTIVE</span>
+            <span class="entry-type">Terminal Application</span>
+            <div class="entry-stack">
+              <span>TypeScript</span>
+              <span>React / Ink</span>
+              <span>MPV IPC</span>
+            </div>
+            <a href="https://github.com/Afterlight0338/youtube-music-cli" target="_blank" rel="noopener" class="entry-repo-link">
+              <span>Repository</span>
+              <span class="link-arrow">↗</span>
+            </a>
+          </div>
+
+          <div class="entry-body-col">
+            <h3 class="entry-title">youtube-music-cli</h3>
+            <p class="entry-tagline">Terminal UI player for YouTube Music built with React, Ink, and headless MPV control.</p>
+            
+            <div class="story-block">
+              <h4 class="story-label">The Friction</h4>
+              <p>
+                Running full web browsers or Electron-packaged music players while compiling code or playing demanding games is pure waste. I wanted instant keyboard search, queue controls, and lightweight background audio playback that lives inside my terminal multiplexer without hogging memory.
+              </p>
+            </div>
+
+            <div class="story-block">
+              <h4 class="story-label">The Architecture</h4>
+              <p>
+                Engineered using React and Ink for reactive terminal UI rendering, connected to a headless MPV instance via Unix domain sockets (IPC). Handles real-time search queries, gapless audio streaming, keyboard navigation, and theme customization while maintaining minimal CPU overhead.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Work 3: Declarative NixOS Setup -->
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">PROJECT_03</span>
+            <span class="entry-status continuous">CONTINUOUS</span>
+            <span class="entry-type">System Architecture</span>
+            <div class="entry-stack">
+              <span>Nix</span>
+              <span>Hyprland</span>
+              <span>Wayland</span>
+            </div>
+            <a href="https://github.com/Afterlight0338/my-nix-setup" target="_blank" rel="noopener" class="entry-repo-link">
+              <span>Repository</span>
+              <span class="link-arrow">↗</span>
+            </a>
+          </div>
+
+          <div class="entry-body-col">
+            <h3 class="entry-title">my-nix-setup</h3>
+            <p class="entry-tagline">Declarative NixOS workstation configuration, Hyprland window rules, and tablet mapping.</p>
+            
+            <div class="story-block">
+              <h4 class="story-label">The System</h4>
+              <p>
+                My complete daily-driver environment defined in code. It bundles everything needed to reproduce this entire machine from scratch: Wayland compositor parameters, custom udev permissions for magnetic keypads, tablet active area clamping, and audio routing optimizations.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Work 4: Microcontroller / Peripheral Flasher -->
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">PROJECT_04</span>
+            <span class="entry-status archival">EXPERIMENT</span>
+            <span class="entry-type">Firmware Tool</span>
+            <div class="entry-stack">
+              <span>Rust</span>
+              <span>USB Serial</span>
+              <span>Embedded</span>
+            </div>
+            <a href="https://github.com/Afterlight0338" target="_blank" rel="noopener" class="entry-repo-link">
+              <span>Repository</span>
+              <span class="link-arrow">↗</span>
+            </a>
+          </div>
+
+          <div class="entry-body-col">
+            <h3 class="entry-title">ry5088-flasher</h3>
+            <p class="entry-tagline">Lightweight flashing utility for custom rhythm keypad microcontrollers and firmware patches.</p>
+            
+            <div class="story-block">
+              <h4 class="story-label">The Motivation</h4>
+              <p>
+                Proprietary vendor software for configuring custom gaming keypads is frequently Windows-only, bloated, or reliant on shady web drivers. Built a minimal command-line utility to flash custom firmware over serial directly from Linux.
+              </p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 02: WORKSTATION & CALIBRATION
+         ============================================================ -->
+    <section class="archive-section" id="workstation">
+      <div class="section-banner">
+        <div class="section-title-wrap">
+          <span class="section-index">SECTION // 02</span>
+          <h2 class="section-heading">HARDWARE & CALIBRATION <span class="kanji-sub">【稼働環境・機器仕様】</span></h2>
+        </div>
+        <span class="section-tag">PRECISION TELEMETRY</span>
+      </div>
+
+      <div class="specs-composite-grid">
+        <!-- Machine Specs Table -->
+        <div class="spec-sheet-panel">
+          <div class="sheet-header">
+            <span class="sheet-title">COMPUTE & OS ENVIRONMENT</span>
+            <span class="sheet-code">SYS_01</span>
+          </div>
+          <table class="telemetry-table">
+            <tbody>
+              <tr>
+                <td class="col-key">Host Platform</td>
+                <td class="col-val val-bold">Acer Nitro V 15</td>
+              </tr>
+              <tr>
+                <td class="col-key">Processor</td>
+                <td class="col-val">AMD Ryzen 5 7535HS (6C/12T)</td>
+              </tr>
+              <tr>
+                <td class="col-key">Graphics</td>
+                <td class="col-val">NVIDIA RTX 3050 6GB • AMD Radeon 680M</td>
+              </tr>
+              <tr>
+                <td class="col-key">Memory</td>
+                <td class="col-val">32GB DDR5 4800MHz</td>
+              </tr>
+              <tr>
+                <td class="col-key">Operating System</td>
+                <td class="col-val val-cyan">NixOS 26.05</td>
+              </tr>
+              <tr>
+                <td class="col-key">Compositor</td>
+                <td class="col-val">Hyprland (Wayland)</td>
+              </tr>
+              <tr>
+                <td class="col-key">Primary Monitor</td>
+                <td class="col-val val-gold">AOC 24G11ZE // 240Hz (0.5ms MPRT)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Input & Calibration Table -->
+        <div class="spec-sheet-panel">
+          <div class="sheet-header">
+            <span class="sheet-title">INPUT CALIBRATION (RHYTHM SPEC)</span>
+            <span class="sheet-code">INPUT_02</span>
+          </div>
+          <table class="telemetry-table">
+            <tbody>
+              <tr>
+                <td class="col-key">Rhythm Keypad</td>
+                <td class="col-val val-gold">SayoDevice K05 HE (Hall Effect)</td>
+              </tr>
+              <tr>
+                <td class="col-key">Static Trigger Point</td>
+                <td class="col-val">1.50 mm</td>
+              </tr>
+              <tr>
+                <td class="col-key">Rapid Trigger Config</td>
+                <td class="col-val val-cyan">0.20 mm Actuation / 0.30 mm Release</td>
+              </tr>
+              <tr>
+                <td class="col-key">Aiming Tablet</td>
+                <td class="col-val">Wacom Bamboo CTH-670</td>
+              </tr>
+              <tr>
+                <td class="col-key">Tablet Active Area</td>
+                <td class="col-val val-cyan">67.67 × 39.39 mm</td>
+              </tr>
+              <tr>
+                <td class="col-key">Area Aspect Ratio</td>
+                <td class="col-val">1.718 : 1 (Clamped to Screen Proportion)</td>
+              </tr>
+              <tr>
+                <td class="col-key">Typing Keyboard</td>
+                <td class="col-val">Everglide AE68 PRO</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 03: RHYTHM GAME ARCHIVE & AUDIO LOUNGE
+         ============================================================ -->
+    <section class="archive-section" id="rhythm">
+      <div class="section-banner">
+        <div class="section-title-wrap">
+          <span class="section-index">SECTION // 03</span>
+          <h2 class="section-heading">RHYTHM GAME ARCHIVE <span class="kanji-sub">【音ゲー記録・試聴室】</span></h2>
+        </div>
+        <span class="section-tag">LIVE TELEMETRY & AUDIO</span>
+      </div>
+
+      <!-- Player Profile Strip -->
+      <div class="rhythm-profile-strip">
+        <div class="player-identity">
+          <img src="https://a.ppy.sh/14671577" alt="osu! Avatar" class="player-avatar">
+          <div class="player-meta">
+            <div class="player-name-row">
+              <span class="player-name">RyoYamada</span>
+              <span class="player-flag">🇲🇾 Malaysia (#146)</span>
+            </div>
+            <span class="player-sub">osu! Standard Ranked • Level 101</span>
+          </div>
+        </div>
+
+        <div class="player-stats-row">
+          <div class="stat-unit">
+            <span class="stat-key">GLOBAL RANK</span>
+            <span class="stat-val val-rose">#14,424</span>
+          </div>
+          <div class="stat-unit">
+            <span class="stat-key">WEIGHTED PP</span>
+            <span class="stat-val val-cyan">8,797 pp</span>
+          </div>
+          <div class="stat-unit">
+            <span class="stat-key">ACCURACY</span>
+            <span class="stat-val val-emerald">97.19%</span>
+          </div>
+          <div class="stat-unit">
+            <span class="stat-key">PLAY COUNT</span>
+            <span class="stat-val val-gold">44,637</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 1 Record Sleeve Card -->
+      <div class="record-sleeve-card">
+        <div class="sleeve-badge-bar">
+          <span class="sleeve-rank">🏆 PERSONAL BEST #1 SPOTLIGHT</span>
+          <span class="sleeve-pp">580.1 PP</span>
+        </div>
+        <div class="sleeve-content">
+          <div class="sleeve-left">
+            <button class="audio-trigger-btn" id="top1-audio-btn" data-beatmapset-id="2401111" onclick="toggleAudioPreview(2401111, this, event)" title="Play Beatmap Audio Preview">
+              <span class="play-symbol">▶</span>
+              <span class="pause-symbol">⏸</span>
+            </button>
+            <div class="sleeve-song-meta">
+              <a href="https://osu.ppy.sh/beatmaps/5258382" target="_blank" rel="noopener" class="song-title-link">Power of the Dragonflame</a>
+              <div class="song-artist-diff">Rhapsody • <span class="diff-name">[Uri's Extreme]</span></div>
+            </div>
+          </div>
+          <div class="sleeve-right">
+            <span class="record-stat">96.21% ACC</span>
+            <span class="record-stat">1,899x COMBO</span>
+            <span class="mod-badge">HD</span>
+            <span class="mod-badge">HR</span>
+            <span class="grade-badge grade-a">A</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 50 Score Table (Dense, Clean, Interactive) -->
+      <div class="table-container">
+        <div class="table-bar">
+          <span class="table-label">RECORDINGS LEDGER // TOP PLAYS</span>
+          <span class="table-note">CLICK ▶ TO AUDITION BEATMAP AUDIO</span>
+        </div>
+        <table class="scores-ledger" id="scores-table">
+          <thead>
+            <tr>
+              <th style="width: 48px;">#</th>
+              <th style="width: 44px;">AUDIO</th>
+              <th>BEATMAP & DIFFICULTY</th>
+              <th style="text-align: right;">PP</th>
+              <th style="text-align: right;">ACC</th>
+              <th style="text-align: right;">COMBO</th>
+              <th style="text-align: center;">MODS</th>
+              <th style="text-align: center;">GRADE</th>
+            </tr>
+          </thead>
+          <tbody id="scores-tbody">
+            <!-- Rendered dynamically by app.js from data/osu.json -->
+          </tbody>
+        </table>
+        <div class="table-toggle-bar">
+          <button class="expand-table-btn" id="expand-scores-btn" onclick="toggleScoreTable()">
+            <span>Show Complete Top 50 Ledger</span>
+            <span class="expand-arrow">▼</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 04: THE VIVLOS LORE & COLOPHON
+         ============================================================ -->
+    <section class="archive-section" id="lore">
+      <div class="section-banner">
+        <div class="section-title-wrap">
+          <span class="section-index">SECTION // 04</span>
+          <h2 class="section-heading">LORE & COLOPHON <span class="kanji-sub">【ヴィブロスについて・余白】</span></h2>
+        </div>
+        <span class="section-tag">SITE NOTES</span>
+      </div>
+
+      <div class="lore-grid">
+        <div class="lore-narrative">
+          <h3 class="lore-title">Why vivlos.dev?</h3>
+          <p>
+            The domain name originates from <a href="https://umamusu.wiki/Vivlos" target="_blank" rel="noopener" class="inline-link">Vivlos (ヴィブロス)</a>, an Umamusume character. There is no profound philosophy behind it: I simply like Vivlos's character design and aesthetic, liked the rhythm of the word, and registered the domain.
+          </p>
+          <p>
+            The funny thing is that I don't even actively play the gacha game. It's just a personal corner of the internet where things that interest me—systems programming, custom drivers, rhythm gaming, and Japanese visual culture—coexist without needing to justify themselves to a corporate template.
+          </p>
+          
+          <h4 class="colophon-title">Colophon</h4>
+          <ul class="colophon-list">
+            <li><strong>Typography:</strong> `Zen Kaku Gothic New` (body and display) & `Maple Mono` (telemetry and code).</li>
+            <li><strong>Hosting:</strong> Static repository deployment on GitHub Pages with Cloudflare Worker proxy for live osu! API telemetry.</li>
+            <li><strong>Craft:</strong> Zero UI libraries, zero trackers, zero bloat. Hand-authored HTML & CSS.</li>
+          </ul>
+        </div>
+
+        <!-- Framed Vivlos Editorial Plate -->
+        <figure class="editorial-plate">
+          <img src="../assets/vivlos/stage.webp" alt="Vivlos Stage Illustration" class="plate-image">
+          <figcaption class="plate-caption">
+            <span class="caption-index">PLATE // 01</span>
+            <span class="caption-text">Vivlos (Stage Ver.) — Visual namesake for vivlos.dev</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       SITE FOOTER
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <span>© AFTERLIGHT // vivlos.dev</span>
+      <span class="footer-dim">ALL SYSTEMS NOMINAL</span>
+    </div>
+    <div class="footer-right">
+      <a href="#about" class="back-to-top">↑ TOP OF REALM</a>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Audio Player Element & Toast -->
+<div id="toast" class="toast-indicator" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
