@@ -1,104 +1,80 @@
 # vivlos.dev, Project Specification, Technical Documentation & Decision Ledger
 
-> **Single Source of Truth**: This document records the complete state of `vivlos.dev`, the technical baseline of the original site, the governing design principles, all user decisions, authoring templates, and the exact questions queued for **Afterlight**. Any AI agent (or Afterlight) resuming this project should start by reading this file.
+> **Single Source of Truth**: This document records the state of `vivlos.dev`: how the redesign is built, the rules that keep it working, every decision Afterlight has made, authoring templates, and what is left to do. Any AI agent (or Afterlight) resuming this project should start by reading this file, then `DESIGN_CONSTITUTION.md`.
+
+*Last updated: 2026-09-27, through commit `41e072e`.*
 
 ---
 
-## Quick Status Summary (Current State of Deployment)
+## Quick Status Summary
 
-1. **Live Production Site (`vivlos.dev`)**:
-   * Currently wiped clean and running in **Clean Placeholder Mode** ([`index.html`](file:///home/afterlight/Afterlight0338.github.io/index.html)).
-   * All copy, descriptions, project titles, and content-specific labels are set to `placeholder` (128 placeholder tokens live).
-2. **Visual Prototype (`vivlos.dev/preview/`)**:
-   * Working prototype demonstrating **Direction D (Personal Digital World)**: Japanese personal web × technical archive × rhythm game instrumentation.
-   * Features: live UTC+8 clock, WebSocket Lanyard presence, interactive osu! audio preview player, and dense scores ledger.
-3. **Governing Design Document**:
-   * [`DESIGN_CONSTITUTION.md`](file:///home/afterlight/Afterlight0338.github.io/DESIGN_CONSTITUTION.md) (also symlinked as [`AGENTS.md`](file:///home/afterlight/Afterlight0338.github.io/AGENTS.md)). All assistants must strictly adhere to its rules (no generic SaaS, no floating blobs, no glassmorphism, no bubble card enclosures, restrained typography, projects as stories).
+1. **Root site (`vivlos.dev/`)**: still in **placeholder mode** (`index.html` + `style.css`, no scripts). Waiting for the redesign to be promoted.
+2. **Redesign (`vivlos.dev/preview/`)**: live and working. Five perspective tabs, liquid glass (Discord card + tab lens), osu!lazer palette with one colour per tab, Torus Pro, an **Animations** switch, live Discord presence, live osu! stats, top 50 plays with audio previews. Copy is still a draft for Afterlight to rewrite.
+3. **Governing design document**: `DESIGN_CONSTITUTION.md` (symlinked as `AGENTS.md`). Its rules still apply. The one approved exception is glassmorphism, scoped in Part 2.
 
 ---
 
-# Part 1: Technical Documentation of Current Implementation
+# Part 1: Technical Documentation
 
-> **Principle**: Documenting *how* the site currently functions. All items below are **implementation facts**, strictly separated from **content/design decisions**.
+> **Principle**: implementation facts only. Content and design decisions live in Part 2.
 
-### 1. File Structure & Repository Layout
+### 1. Repository layout
 ```
-/home/afterlight/Afterlight0338.github.io/
-├── CNAME                    # Domain routing to vivlos.dev
-├── .nojekyll                # Bypasses Jekyll on GitHub Pages (ensures raw static delivery)
-├── index.html               # Main root document (wiped clean with placeholders)
-├── style.css                # Monolithic production stylesheet (1,267 lines, 26 KB)
+Afterlight0338.github.io/
+├── CNAME                      # vivlos.dev
+├── .nojekyll                  # serve files raw (no Jekyll)
+├── index.html, style.css      # root placeholder page
+├── preview/                   # the redesign, served at vivlos.dev/preview/
+│   ├── index.html             # markup for all five tabs
+│   ├── style.css              # tokens, layout, glass fallback, motion
+│   └── app.js                 # tabs, motion switch, glass, Lanyard, osu!, audio
 ├── assets/
-│   └── vivlos/              # WebP character art: casual.webp, racing.webp, stage.webp, summer.webp
-├── data/
-│   └── osu.json             # Static dataset: user profile + 50 top plays (912 lines, 27 KB)
-├── js/
-│   ├── vivlos.js            # Live UTC+8 clock + clipboard copy toast (36 lines)
-│   ├── lanyard.js           # Discord WebSocket + Spotify progress loop (215 lines)
-│   ├── osu.js               # osu! API proxy fetcher, cache, audio engine, score renderer (380 lines)
-│   ├── app.js               # [Orphaned/Legacy] Splash screen controller from /roxy
-│   ├── canvas.js            # [Orphaned/Legacy] Particle canvas from /roxy
-│   └── tilt.js              # [Orphaned/Legacy] 3D mouse tilt from /roxy
-├── worker/
-│   ├── osu-worker.js        # Cloudflare Worker proxy for osu! API v2 OAuth token exchange
-│   └── wrangler.toml        # Worker config (account binding: osu-api-proxy)
-├── roxy/                    # [Archived] Previous site version (particle canvas, 3D tilt)
-├── site-1/                  # [Archived] Staging prototype graduated to root in commit 2203d57
-├── preview/                 # [Isolated Prototype] Direction D redesign (vivlos.dev/preview/)
-├── stripped/                # Stripped placeholder revision
-├── DESIGN_CONSTITUTION.md   # Governing design rules & constraints
-├── AGENTS.md                # Symlink to DESIGN_CONSTITUTION.md for automatic agent ingestion
-└── SPECIFICATION_INTERVIEW.md # This master document
+│   ├── fonts/                 # TorusPro Regular / SemiBold / Bold / Heavy (woff2)
+│   └── vivlos/                # casual, racing, stage, summer (transparent webp)
+├── data/osu.json              # snapshot: profile + top 50 plays (fallback + score list)
+├── worker/                    # Cloudflare Worker proxying the osu! API (osu-api-proxy)
+├── js/                        # old root scripts, unused since placeholder mode
+├── roxy/, site-1/, stripped/  # archived earlier versions
+├── DESIGN_CONSTITUTION.md     # design rules (AGENTS.md is a symlink to it)
+└── SPECIFICATION_INTERVIEW.md # this file
 ```
 
-### 2. HTML Architecture
-* **Layout Model**: A 2-column desktop grid wrapped in `.app-container` (`max-width: 1320px`, `grid-template-columns: 340px 1fr`, `gap: 36px`):
-  * **Left Column (`<aside class="left-stage">`)**: Sticky column (`top: 40px`, `height: fit-content`). Contains `.profile-meta-card`, avatar container, title group, domain pill, tagline, Lanyard presence card, jump navigation list, social icon button row, and UTC+8 live clock.
-  * **Right Column (`<main class="right-feed">`)**: Vertical stack of 4 `.unified-section-card` containers with `gap: 32px`, followed by `<footer class="site-footer">`.
-* **Section Card Anatomy**: Every section shares an identical HTML wrapper:
-  * `.card-header-flex`: Header flexbox containing `.card-title-group` (mono index label, `<h2>` main title, `.card-subtext`) and `.section-character-art` (`<img>` width 140, height 185).
-  * Card body: Section-specific markup (paragraphs, list rows, split spec grid, or score ledger).
+### 2. Page structure (`preview/index.html`)
+* **Status rail**: domain, OS, UTC+8 clock, Animations switch (`#motion-switch`, `role="switch"`).
+* **Masthead** (`#masthead`, a liquidglass root). Direct children, in order: `.glass-backing`, `img#vivlos-art`, `.masthead-main` (kana, title, manifesto), `aside#lanyard-panel.glass` (Discord card).
+* **Tab bar** (`#archive-nav`, a second liquidglass root): `.glass-backing`, five `a.nav-tab` (`#about`, `#projects`, `#workstation`, `#rhythm`, `#lore`), `span#tab-lens.glass`.
+* **Sections**: `section.archive-section` per tab. JS sets `hidden` on all but the active one; without JS every section shows as one long page.
+* Default tab is Profile (`#about`). The URL hash keeps a tab linkable, and back/forward works (`pushState` + `popstate`).
 
-### 3. CSS Architecture & Design Tokens
-* **Preprocessors / Frameworks**: Zero. Hand-authored vanilla CSS with CSS Custom Properties.
-* **Token Palette Declared in `:root`**:
-  * Surfaces: `--bg-main: #060911`, `--bg-surface: #0b101c`, `--bg-card: rgba(14, 21, 37, 0.65)`, `--bg-card-hover: rgba(20, 30, 52, 0.85)`.
-  * Borders: `--border-subtle: rgba(255, 255, 255, 0.08)`, `--border-focus: rgba(6, 182, 212, 0.4)`, `--border-gold: rgba(251, 191, 36, 0.35)`.
-  * Accents: `--accent-cyan: #06b6d4`, `--accent-cyan-light: #38bdf8`, `--accent-cyan-glow: rgba(6, 182, 212, 0.12)`, `--accent-gold: #fbbf24`, `--accent-gold-glow: rgba(251, 191, 36, 0.12)`, `--accent-emerald: #10b981`, `--accent-rose: #f43f5e`, `--accent-violet: #a78bfa`.
-  * Text: `--text-primary: #f8fafc`, `--text-secondary: #94a3b8`, `--text-muted: #64748b`.
-  * Fonts: `--font-sans: 'Zen Kaku Gothic New', ...`, `--font-mono: 'Maple Mono', ...`.
-* **Geometry Rules**:
-  * Section cards: `border-radius: 20px`, `padding: 28px 32px`, `box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6)`.
-  * Sub-cards / list rows: `border-radius: 12px–14px`.
-  * Body background: Dual fixed radial gradient ellipses (`rgba(6, 182, 212, 0.07)` and `rgba(251, 191, 36, 0.04)`).
+### 3. Styling (`preview/style.css`)
+* No framework or preprocessor. Tokens on `:root`.
+* **Accent**: `--accent` is registered with `@property` (so it can animate) and set per tab on `html[data-tab=…]`:
 
-### 4. JavaScript Modules & Runtime
-* **Script Loading**: All scripts use `defer` at the bottom of `<body>`:
-  1. `js/vivlos.js`:
-     * Updates `#live-clock-text` every 1,000ms calculating UTC+8 from local date offset.
-     * `window.copyDiscordTag()` copies `"afterlight_hd"` via `navigator.clipboard.writeText` and displays `#toast-box` for 2,500ms.
-  2. `js/lanyard.js`:
-     * Opens WebSocket connection to `wss://api.lanyard.rest/socket`.
-     * Subscribes to Discord User ID `553169854304354304`.
-     * Handles op 1 (heartbeat intervals), op 0 (`INIT_STATE` / `PRESENCE_UPDATE`).
-     * Dynamically alters status dot (`online`, `idle`, `dnd`, `offline`), custom status emoji/text, game activity title/subtitle, and device badges (`💻`, `📱`, `🌐`).
-     * Runs Spotify progress interval tracking `timestamps.start` / `timestamps.end` with live width percent and elapsed minute:second counter.
-  3. `js/osu.js`:
-     * Targets osu! User ID `14671577`.
-     * Caching mechanism: Checks `sessionStorage.getItem("osu_profile_cache_v5")` with TTL of 5 minutes (`CACHE_TTL_MS = 300,000`).
-     * Multi-stage fetch with timeout:
-       1. Primary live endpoint: `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=14671577` (4s timeout).
-       2. Fallback static endpoint: `data/osu.json` (3s timeout).
-       3. Merges live profile statistics (rank, PP, accuracy, play count) with fallback `top_scores` array if live proxy only returned user profile.
-     * Dynamic DOM rendering:
-       * Populates user bar, level pill, country rank, and 4 metric tiles.
-       * Populates Top 1 Spotlight banner with cover backdrop and audio button.
-       * Renders Top 5 score card items (expandable to 50 items via `window.toggleScoresExpand()`).
-     * Audio Preview Engine:
-       * `window.toggleAudioPreview(beatmapsetId, btnEl, e)` manages a single HTML5 `new Audio("https://b.ppy.sh/preview/{setId}.mp3")`.
-       * Volume is clamped to `0.18` (soft, comfortable level).
-       * Toggles `.playing` CSS class across all buttons sharing the active `beatmapsetId`.
-       * Resets state on audio `ended` or manual pause.
+  | Tab | Colour | Token |
+  | :--- | :--- | :--- |
+  | Profile | `#66ccff` | `--osu-blue` |
+  | Projects | `#8c66ff` | `--osu-purple` |
+  | Workstation | `#b2ff66` | `--osu-lime` |
+  | Rhythm | `#ff66aa` | `--osu-pink` |
+  | Lore | `#ffcc22` | `--osu-yellow` |
+
+  All values come from osu!lazer `OsuColour.cs`. Grades use `OsuColour.ForRank` (SS `#de31ae`, S `#02b5c3`, A `#88da20`, B `#e3b130`, C `#ff8e5d`, D `#ff5a5a`); mods use the lazer ModType colours (difficulty increase red, reduction lime, automation blue). Discord status dots keep their own semantic colours.
+* **Fonts**: `Torus Pro` (self-hosted) for everything, `Zen Kaku Gothic New` as the fallback for Japanese glyphs only, `Maple Mono` for data and labels.
+* **Motion**: every transition and animation is scoped under `[data-motion="on"]`. With the switch off (or no JS) nothing moves.
+* **Breakpoints**: 900px (single column, Discord card capped at 360px with headroom for Vivlos) and 640px (tabs become a 3 + 2 grid, tab numbers and kanji hidden, combo and grade columns dropped).
+
+### 4. Behaviour (`preview/app.js`, one IIFE)
+* **Motion switch**: defaults to `prefers-reduced-motion`; an explicit choice is stored in `localStorage["vivlos-motion"]` (wrapped in try/catch).
+* **Tabs**: `show(id)` sets `data-tab`, toggles `hidden`, moves the lens (`translate` + a WAAPI `scale` squish), swaps the Vivlos outfit, and staggers the new tab's blocks in from the direction of travel (`.rise`, `--dx`, `--i`).
+* **Vivlos outfit per tab**: Profile `summer`, Projects `racing`, Workstation `casual`, Rhythm `stage`, Lore `summer`. The swap drops her behind the card and pops her back up; the `clip-path` moves with the `transform` so she never shows below the masthead. Other outfits are preloaded after `load`.
+* **Glass**: after `load` and `document.fonts.ready`, dynamically imports liquidglass 1.0.3 from jsDelivr and initialises both roots in parallel. Skipped when WebGL is missing or `prefers-reduced-transparency: reduce`; on any failure the CSS glass stays.
+* **Clock**: `Intl.DateTimeFormat` with `Asia/Kuala_Lumpur`.
+* **Lanyard**: WebSocket `wss://api.lanyard.rest/socket`, Discord ID `553169854304354304`, reconnects after 6s. Shows Spotify (with progress), else the first activity, else the custom status.
+* **osu!** (user `14671577`): renders `data/osu.json` first, then overwrites stats from `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=14671577` (4s timeout). Top 5 plays, expandable to 50; row 1 is the spotlight.
+* **Audio previews**: one `Audio` at a time from `https://b.ppy.sh/preview/{setId}.mp3`, volume 0.35. Playing buttons show three level bars (animated only with motion on).
+
+### 5. Original implementation baseline (before the redesign)
+The pre-redesign site was a two-column layout (sticky left profile column, four identical rounded "mega-cards" on the right) with scripts `js/vivlos.js` (clock, copy toast), `js/lanyard.js` (presence) and `js/osu.js` (proxy fetch with `sessionStorage` cache, Top 1 banner, Top 5 list). It used cyan/gold/emerald/rose accents, Zen Kaku Gothic New, 20px card radius and radial-gradient backgrounds. Kept here only as the reference for Parts 2 and 3; none of it is used by `/preview`.
 
 ---
 
@@ -144,33 +120,23 @@ Status Legend:
 
 ---
 
-# Part 4: Real Project Catalog from Afterlight's Workspace
 
-> **Context for Project Selection**: These are the actual repositories and projects discovered directly in Afterlight's workspace (`/home/afterlight`):
+# Part 4: Project Catalog (verified against the repos, 2026-09-27)
 
-1. **`veikk-s640-zero-smoothing`** (`/home/afterlight/veikk-s640-zero-smoothing`)
-   * *What it is*: Linux kernel-level input driver patch that bypasses internal drawing-tablet smoothing and interpolation filters, achieving raw 1:1 hardware polling for rhythm gaming.
-   * *Stack*: C, Linux Kernel / HID, udev rules.
-2. **`youtube-music-cli`** (`/home/afterlight/youtube-music-cli`)
-   * *What it is*: Terminal UI player for YouTube Music built with React and Ink, controlling headless MPV via Unix domain sockets (IPC) for lightweight background playback with zero browser overhead.
-   * *Stack*: TypeScript, React, Ink, MPV, Node.js.
-3. **`my-nix-setup`** (`/home/afterlight/my-nix-setup`)
-   * *What it is*: Fully declarative daily-driver configuration: NixOS, Hyprland Wayland compositor rules, custom udev permissions for magnetic switches, Wacom active area clamping, and audio routing.
-   * *Stack*: Nix, Hyprland, Wayland, Bash.
-4. **`ry5088-flasher`** (`/home/afterlight/ry5088-flasher`)
-   * *What it is*: Lightweight flashing utility for custom rhythm keypad microcontrollers over serial, bypassing proprietary vendor software.
-   * *Stack*: Rust, USB Serial, Embedded.
-5. **`choicer-online`** (`/home/afterlight/choicer-online`)
-   * *What it is*: Deployed online interactive decision-making tool.
-   * *Stack*: Web / JavaScript.
-6. **`osu-skins` / `osu-skins-repo`** (`/home/afterlight/osu-skins-repo`)
-   * *What it is*: Curated collection and archive of competitive rhythm game skins.
-7. **`osu-winello`** (`/home/afterlight/osu-winello`)
-   * *What it is*: Wine environment wrapper and audio latency optimizer for running osu! on Linux.
-8. **`hitsound-studio`** (`/home/afterlight/hitsound-studio`)
-   * *What it is*: Audio hitsound editing and testing tool for beatmap creation.
-9. **`vivlos.dev`** (`/home/afterlight/Afterlight0338.github.io`)
-   * *What it is*: This website, pure static frontend, Cloudflare Worker proxy, and Lanyard real-time WebSocket bridge.
+> Facts below come from each project's README and git history. The earlier catalog had several wrong descriptions; do not reuse them.
+
+**Featured on `/preview`:**
+1. **Hitsound Studio** (`Afterlight0338/hitsound-studio`, live at hitsound.vivlos.dev): FL Studio-style lane editor for osu! hitsounding. TypeScript, Canvas, Web Audio; fully client-side; exports a `[Hitsounds]` diff and copies hitsounds without touching SV.
+2. **steal-framework** (`Afterlight0338/steal-framework`, live at steal.vivlos.dev): checks whether an osu! map copies another map of the same song (rhythm, positions, slider shapes, flipped/rotated/shifted variants) using the Hinamizawa mirror. TypeScript, Canvas, Vite.
+3. **osu! Beatmap Gacha** (`Afterlight0338/osu-beatmap-gacha`, live at gacha.vivlos.dev): gacha game that pulls osu! beatmaps as cards. React 19, TypeScript, Cloudflare Workers + D1, osu! OAuth.
+4. **my-nix-setup** (`Afterlight0338/my-nix-setup`): the declarative NixOS + Hyprland daily driver.
+5. **osu-skins** (`Afterlight0338/osu-skins`): Afterlight's skin collection, downloadable as `.osk` releases.
+
+**Not featured (Afterlight's call):**
+* **veikk-s640-zero-smoothing**: local only, not published. It is a USB DFU *firmware* patch for the Veikk S640's GD32F150 (removes the 2-sample average over USB; the other two filters need SWD). It is not a kernel driver.
+* **ry5088-flasher**: dot-agi's repository (flasher + firmware for RongYuan RY5088 magnetic keyboards). Afterlight rewrote a keyboard firmware with it; not their project.
+* **youtube-music-cli**: a half-baked private fork (`Afterlight0338/ymc`); the commits are by involvex.
+* Others in the workspace (osu-splitter-cli, yt-music-obs-overlay, choicer-online, osu-winello, lazer-mapping, etc.) were not discussed.
 
 ---
 
@@ -189,11 +155,47 @@ Status Legend:
 
 ---
 
-# Part 6: Next Steps for Implementation
+# Part 6: Next Steps
 
-Once Afterlight answers the questions in Part 5:
-1. Lock in the tab architecture in `SPECIFICATION_INTERVIEW.md`.
-2. Construct the **Option 3 Tab Component System** in [`preview/`](file:///home/afterlight/Afterlight0338.github.io/preview/) (or directly in a prototype branch).
-3. Insert Afterlight's newly authored copy into the corresponding sections as they provide it.
-4. Verify responsiveness, keyboard navigation, and audio preview playback.
-5. Deploy to production once Afterlight gives final approval.
+1. **Copy**: Afterlight rewrites the Profile text and the project write-ups. The current project text was drafted from each README and is marked as a draft in Part 5. Part 3 has the original text as a baseline.
+2. **Look**: Afterlight to confirm the Vivlos size and outfit per tab, and the glass tuning.
+3. **Promote**: when approved, move `preview/` to the root. Asset paths in `preview/` use `../` (fonts, art, `data/osu.json`) and must be adjusted; keep the `?v=` versioning.
+4. **Optional clean-up**: remove the unused `js/` scripts and the archived `roxy/`, `site-1/`, `stripped/` once nothing links to them.
+
+**Known rough edges:**
+* The lens magnifies the label slightly at its top and bottom edges (real refraction, kept subtle).
+* The "Discord" label on the card is lower contrast where a bright part of an outfit sits behind it.
+* Japanese text arriving from Lanyard (e.g. a Spotify title) renders in the system font, because Zen Kaku is subset to the page's own glyphs.
+* Opening a deep link such as `/preview/#rhythm` scrolls the browser to that section.
+
+---
+
+# Part 7: Maintenance Rules (read before editing `/preview`)
+
+These are the non-obvious things that broke once. Each one has a comment at the relevant spot in the code.
+
+### Deploying
+* **Bump `?v=` on `style.css` and `app.js` in `preview/index.html` whenever either file changes.** vivlos.dev is served with `cache-control: max-age=14400` (4 hours). Without a new URL, returning visitors get the new HTML with the old CSS/JS, and the page falls apart (this happened on 2026-09-27). Current: `?v=5`.
+* GitHub Pages deploys in about 30 to 40 seconds after a push.
+
+### liquidglass (v1.0.3) constraints
+* Glass elements must be **direct children** of the root passed to `LiquidGlass.init`.
+* The shader's scene starts **white**, so each root has a `.glass-backing` layer in the page colour. It overhangs by 20px (the library's `SHADOW_PAD`), which the 32px section gaps absorb. Do not shrink those gaps below 20px.
+* The library only redraws when something is marked dirty. **Anything that moves** (lens slide, Vivlos swap) must call `markChanged()` every frame while moving; that is `keepGlassFresh()` in `app.js`.
+* Non-glass children are rasterised once with html-to-image and cached. So the **tab labels must not change style** with state (the lens alone marks the active tab), and images must be **direct `<img>` children** of the root (a wrapped image leaves a frozen copy). CSS `opacity` is ignored by the library; hide things with `display: none`.
+* `fresnel` and `specular` are **0 on purpose**: the shader paints them as white from fixed virtual lights (one below the element) plus a "fake" environment reflection, which read as a grey shelf on the dark page. Lens `chromAberration` is 0 because it split the 3px tab bar's colour channels (blue showed olive).
+* Any `@font-face` inside a glass root must use **absolute URLs**: the library resolves font URLs against the page, not the stylesheet (fontsource's relative `./files/` paths 404'd).
+
+### Fonts
+* Zen Kaku Gothic New is requested with Google Fonts `text=`, listing only the Japanese characters on the page. The library embeds every face of a loaded family, and the full sheet meant 242 downloads before the glass appeared. **When adding Japanese text, add its characters to that URL.** To regenerate the list:
+  ```
+  node -e "const h=require('fs').readFileSync('preview/index.html','utf8');console.log(encodeURIComponent([...new Set(h.match(/[　-ヿ一-鿿＀-￯]/g))].sort().join('')))"
+  ```
+* Torus is a commercial typeface licensed to ppy for osu!. Self-hosting it is Afterlight's decision (it is also served on hitsound.vivlos.dev).
+
+### Layout and browsers
+* `overflow-x: clip` lives on `.site-canvas`, not `body`: Chromium ignores it on `body`, which let the glass backings cause sideways scrolling on phones.
+* Afterlight uses **Brave**. Test in Brave (Chromium) as well as Firefox. Headless recipe used here: `puppeteer-core` launching `/run/current-system/sw/bin/brave` with `--use-angle=swiftshader --enable-unsafe-swiftshader`, waiting for `.glass > canvas` to appear twice.
+
+### Writing
+* **No em dashes** in site copy or docs (Afterlight's preference). Use commas, colons or parentheses.
