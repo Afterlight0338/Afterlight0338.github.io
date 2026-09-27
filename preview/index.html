@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Afterlight — vivlos.dev</title>
-  <meta name="description" content="Afterlight's personal site — NixOS, firmware hacking, rhythm games, and whatever else I'm tinkering with.">
+  <title>Afterlight, vivlos.dev</title>
+  <meta name="description" content="Afterlight's personal site, NixOS, firmware hacking, rhythm games, and whatever else I'm tinkering with.">
   <meta name="theme-color" content="#080b12">
   <link rel="icon" type="image/webp" href="../assets/vivlos/casual.webp">
 
@@ -13,13 +13,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Zen Kaku only covers the Japanese text Torus lacks. text= subsets it to the
-       exact glyphs on this page (2 tiny files instead of 242 — liquidglass fetches
+       exact glyphs on this page (2 tiny files instead of 242, liquidglass fetches
        every face of a loaded family). Add new Japanese characters here; anything
        missing (e.g. a Japanese Spotify title) falls back to the system font. -->
   <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap&text=%E3%81%84%E3%81%A4%E3%81%A6%E3%81%AB%E3%82%A2%E3%82%A3%E3%82%A4%E3%82%B2%E3%82%B9%E3%82%BF%E3%83%88%E3%83%95%E3%83%96%E3%83%A9%E3%83%AD%E3%83%B4%E3%83%BC%E4%BB%8B%E4%BD%99%E4%BD%9C%E5%88%B6%E5%99%A8%E5%B7%B1%E6%88%90%E6%A7%8B%E6%A9%9F%E7%89%A9%E7%99%BD%E7%B4%B9%E8%87%AA%E8%A8%98%E9%8C%B2%E9%9F%B3" rel="stylesheet">
 
   <!-- vivlos.dev is served with a 4h browser cache: bump ?v= whenever style.css or app.js change -->
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -57,7 +57,7 @@
         <img src="../assets/vivlos/casual.webp" alt="" class="avatar-small" width="40" height="40">
         <div class="presence-meta">
           <div class="activity-title-text" id="sidecar-activity-title">@afterlight_hd</div>
-          <div class="activity-sub-text" id="sidecar-activity-desc">—</div>
+          <div class="activity-sub-text" id="sidecar-activity-desc">…</div>
         </div>
       </div>
       <div class="presence-spotify" id="sidecar-spotify" hidden>
@@ -95,7 +95,7 @@
             My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because larp, but it became a permanent home because declarative configuration fits how my brain operates. It also gives me a very convenient excuse to spend hours tweaking things that were already working perfectly fine.
           </p>
           <p>
-            Outside of that, I spend a borderline degenerate amount of time playing rhythm games — mostly <strong>osu!</strong> standard, plus <strong>maimai</strong>.
+            Outside of that, I spend a borderline degenerate amount of time playing rhythm games, mostly <strong>osu!</strong> standard, plus <strong>maimai</strong>.
           </p>
 
           <p class="links-row">
@@ -157,7 +157,7 @@
             <p class="entry-tagline">Checks whether an osu! map was stolen from another map of the same song.</p>
             <div class="story-block">
               <h4 class="story-label">How it works</h4>
-              <p>Give it a map link, ID or <code>.osz</code>. It pulls every other map of that song from the Hinamizawa mirror and compares rhythm timing, object positions and slider shapes — including flipped, rotated and shifted copies — then points at the exact stretches that match, on a playfield overlay you can scrub through.</p>
+              <p>Give it a map link, ID or <code>.osz</code>. It pulls every other map of that song from the Hinamizawa mirror and compares rhythm timing, object positions and slider shapes, including flipped, rotated and shifted copies, then points at the exact stretches that match, on a playfield overlay you can scrub through.</p>
             </div>
           </div>
         </article>
@@ -174,7 +174,7 @@
             <h3 class="entry-title">osu! Beatmap Gacha</h3>
             <p class="entry-tagline">A gacha game where you pull osu! beatmaps instead of characters.</p>
             <div class="story-block">
-              <p>Log in with your osu! account, summon beatmaps as collectible cards, keep a collection. Made for fun — a friend asked for it.</p>
+              <p>Log in with your osu! account, summon beatmaps as collectible cards, keep a collection. Made for fun, a friend asked for it.</p>
             </div>
           </div>
         </article>
@@ -190,7 +190,7 @@
             <h3 class="entry-title">my-nix-setup</h3>
             <p class="entry-tagline">Declarative NixOS workstation configuration, Hyprland window rules, and tablet mapping.</p>
             <div class="story-block">
-              <p>My complete daily-driver environment defined in code — enough to rebuild this machine from scratch: compositor config, custom udev permissions for magnetic keypads, tablet area clamping, and audio routing.</p>
+              <p>My complete daily-driver environment defined in code, enough to rebuild this machine from scratch: compositor config, custom udev permissions for magnetic keypads, tablet area clamping, and audio routing.</p>
             </div>
           </div>
         </article>
@@ -204,7 +204,7 @@
           </div>
           <div class="entry-body-col">
             <h3 class="entry-title">osu-skins</h3>
-            <p class="entry-tagline">The osu! skins I use, mix and keep around — downloadable as .osk.</p>
+            <p class="entry-tagline">The osu! skins I use, mix and keep around, downloadable as .osk.</p>
           </div>
         </article>
 
@@ -258,17 +258,17 @@
         </div>
 
         <dl class="player-stats-row">
-          <div class="stat-unit"><dt>Global</dt><dd id="osu-rank">—</dd></div>
-          <div class="stat-unit"><dt>Malaysia</dt><dd id="osu-country">—</dd></div>
-          <div class="stat-unit"><dt>pp</dt><dd id="osu-pp">—</dd></div>
-          <div class="stat-unit"><dt>Accuracy</dt><dd id="osu-acc">—</dd></div>
-          <div class="stat-unit"><dt>Plays</dt><dd id="osu-plays">—</dd></div>
+          <div class="stat-unit"><dt>Global</dt><dd id="osu-rank">…</dd></div>
+          <div class="stat-unit"><dt>Malaysia</dt><dd id="osu-country">…</dd></div>
+          <div class="stat-unit"><dt>pp</dt><dd id="osu-pp">…</dd></div>
+          <div class="stat-unit"><dt>Accuracy</dt><dd id="osu-acc">…</dd></div>
+          <div class="stat-unit"><dt>Plays</dt><dd id="osu-plays">…</dd></div>
         </dl>
       </div>
 
       <div class="table-container">
         <table class="scores-ledger">
-          <caption>Top plays <span class="mono-dim">— press ▶ for the song preview</span></caption>
+          <caption>Top plays<span class="mono-dim">, press ▶ for the song preview</span></caption>
           <thead>
             <tr>
               <th class="col-rank">#</th>
@@ -297,20 +297,20 @@
         <div class="lore-narrative">
           <h3 class="lore-title">Why vivlos.dev?</h3>
           <p>
-            The name comes from <a href="https://umamusu.wiki/Vivlos" target="_blank" rel="noopener">Vivlos (ヴィブロス)</a> from Umamusume: Pretty Derby. There's no deep meaning behind it: I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev — and I don't even play Uma.
+            The name comes from <a href="https://umamusu.wiki/Vivlos" target="_blank" rel="noopener">Vivlos (ヴィブロス)</a> from Umamusume: Pretty Derby. There's no deep meaning behind it: I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev, and I don't even play Uma.
           </p>
 
           <h4 class="colophon-title">Colophon</h4>
           <ul class="colophon-list">
             <li>Set in Torus Pro (osu!'s typeface) and Maple Mono. Colours are osu!lazer's own palette.</li>
             <li>Static files on GitHub Pages; a Cloudflare Worker proxies the osu! API, Lanyard provides Discord presence.</li>
-            <li>Glass by <a href="https://github.com/ybouane/liquidglass" target="_blank" rel="noopener">liquidglass</a> (WebGL). Otherwise no frameworks, no trackers — hand-written HTML and CSS.</li>
+            <li>Glass by <a href="https://github.com/ybouane/liquidglass" target="_blank" rel="noopener">liquidglass</a> (WebGL). Otherwise no frameworks, no trackers, hand-written HTML and CSS.</li>
           </ul>
         </div>
 
         <figure class="editorial-plate">
           <img src="../assets/vivlos/stage.webp" alt="Vivlos in her stage outfit" class="plate-image" loading="lazy">
-          <figcaption>Vivlos, stage outfit — the site's namesake.</figcaption>
+          <figcaption>Vivlos, stage outfit, the site's namesake.</figcaption>
         </figure>
       </div>
     </section>
@@ -323,6 +323,6 @@
 
 <div id="toast" class="toast-indicator" role="status" aria-live="polite"></div>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// vivlos.dev — Direction D prototype
+// vivlos.dev, Direction D prototype
 // Tabs, motion switch, glass (liquidglass), UTC+8 clock, Lanyard presence,
 // osu! stats + scores, audio previews.
 
@@ -27,7 +27,7 @@
   const motionOn = () => document.documentElement.dataset.motion === 'on';
 
   // ------------------------------------------------------------
-  // Animations switch — defaults to the OS reduced-motion setting,
+  // Animations switch, defaults to the OS reduced-motion setting,
   // an explicit choice is remembered per browser
   // ------------------------------------------------------------
   function initMotionSwitch() {
@@ -134,7 +134,7 @@
   // ------------------------------------------------------------
   let artSeq = 0;
 
-  // liquidglass only re-renders when something is marked dirty — it never
+  // liquidglass only re-renders when something is marked dirty, it never
   // notices CSS/WAAPI motion by itself, so mark the mover every frame
   function keepGlassFresh(which, el, ms) {
     const end = performance.now() + ms;
@@ -185,14 +185,18 @@
   // ------------------------------------------------------------
   // Liquid glass (WebGL). Loaded last; the CSS glass stays if it fails.
   // ------------------------------------------------------------
+  // fresnel/specular are off on purpose: the shader paints them as white from
+  // fixed virtual lights (one below the element) and a "fake" environment
+  // reflection, on a dark page that reads as a grey shelf reflecting nothing.
+  // Keep only what's really behind the glass, plus the thin top-lit rim.
   const PRESENCE_GLASS = {
     cornerRadius: 14, zRadius: 14, blurAmount: 0.35, refraction: 0.55,
-    chromAberration: 0.05, edgeHighlight: 0.12, specular: 0.2, fresnel: 0.45,
+    chromAberration: 0.05, edgeHighlight: 0.12, specular: 0, fresnel: 0,
     brightness: -0.22, saturation: 0.25, shadowOpacity: 0.4, shadowSpread: 14, shadowOffsetY: 4,
   };
   const LENS_GLASS = {
     cornerRadius: 12, zRadius: 9, blurAmount: 0, refraction: 0.45,
-    chromAberration: 0.06, edgeHighlight: 0.2, specular: 0.45, fresnel: 0.7,
+    chromAberration: 0, edgeHighlight: 0.2, specular: 0, fresnel: 0, // any aberration splits the 3px tab bar into the wrong colour
     brightness: 0.06, saturation: 0.3, shadowOpacity: 0.3, shadowSpread: 8, shadowOffsetY: 2,
   };
 
@@ -371,7 +375,7 @@
   }
 
   // ------------------------------------------------------------
-  // osu! — live stats from the Worker proxy, scores from osu.json
+  // osu!, live stats from the Worker proxy, scores from osu.json
   // ------------------------------------------------------------
   // osu!lazer ModType: difficulty increase / reduction / automation
   const MOD_TYPE = {
@@ -453,7 +457,7 @@
           </td>
           <td class="num td-pp">${Number(s.pp).toFixed(0)}</td>
           <td class="num td-dim">${Number(s.accuracy).toFixed(2)}%</td>
-          <td class="num td-dim td-combo">${s.max_combo ? Number(s.max_combo).toLocaleString('en-US') + 'x' : '—'}</td>
+          <td class="num td-dim td-combo">${s.max_combo ? Number(s.max_combo).toLocaleString('en-US') + 'x' : ''}</td>
           <td class="td-mods">${mods}</td>
           <td class="td-grade grade-${gradeClass}">${gradeText}</td>
         </tr>`;

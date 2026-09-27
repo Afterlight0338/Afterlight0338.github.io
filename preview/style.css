@@ -941,7 +941,7 @@ code {
 }
 
 .colophon-list li::before {
-  content: "— ";
+  content: "- ";
   color: var(--accent);
 }
 

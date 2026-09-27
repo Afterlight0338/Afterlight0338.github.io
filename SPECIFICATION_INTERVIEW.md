@@ -1,4 +1,4 @@
-# vivlos.dev — Project Specification, Technical Documentation & Decision Ledger
+# vivlos.dev, Project Specification, Technical Documentation & Decision Ledger
 
 > **Single Source of Truth**: This document records the complete state of `vivlos.dev`, the technical baseline of the original site, the governing design principles, all user decisions, authoring templates, and the exact questions queued for **Afterlight**. Any AI agent (or Afterlight) resuming this project should start by reading this file.
 
@@ -122,7 +122,7 @@ Status Legend:
 | **Lanyard Discord Sync** | Live status, game activity, Spotify progress bar | Keep real-time presence | **decided** |
 | **Vivlos Mascot & Lore** | 4 character cutouts in card headers | Keep lore & aesthetic connection (User will re-write/refine commentary) | **user will write** |
 | **Visual Containerization**| 4 identical rounded mega-cards | Hairline rules, no cards; one bordered box for live Discord presence. 5 perspective tabs | **decided** |
-| **Glassmorphism** | None | **Explicitly requested (2026-09-27)** — overrides the Constitution's default ban. Scope: Discord card + tab lens only, via [liquidglass](https://github.com/ybouane/liquidglass) 1.0.3 (WebGL, pinned on jsDelivr). CSS glass fallback; skipped under `prefers-reduced-transparency` | **decided** |
+| **Glassmorphism** | None | **Explicitly requested (2026-09-27)**, overrides the Constitution's default ban. Scope: Discord card + tab lens only, via [liquidglass](https://github.com/ybouane/liquidglass) 1.0.3 (WebGL, pinned on jsDelivr). CSS glass fallback; skipped under `prefers-reduced-transparency` | **decided** |
 | **Typography** | Zen Kaku Gothic New + Maple Mono | Torus Pro (osu!'s typeface, self-hosted in `assets/fonts/`); Zen Kaku kept only for Japanese glyphs; Maple Mono for data | **decided** |
 | **Colour** | Cyan/gold/emerald/rose accents | osu!lazer `OsuColour` palette, one colour per tab (blue / purple / lime / pink / yellow) that the whole page shifts to; lazer rank + mod colours in the scores table | **decided** |
 | **Animation** | Static | Behind an **Animations** switch in the status rail (defaults to OS reduced-motion, remembered per browser): tab content slides in from the travel direction, glass lens slides with squish, Vivlos outfit swap behind the card, eq bars on playing previews, staggered rows on expand | **decided** |
@@ -135,12 +135,12 @@ Status Legend:
 
 | Component / Section | Original Text (Clue / Baseline) | Afterlight's Version (To Be Written) |
 | :--- | :--- | :--- |
-| **Site Title & Tagline** | `"Afterlight"`<br>`"I build stuff, mess around with techs, play way too many rhythm games, and an Arknights enjoyer."` | `placeholder — user authored` |
-| **Bio: Opening Paragraph** | `"Hey, I'm Afterlight. I build shi, mess around with tech, and spend a questionable amount of time playing rhythm games. Most of the things I make starts with 'ts so ass im gonna make one my own', or thinking 'no one made ts yet'"` | `placeholder — user authored` |
-| **Bio: System / Linux** | `"I run NixOS with Hyprland as my daily setup, mostly because larp. It also gives me a very convenient excuse to spend hours tweaking things that were already working perfectly fine."` | `placeholder — user authored` |
-| **Bio: Vivlos / Lore** | `"The name vivlos.dev comes from Vivlos (ヴィブロス) from Umamusume: Pretty Derby. There's no particularly deep meaning behind it, I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev, and i dont even play Uma."` | `placeholder — user authored` |
-| **Hardware & Input Calibration** | *Machine*: Acer Nitro V 15, Ryzen 5 7535HS, RTX 3050 6GB, 32GB DDR5 4800MHz, NixOS 26.05, Hyprland, AOC 24G11ZE 240Hz.<br>*Input*: SayoDevice K05 HE (Rapid Trigger 0.2mm actuation / 0.3mm release), Wacom Bamboo CTH-670 (Area: 67.67 × 39.39 mm, Ratio: 1.718 : 1), Everglide AE68 PRO | `placeholder — user authored` |
-| **Rhythm Game Commentary** | `"Scores, stats, and other."`<br>Top 1 Spotlight: Power of the Dragonflame (580.1pp, HDHR, 96.21%) | `placeholder — user authored` |
+| **Site Title & Tagline** | `"Afterlight"`<br>`"I build stuff, mess around with techs, play way too many rhythm games, and an Arknights enjoyer."` | `placeholder, user authored` |
+| **Bio: Opening Paragraph** | `"Hey, I'm Afterlight. I build shi, mess around with tech, and spend a questionable amount of time playing rhythm games. Most of the things I make starts with 'ts so ass im gonna make one my own', or thinking 'no one made ts yet'"` | `placeholder, user authored` |
+| **Bio: System / Linux** | `"I run NixOS with Hyprland as my daily setup, mostly because larp. It also gives me a very convenient excuse to spend hours tweaking things that were already working perfectly fine."` | `placeholder, user authored` |
+| **Bio: Vivlos / Lore** | `"The name vivlos.dev comes from Vivlos (ヴィブロス) from Umamusume: Pretty Derby. There's no particularly deep meaning behind it, I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev, and i dont even play Uma."` | `placeholder, user authored` |
+| **Hardware & Input Calibration** | *Machine*: Acer Nitro V 15, Ryzen 5 7535HS, RTX 3050 6GB, 32GB DDR5 4800MHz, NixOS 26.05, Hyprland, AOC 24G11ZE 240Hz.<br>*Input*: SayoDevice K05 HE (Rapid Trigger 0.2mm actuation / 0.3mm release), Wacom Bamboo CTH-670 (Area: 67.67 × 39.39 mm, Ratio: 1.718 : 1), Everglide AE68 PRO | `placeholder, user authored` |
+| **Rhythm Game Commentary** | `"Scores, stats, and other."`<br>Top 1 Spotlight: Power of the Dragonflame (580.1pp, HDHR, 96.21%) | `placeholder, user authored` |
 
 ---
 
@@ -170,7 +170,7 @@ Status Legend:
 8. **`hitsound-studio`** (`/home/afterlight/hitsound-studio`)
    * *What it is*: Audio hitsound editing and testing tool for beatmap creation.
 9. **`vivlos.dev`** (`/home/afterlight/Afterlight0338.github.io`)
-   * *What it is*: This website—pure static frontend, Cloudflare Worker proxy, and Lanyard real-time WebSocket bridge.
+   * *What it is*: This website, pure static frontend, Cloudflare Worker proxy, and Lanyard real-time WebSocket bridge.
 
 ---
 
