@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afterlight — vivlos.dev</title>
+  <meta name="description" content="Afterlight's personal site — NixOS, firmware hacking, rhythm games, and whatever else I'm tinkering with.">
+  <meta name="theme-color" content="#080b12">
+  <link rel="icon" type="image/webp" href="../assets/vivlos/casual.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-canvas">
+
+  <div class="top-status-bar">
+    <span>vivlos.dev</span>
+    <span><span class="mono-dim">running</span> NixOS 26.05 / Hyprland</span>
+    <span><span class="mono-dim">local time</span> <span id="clock-display">--:--:--</span> UTC+8</span>
+  </div>
+
+  <header class="site-masthead">
+    <div class="masthead-main">
+      <span class="kana-rubi">アフターライト</span>
+      <h1 class="site-title">Afterlight</h1>
+      <p class="site-manifesto">
+        I build tools out of spite, tweak things that were already working fine, daily-drive NixOS, and spend a questionable amount of time playing rhythm games.
+      </p>
+    </div>
+
+    <aside class="presence" id="lanyard-panel" aria-label="Discord presence">
+      <div class="presence-head">
+        <span class="mono-dim">Discord</span>
+        <span class="presence-status" id="presence-badge"><span class="status-dot" id="lanyard-pip"></span><span id="presence-text">connecting</span></span>
+      </div>
+      <div class="presence-body">
+        <img src="../assets/vivlos/casual.webp" alt="" class="avatar-small" width="40" height="40">
+        <div class="presence-meta">
+          <div class="activity-title-text" id="sidecar-activity-title">@afterlight_hd</div>
+          <div class="activity-sub-text" id="sidecar-activity-desc">—</div>
+        </div>
+      </div>
+      <div class="presence-spotify" id="sidecar-spotify" hidden>
+        <div class="spotify-info-row">
+          <span>Spotify</span>
+          <span id="spotify-time">0:00 / 0:00</span>
+        </div>
+        <div class="spotify-bar-track"><div class="spotify-bar-fill" id="spotify-fill"></div></div>
+      </div>
+    </aside>
+  </header>
+
+  <nav class="archive-nav" id="archive-nav" aria-label="Sections">
+    <a href="#about" class="nav-tab"><span class="tab-num">00</span> Profile <span class="tab-kanji">自己紹介</span></a>
+    <a href="#projects" class="nav-tab"><span class="tab-num">01</span> Projects <span class="tab-kanji">制作物</span></a>
+    <a href="#workstation" class="nav-tab"><span class="tab-num">02</span> Workstation <span class="tab-kanji">機器構成</span></a>
+    <a href="#rhythm" class="nav-tab"><span class="tab-num">03</span> Rhythm <span class="tab-kanji">音ゲー</span></a>
+    <a href="#lore" class="nav-tab"><span class="tab-num">04</span> Lore <span class="tab-kanji">余白</span></a>
+  </nav>
+
+  <main class="content-stream">
+
+    <!-- 00 PROFILE -->
+    <section class="archive-section" id="about">
+      <h2 class="section-heading">Profile <span class="kanji-sub">自己紹介</span></h2>
+
+      <div class="narrative-grid">
+        <div class="narrative-prose">
+          <p class="lead-text">
+            Hey, I'm <strong>Afterlight</strong>. Most of the software I write starts with a very specific irritation: <em>"ts so ass im gonna make one my own"</em>, or realizing that no one made the exact tool that solves a hyper-specific annoyance.
+          </p>
+          <p>
+            My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because larp, but it became a permanent home because declarative configuration fits how my brain operates. It also gives me a very convenient excuse to spend hours tweaking things that were already working perfectly fine.
+          </p>
+          <p>
+            Outside of that, I spend a borderline degenerate amount of time playing rhythm games — mostly <strong>osu!</strong> standard, plus <strong>maimai</strong>.
+          </p>
+
+          <p class="links-row">
+            <a href="https://github.com/Afterlight0338" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">osu! ↗</a>
+            <a href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener">Twitch ↗</a>
+            <a href="https://www.tiktok.com/@afterlight_1337" target="_blank" rel="noopener">TikTok ↗</a>
+            <button type="button" class="link-btn" onclick="copyDiscord()">Discord @afterlight_hd <span class="mono-dim">(copy)</span></button>
+          </p>
+        </div>
+
+        <dl class="data-pair-list">
+          <div class="data-pair"><dt>Handle</dt><dd>Afterlight / RyoYamada</dd></div>
+          <div class="data-pair"><dt>Based in</dt><dd>Malaysia, UTC+8</dd></div>
+          <div class="data-pair"><dt>OS</dt><dd>NixOS 26.05 + Hyprland</dd></div>
+          <div class="data-pair"><dt>Writes</dt><dd>C++, TypeScript</dd></div>
+          <div class="data-pair"><dt>Into</dt><dd>osu!, maimai, Linux ricing</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 01 PROJECTS -->
+    <section class="archive-section" id="projects">
+      <h2 class="section-heading">Projects <span class="kanji-sub">制作物</span></h2>
+
+      <div class="projects-dossier">
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">01</span>
+            <span class="entry-status">Live</span>
+            <span class="entry-stack">TypeScript · Canvas · Web Audio</span>
+            <a href="https://hitsound.vivlos.dev/" target="_blank" rel="noopener">hitsound.vivlos.dev ↗</a>
+            <a href="https://github.com/Afterlight0338/hitsound-studio" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">Hitsound Studio</h3>
+            <p class="entry-tagline">An FL Studio-style hitsound editor for osu! mappers, in the browser.</p>
+            <div class="story-block">
+              <h4 class="story-label">The problem</h4>
+              <p>Hitsounding in osu! means juggling sample sets, additions, volumes and custom indices across hundreds of timing lines. The usual workaround is a dummy 18-key mania diff in Mapping Tools, which says mappers want lanes; the workflow just isn't there.</p>
+            </div>
+            <div class="story-block">
+              <h4 class="story-label">What it does</h4>
+              <p>A channel-rack of lanes, each bound to a sample set, addition, index and volume, over a waveform with BPM-snapped grid and ghost notes from your other diffs. Exports a clean <code>[Hitsounds]</code> diff and can copy hitsounds into the mapset without touching slider velocity. Runs entirely client-side.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">02</span>
+            <span class="entry-status">Live</span>
+            <span class="entry-stack">TypeScript · Canvas · Vite</span>
+            <a href="https://steal.vivlos.dev/" target="_blank" rel="noopener">steal.vivlos.dev ↗</a>
+            <a href="https://github.com/Afterlight0338/steal-framework" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">steal-framework</h3>
+            <p class="entry-tagline">Checks whether an osu! map was stolen from another map of the same song.</p>
+            <div class="story-block">
+              <h4 class="story-label">How it works</h4>
+              <p>Give it a map link, ID or <code>.osz</code>. It pulls every other map of that song from the Hinamizawa mirror and compares rhythm timing, object positions and slider shapes — including flipped, rotated and shifted copies — then points at the exact stretches that match, on a playfield overlay you can scrub through.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">03</span>
+            <span class="entry-status">Live</span>
+            <span class="entry-stack">React · TypeScript · Cloudflare Workers + D1</span>
+            <a href="https://gacha.vivlos.dev/" target="_blank" rel="noopener">gacha.vivlos.dev ↗</a>
+            <a href="https://github.com/Afterlight0338/osu-beatmap-gacha" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">osu! Beatmap Gacha</h3>
+            <p class="entry-tagline">A gacha game where you pull osu! beatmaps instead of characters.</p>
+            <div class="story-block">
+              <p>Log in with your osu! account, summon beatmaps as collectible cards, keep a collection. Made for fun — a friend asked for it.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">04</span>
+            <span class="entry-status">Ongoing</span>
+            <span class="entry-stack">Nix · Hyprland · Wayland</span>
+            <a href="https://github.com/Afterlight0338/my-nix-setup" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">my-nix-setup</h3>
+            <p class="entry-tagline">Declarative NixOS workstation configuration, Hyprland window rules, and tablet mapping.</p>
+            <div class="story-block">
+              <p>My complete daily-driver environment defined in code — enough to rebuild this machine from scratch: compositor config, custom udev permissions for magnetic keypads, tablet area clamping, and audio routing.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">05</span>
+            <span class="entry-status">Archive</span>
+            <span class="entry-stack">.osk</span>
+            <a href="https://github.com/Afterlight0338/osu-skins" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">osu-skins</h3>
+            <p class="entry-tagline">The osu! skins I use, mix and keep around — downloadable as .osk.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- 02 WORKSTATION -->
+    <section class="archive-section" id="workstation">
+      <h2 class="section-heading">Workstation <span class="kanji-sub">機器構成</span></h2>
+
+      <div class="specs-composite-grid">
+        <table class="spec-table">
+          <caption>Machine</caption>
+          <tbody>
+            <tr><th scope="row">Laptop</th><td>Acer Nitro V 15</td></tr>
+            <tr><th scope="row">CPU</th><td>AMD Ryzen 5 7535HS (6C/12T)</td></tr>
+            <tr><th scope="row">GPU</th><td>NVIDIA RTX 3050 6GB</td></tr>
+            <tr><th scope="row">Memory</th><td>32GB DDR5 4800MHz</td></tr>
+            <tr><th scope="row">OS</th><td>NixOS 26.05</td></tr>
+            <tr><th scope="row">Compositor</th><td>Hyprland (Wayland)</td></tr>
+            <tr><th scope="row">Monitor</th><td>AOC 24G11ZE, 240Hz</td></tr>
+          </tbody>
+        </table>
+
+        <table class="spec-table">
+          <caption>Input</caption>
+          <tbody>
+            <tr><th scope="row">Keypad</th><td>SayoDevice K05 HE</td></tr>
+            <tr><th scope="row">Actuation</th><td>1.5 mm press / 0.3 mm release</td></tr>
+            <tr><th scope="row">Rapid trigger</th><td>0.2 mm press / 0.4 mm release</td></tr>
+            <tr><th scope="row">Tablet</th><td>Wacom Bamboo CTH-670</td></tr>
+            <tr><th scope="row">Tablet area</th><td>67.67 × 39.39 mm</td></tr>
+            <tr><th scope="row">Area ratio</th><td>1.718 : 1</td></tr>
+            <tr><th scope="row">Keyboards</th><td>HyperX Alloy Origins (Red) · Everglide AE68 PRO</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 03 RHYTHM -->
+    <section class="archive-section" id="rhythm">
+      <h2 class="section-heading">Rhythm <span class="kanji-sub">音ゲー記録</span></h2>
+
+      <div class="rhythm-profile-strip">
+        <div class="player-identity">
+          <img src="https://a.ppy.sh/14671577" alt="" class="player-avatar" width="44" height="44">
+          <div>
+            <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" class="player-name">RyoYamada</a>
+            <div class="mono-dim">osu! standard · <span id="osu-level">Lv 101</span></div>
+          </div>
+        </div>
+
+        <dl class="player-stats-row">
+          <div class="stat-unit"><dt>Global</dt><dd id="osu-rank">—</dd></div>
+          <div class="stat-unit"><dt>Malaysia</dt><dd id="osu-country">—</dd></div>
+          <div class="stat-unit"><dt>pp</dt><dd id="osu-pp">—</dd></div>
+          <div class="stat-unit"><dt>Accuracy</dt><dd id="osu-acc">—</dd></div>
+          <div class="stat-unit"><dt>Plays</dt><dd id="osu-plays">—</dd></div>
+        </dl>
+      </div>
+
+      <div class="table-container">
+        <table class="scores-ledger">
+          <caption>Top plays <span class="mono-dim">— press ▶ for the song preview</span></caption>
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th class="col-play"><span class="visually-hidden">Preview</span></th>
+              <th>Beatmap</th>
+              <th class="num">pp</th>
+              <th class="num">Acc</th>
+              <th class="num col-combo">Combo</th>
+              <th class="col-mods">Mods</th>
+              <th class="col-grade">Grade</th>
+            </tr>
+          </thead>
+          <tbody id="scores-tbody">
+            <tr><td colspan="8" class="table-msg">Loading scores…</td></tr>
+          </tbody>
+        </table>
+        <button type="button" class="expand-table-btn" id="expand-scores-btn" onclick="toggleScoreTable()" aria-expanded="false">Show all 50</button>
+      </div>
+    </section>
+
+    <!-- 04 LORE -->
+    <section class="archive-section" id="lore">
+      <h2 class="section-heading">Lore <span class="kanji-sub">ヴィブロスについて</span></h2>
+
+      <div class="lore-grid">
+        <div class="lore-narrative">
+          <h3 class="lore-title">Why vivlos.dev?</h3>
+          <p>
+            The name comes from <a href="https://umamusu.wiki/Vivlos" target="_blank" rel="noopener">Vivlos (ヴィブロス)</a> from Umamusume: Pretty Derby. There's no deep meaning behind it: I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev — and I don't even play Uma.
+          </p>
+
+          <h4 class="colophon-title">Colophon</h4>
+          <ul class="colophon-list">
+            <li>Set in Zen Kaku Gothic New and Maple Mono.</li>
+            <li>Static files on GitHub Pages; a Cloudflare Worker proxies the osu! API, Lanyard provides Discord presence.</li>
+            <li>No frameworks, no trackers. Hand-written HTML and CSS.</li>
+          </ul>
+        </div>
+
+        <figure class="editorial-plate">
+          <img src="../assets/vivlos/stage.webp" alt="Vivlos in her stage outfit" class="plate-image" loading="lazy">
+          <figcaption>Vivlos, stage outfit — the site's namesake.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">© Afterlight · vivlos.dev</footer>
+
+</div>
+
+<div id="toast" class="toast-indicator" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

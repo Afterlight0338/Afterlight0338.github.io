@@ -9,7 +9,7 @@
 1. **Live Production Site (`vivlos.dev`)**:
    * Currently wiped clean and running in **Clean Placeholder Mode** ([`index.html`](file:///home/afterlight/Afterlight0338.github.io/index.html)).
    * All copy, descriptions, project titles, and content-specific labels are set to `placeholder` (128 placeholder tokens live).
-2. **Visual Prototype (`vivlos.dev/dir-d/` & `vivlos.dev/dir-c/`)**:
+2. **Visual Prototype (`vivlos.dev/preview/`)**:
    * Working prototype demonstrating **Direction D (Personal Digital World)**: Japanese personal web × technical archive × rhythm game instrumentation.
    * Features: live UTC+8 clock, WebSocket Lanyard presence, interactive osu! audio preview player, and dense scores ledger.
 3. **Governing Design Document**:
@@ -44,7 +44,7 @@
 │   └── wrangler.toml        # Worker config (account binding: osu-api-proxy)
 ├── roxy/                    # [Archived] Previous site version (particle canvas, 3D tilt)
 ├── site-1/                  # [Archived] Staging prototype graduated to root in commit 2203d57
-├── dir-c/ & dir-d/          # [Isolated Prototype] Direction D visual prototype
+├── preview/                 # [Isolated Prototype] Direction D redesign (vivlos.dev/preview/)
 ├── stripped/                # Stripped placeholder revision
 ├── DESIGN_CONSTITUTION.md   # Governing design rules & constraints
 ├── AGENTS.md                # Symlink to DESIGN_CONSTITUTION.md for automatic agent ingestion
@@ -116,12 +116,12 @@ Status Legend:
 | **Page Architecture** | 1 continuous scrolling page with 4 cards | **Option 3: Single-View Perspective Tabs** (Switch perspectives without full page reloads) | **decided** |
 | **Content Scope** | Bio, Repos, Specs, osu!, Vivlos, Discord | **Keep everything** ("Honestly speaking there's nothing I would remove") | **decided** |
 | **Bio & Statements** | 3 casual paragraphs ("I build shi...", NixOS larp, Vivlos) | User will re-write based on current baseline | **user will write** |
-| **Featured Projects** | 4 simple link rows with 1 generic sentence | Projects with deployed sites, latest work, and top projects (User will select & write) | **user will decide & write** |
+| **Featured Projects** | 4 simple link rows with 1 generic sentence | See Part 5 answers (5 projects) | **decided** |
 | **System & Hardware** | 2-column key-value tables | Keep hardware and calibration telemetry (User will re-write/verify details) | **user will write** |
 | **osu! / Rhythm Section**| Live stats grid, Top 1 banner, Top 5 expandable list | Keep stats, Top 50 scores, and audio preview player | **decided** |
 | **Lanyard Discord Sync** | Live status, game activity, Spotify progress bar | Keep real-time presence | **decided** |
 | **Vivlos Mascot & Lore** | 4 character cutouts in card headers | Keep lore & aesthetic connection (User will re-write/refine commentary) | **user will write** |
-| **Visual Containerization**| 4 identical rounded mega-cards | To be redesigned around Option 3 Perspective Tabs adhering to Constitution | **undecided** |
+| **Visual Containerization**| 4 identical rounded mega-cards | Hairline rules, no cards; one bordered box for live Discord presence. 5 perspective tabs | **decided** |
 
 ---
 
@@ -170,31 +170,18 @@ Status Legend:
 
 ---
 
-# Part 5: Progressive Interview Queue (Ready for Afterlight)
+# Part 5: Interview Answers (2026-09-27)
 
-When Afterlight returns, these are the exact questions to answer:
-
-### Question 2.1: Defining the Perspective Tabs (Option 3)
-In Option 3, visitors switch views without page reloads. Which tab grouping feels right?
-* **Option A (4 Dedicated Perspectives)**:
-  1. `[Overview]` (Identity, Bio, Live Discord/Status, High-level summary)
-  2. `[Projects]` (Your featured software, tools, and deployed sites)
-  3. `[Workstation]` (NixOS configuration, machine specs, input calibration)
-  4. `[Rhythm]` (osu! player stats, Top 1 spotlight, Top 50 scores, audio previews)
-* **Option B (3 Focused Perspectives)**:
-  1. `[Profile & System]` (Bio + NixOS + Hardware specs in one technical dossier)
-  2. `[Projects]` (Dedicated software archive)
-  3. `[Rhythm & Audio]` (osu! telemetry & beatmap audio lounge)
-* **Option C**: Your own custom tab naming and grouping.
-
-### Question 2.2: Your Featured Project Lineup
-From the project catalog in Part 4 (or any other projects you have):
-* **Which 3 to 5 projects do you want featured?**
-* **For each project, do you want a short summary or a full story (problem → hack → outcome)?**
-
-### Question 2.3: Default View & Persistent Elements
-1. **Which perspective tab should be open by default when someone first loads `vivlos.dev`?**
-2. **Should the live telemetry bar (UTC+8 clock, NixOS status, Discord presence) stay permanently pinned at the top across all tabs?**
+| Question | Answer |
+| :--- | :--- |
+| **2.1 Tab grouping** | 5 tabs: Profile / Projects / Workstation / Rhythm / Lore. |
+| **2.2 Featured projects** | Hitsound Studio (hitsound.vivlos.dev), steal-framework (steal.vivlos.dev), osu! Beatmap Gacha (gacha.vivlos.dev), my-nix-setup, osu-skins. **Removed:** ry5088-flasher (dot-agi's repo; user only rewrote firmware with it), youtube-music-cli (half-baked private fork), veikk-s640-zero-smoothing (not published). |
+| **2.3 Default view / pinned bar** | Profile opens by default. Status rail + Discord presence stay above every tab. |
+| **Publish target** | Prototype lives at `vivlos.dev/preview/` (renamed from `dir-d`). Root stays on placeholders for now. |
+| **Rhythm games** | osu! standard + maimai. |
+| **Input settings** | SayoDevice K05 HE: actuation 1.5 mm / release 0.3 mm, RT 0.2 mm press / 0.4 mm release. Keyboards: HyperX Alloy Origins (Red) + Everglide AE68 PRO. |
+| **Links** | GitHub, osu!, Twitch, TikTok (@afterlight_1337), Discord copy. |
+| **Copy** | Current draft text ships in /preview; user will rewrite later. |
 
 ---
 
@@ -202,7 +189,7 @@ From the project catalog in Part 4 (or any other projects you have):
 
 Once Afterlight answers the questions in Part 5:
 1. Lock in the tab architecture in `SPECIFICATION_INTERVIEW.md`.
-2. Construct the **Option 3 Tab Component System** in [`dir-d/`](file:///home/afterlight/Afterlight0338.github.io/dir-d/) (or directly in a prototype branch).
+2. Construct the **Option 3 Tab Component System** in [`preview/`](file:///home/afterlight/Afterlight0338.github.io/preview/) (or directly in a prototype branch).
 3. Insert Afterlight's newly authored copy into the corresponding sections as they provide it.
 4. Verify responsiveness, keyboard navigation, and audio preview playback.
 5. Deploy to production once Afterlight gives final approval.
