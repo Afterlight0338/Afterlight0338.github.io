@@ -9,6 +9,10 @@
 @font-face { font-family: 'Torus Pro'; src: url('../assets/fonts/TorusPro-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
 @font-face { font-family: 'Torus Pro'; src: url('../assets/fonts/TorusPro-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Torus Pro'; src: url('../assets/fonts/TorusPro-Heavy.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+/* Absolute URLs on purpose: liquidglass resolves font URLs against the page,
+   so fontsource's relative ./files/ paths 404 inside the glass */
+@font-face { font-family: 'Maple Mono'; src: url('https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/files/maple-mono-latin-500-normal.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Maple Mono'; src: url('https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/files/maple-mono-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-display: swap; }
 
 /* Registered so tab changes can interpolate the colour */
 @property --accent {
@@ -82,7 +86,6 @@ body {
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: clip; /* glass backings overhang the gutter by 20px */
 }
 
 ::selection { background: color-mix(in oklab, var(--accent) 40%, transparent); }
@@ -120,6 +123,7 @@ code {
   max-width: 1080px;
   margin: 0 auto;
   padding: 16px 24px 64px;
+  overflow-x: clip; /* glass backings overhang the 16px phone gutter; on body Chromium ignores clip */
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -1040,7 +1044,11 @@ code {
   .site-masthead { min-height: 0; }
 
   /* Leave headroom for Vivlos to peek over the card */
-  .presence { margin-top: 84px; }
+  .presence {
+    margin-top: 84px;
+    justify-self: end;
+    width: min(100%, 360px);
+  }
 
   .vivlos-art {
     --art-sink: 60px;
