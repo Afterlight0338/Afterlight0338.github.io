@@ -228,8 +228,10 @@
       console.warn('liquidglass unavailable, keeping CSS glass:', err);
       return;
     }
-    glass.masthead = await startGlass(LiquidGlass, $('masthead'), $('lanyard-panel'), PRESENCE_GLASS);
-    glass.nav = await startGlass(LiquidGlass, $('archive-nav'), $('tab-lens'), LENS_GLASS);
+    [glass.masthead, glass.nav] = await Promise.all([
+      startGlass(LiquidGlass, $('masthead'), $('lanyard-panel'), PRESENCE_GLASS),
+      startGlass(LiquidGlass, $('archive-nav'), $('tab-lens'), LENS_GLASS),
+    ]);
   }
 
   // ------------------------------------------------------------
