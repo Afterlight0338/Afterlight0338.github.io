@@ -122,6 +122,10 @@ Status Legend:
 | **Lanyard Discord Sync** | Live status, game activity, Spotify progress bar | Keep real-time presence | **decided** |
 | **Vivlos Mascot & Lore** | 4 character cutouts in card headers | Keep lore & aesthetic connection (User will re-write/refine commentary) | **user will write** |
 | **Visual Containerization**| 4 identical rounded mega-cards | Hairline rules, no cards; one bordered box for live Discord presence. 5 perspective tabs | **decided** |
+| **Glassmorphism** | None | **Explicitly requested (2026-09-27)** — overrides the Constitution's default ban. Scope: Discord card + tab lens only, via [liquidglass](https://github.com/ybouane/liquidglass) 1.0.3 (WebGL, pinned on jsDelivr). CSS glass fallback; skipped under `prefers-reduced-transparency` | **decided** |
+| **Typography** | Zen Kaku Gothic New + Maple Mono | Torus Pro (osu!'s typeface, self-hosted in `assets/fonts/`); Zen Kaku kept only for Japanese glyphs; Maple Mono for data | **decided** |
+| **Colour** | Cyan/gold/emerald/rose accents | osu!lazer `OsuColour` palette, one colour per tab (blue / purple / lime / pink / yellow) that the whole page shifts to; lazer rank + mod colours in the scores table | **decided** |
+| **Animation** | Static | Behind an **Animations** switch in the status rail (defaults to OS reduced-motion, remembered per browser): tab content slides in from the travel direction, glass lens slides with squish, Vivlos outfit swap behind the card, eq bars on playing previews, staggered rows on expand | **decided** |
 
 ---
 

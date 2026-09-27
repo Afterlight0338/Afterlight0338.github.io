@@ -8,9 +8,12 @@
   <meta name="theme-color" content="#080b12">
   <link rel="icon" type="image/webp" href="../assets/vivlos/casual.webp">
 
+  <link rel="preload" href="../assets/fonts/TorusPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/TorusPro-Heavy.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Zen Kaku only covers the Japanese glyphs Torus doesn't have -->
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
 
@@ -24,9 +27,17 @@
     <span>vivlos.dev</span>
     <span><span class="mono-dim">running</span> NixOS 26.05 / Hyprland</span>
     <span><span class="mono-dim">local time</span> <span id="clock-display">--:--:--</span> UTC+8</span>
+    <button type="button" class="motion-switch" id="motion-switch" role="switch" aria-checked="false">
+      <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+      Animations
+    </button>
   </div>
 
-  <header class="site-masthead">
+  <!-- LiquidGlass root: the art frame is what the glass card refracts -->
+  <header class="site-masthead" id="masthead">
+    <div class="glass-backing" aria-hidden="true"></div>
+    <img src="../assets/vivlos/summer.webp" alt="" class="vivlos-art" id="vivlos-art">
+
     <div class="masthead-main">
       <span class="kana-rubi">アフターライト</span>
       <h1 class="site-title">Afterlight</h1>
@@ -35,7 +46,7 @@
       </p>
     </div>
 
-    <aside class="presence" id="lanyard-panel" aria-label="Discord presence">
+    <aside class="presence glass" id="lanyard-panel" aria-label="Discord presence">
       <div class="presence-head">
         <span class="mono-dim">Discord</span>
         <span class="presence-status" id="presence-badge"><span class="status-dot" id="lanyard-pip"></span><span id="presence-text">connecting</span></span>
@@ -58,11 +69,13 @@
   </header>
 
   <nav class="archive-nav" id="archive-nav" aria-label="Sections">
+    <div class="glass-backing" aria-hidden="true"></div>
     <a href="#about" class="nav-tab"><span class="tab-num">00</span> Profile <span class="tab-kanji">自己紹介</span></a>
     <a href="#projects" class="nav-tab"><span class="tab-num">01</span> Projects <span class="tab-kanji">制作物</span></a>
     <a href="#workstation" class="nav-tab"><span class="tab-num">02</span> Workstation <span class="tab-kanji">機器構成</span></a>
     <a href="#rhythm" class="nav-tab"><span class="tab-num">03</span> Rhythm <span class="tab-kanji">音ゲー</span></a>
     <a href="#lore" class="nav-tab"><span class="tab-num">04</span> Lore <span class="tab-kanji">余白</span></a>
+    <span class="tab-lens glass" id="tab-lens" aria-hidden="true"></span>
   </nav>
 
   <main class="content-stream">
@@ -110,7 +123,7 @@
         <article class="project-entry">
           <div class="entry-meta-col">
             <span class="entry-num">01</span>
-            <span class="entry-status">Live</span>
+            <span class="entry-status" data-state="live">Live</span>
             <span class="entry-stack">TypeScript · Canvas · Web Audio</span>
             <a href="https://hitsound.vivlos.dev/" target="_blank" rel="noopener">hitsound.vivlos.dev ↗</a>
             <a href="https://github.com/Afterlight0338/hitsound-studio" target="_blank" rel="noopener">Repository ↗</a>
@@ -132,7 +145,7 @@
         <article class="project-entry">
           <div class="entry-meta-col">
             <span class="entry-num">02</span>
-            <span class="entry-status">Live</span>
+            <span class="entry-status" data-state="live">Live</span>
             <span class="entry-stack">TypeScript · Canvas · Vite</span>
             <a href="https://steal.vivlos.dev/" target="_blank" rel="noopener">steal.vivlos.dev ↗</a>
             <a href="https://github.com/Afterlight0338/steal-framework" target="_blank" rel="noopener">Repository ↗</a>
@@ -150,7 +163,7 @@
         <article class="project-entry">
           <div class="entry-meta-col">
             <span class="entry-num">03</span>
-            <span class="entry-status">Live</span>
+            <span class="entry-status" data-state="live">Live</span>
             <span class="entry-stack">React · TypeScript · Cloudflare Workers + D1</span>
             <a href="https://gacha.vivlos.dev/" target="_blank" rel="noopener">gacha.vivlos.dev ↗</a>
             <a href="https://github.com/Afterlight0338/osu-beatmap-gacha" target="_blank" rel="noopener">Repository ↗</a>
@@ -167,7 +180,7 @@
         <article class="project-entry">
           <div class="entry-meta-col">
             <span class="entry-num">04</span>
-            <span class="entry-status">Ongoing</span>
+            <span class="entry-status" data-state="ongoing">Ongoing</span>
             <span class="entry-stack">Nix · Hyprland · Wayland</span>
             <a href="https://github.com/Afterlight0338/my-nix-setup" target="_blank" rel="noopener">Repository ↗</a>
           </div>
@@ -287,9 +300,9 @@
 
           <h4 class="colophon-title">Colophon</h4>
           <ul class="colophon-list">
-            <li>Set in Zen Kaku Gothic New and Maple Mono.</li>
+            <li>Set in Torus Pro (osu!'s typeface) and Maple Mono. Colours are osu!lazer's own palette.</li>
             <li>Static files on GitHub Pages; a Cloudflare Worker proxies the osu! API, Lanyard provides Discord presence.</li>
-            <li>No frameworks, no trackers. Hand-written HTML and CSS.</li>
+            <li>Glass by <a href="https://github.com/ybouane/liquidglass" target="_blank" rel="noopener">liquidglass</a> (WebGL). Otherwise no frameworks, no trackers — hand-written HTML and CSS.</li>
           </ul>
         </div>
 

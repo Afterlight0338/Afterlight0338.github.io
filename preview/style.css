@@ -1,9 +1,41 @@
 /* ============================================================
    DIRECTION D: PERSONAL DIGITAL WORLD (個人電脳領域)
-   Rules over boxes. Cyan = interactive. Gold = rhythm/Vivlos only.
+   Rules over boxes. Each tab owns one osu!lazer colour (--accent).
+   Glass (liquidglass/WebGL) on two things only: the Discord card
+   and the tab lens. Motion only under [data-motion="on"].
    ============================================================ */
 
+@font-face { font-family: 'Torus Pro'; src: url('../assets/fonts/TorusPro-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Torus Pro'; src: url('../assets/fonts/TorusPro-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Torus Pro'; src: url('../assets/fonts/TorusPro-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Torus Pro'; src: url('../assets/fonts/TorusPro-Heavy.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+/* Registered so tab changes can interpolate the colour */
+@property --accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #66ccff;
+}
+
 :root {
+  /* osu!lazer OsuColour */
+  --osu-blue: #66ccff;
+  --osu-purple: #8c66ff;
+  --osu-lime: #b2ff66;
+  --osu-pink: #ff66aa;
+  --osu-yellow: #ffcc22;
+  --osu-red: #ff6666;
+
+  /* osu!lazer OsuColour.ForRank */
+  --rank-ss: #de31ae;
+  --rank-s: #02b5c3;
+  --rank-a: #88da20;
+  --rank-b: #e3b130;
+  --rank-c: #ff8e5d;
+  --rank-d: #ff5a5a;
+
+  --accent: var(--osu-blue);
+
   --bg-canvas: #080b12;
   --bg-surface: #0e1422;
   --bg-surface-elevated: #141c2e;
@@ -16,17 +48,24 @@
   --text-dim: #64748b;
   --text-bright: #ffffff;
 
-  --accent-cyan: #00e5ff;
-  --accent-gold: #fbbf24;
-  --accent-emerald: #10b981;
-  --accent-rose: #f43f5e;
+  /* Discord status (semantic, not accents) */
+  --status-online: #10b981;
+  --status-idle: #fbbf24;
+  --status-dnd: #f43f5e;
 
-  --font-sans: 'Zen Kaku Gothic New', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: 'Torus Pro', 'Zen Kaku Gothic New', system-ui, sans-serif;
+  --font-mono: 'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --radius-xs: 2px;
   --radius-sm: 4px;
+  --radius-glass: 14px;
 }
+
+html[data-tab="about"]       { --accent: var(--osu-blue); }
+html[data-tab="projects"]    { --accent: var(--osu-purple); }
+html[data-tab="workstation"] { --accent: var(--osu-lime); }
+html[data-tab="rhythm"]      { --accent: var(--osu-pink); }
+html[data-tab="lore"]        { --accent: var(--osu-yellow); }
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -40,22 +79,25 @@ body {
   background-color: var(--bg-canvas);
   color: var(--text-main);
   font-family: var(--font-sans);
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip; /* glass backings overhang the gutter by 20px */
 }
 
-a { color: var(--accent-cyan); text-underline-offset: 3px; }
+::selection { background: color-mix(in oklab, var(--accent) 40%, transparent); }
+
+a { color: var(--accent); text-underline-offset: 3px; }
 a:hover { color: var(--text-bright); }
 
 a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--accent-cyan);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 code {
   font-family: var(--font-mono);
-  font-size: 0.85em;
+  font-size: 0.82em;
   color: var(--text-main);
 }
 
@@ -84,11 +126,12 @@ code {
 }
 
 /* ============================================================
-   STATUS RAIL
+   STATUS RAIL + ANIMATIONS SWITCH
    ============================================================ */
 .top-status-bar {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 4px 28px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border-hairline);
@@ -102,51 +145,145 @@ code {
   margin-right: auto;
 }
 
+.motion-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.motion-switch:hover { color: var(--text-bright); }
+
+.switch-track {
+  position: relative;
+  width: 26px;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--border-medium);
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-main);
+}
+
+.motion-switch[aria-checked="true"] .switch-track { background: var(--accent); }
+.motion-switch[aria-checked="true"] .switch-thumb { transform: translateX(12px); background: var(--bg-canvas); }
+
+/* ============================================================
+   GLASS
+   Fallback look is plain CSS; once liquidglass is running the root
+   gets .lg-on and the WebGL canvas replaces it.
+   ============================================================ */
+
+/* Page-coloured layer the shader refracts (its scene starts white).
+   Overhangs by the library's 20px shadow pad; the 32px section gaps
+   keep it off neighbouring content. */
+.glass-backing {
+  position: absolute;
+  inset: -20px;
+  background: var(--bg-canvas);
+  pointer-events: none;
+}
+
+.presence.glass {
+  background: rgba(14, 20, 34, 0.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lg-on > .presence.glass {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: transparent;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .presence.glass {
+    background: var(--bg-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 /* ============================================================
    MASTHEAD
    ============================================================ */
 .site-masthead {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 48px;
   align-items: end;
+  min-height: 250px;
 }
 
 .masthead-main {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .kana-rubi {
   font-size: 0.8rem;
   letter-spacing: 0.2em;
-  color: var(--accent-gold);
+  color: var(--accent);
 }
 
 .site-title {
-  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  font-size: clamp(2.6rem, 6vw, 3.8rem);
   font-weight: 900;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   line-height: 1;
   color: var(--text-bright);
 }
 
 .site-manifesto {
-  margin-top: 8px;
-  font-size: 1.05rem;
+  margin-top: 10px;
+  font-size: 1.08rem;
   color: var(--text-secondary);
-  max-width: 60ch;
+  max-width: 58ch;
 }
 
-/* Discord presence — the one boxed element: it's live, separate data */
+/* Vivlos stands behind the Discord card. She overhangs the masthead
+   bottom by --art-sink and is clipped there; JS moves the clip with
+   her when she swaps outfits. Must stay a direct child of #masthead
+   so liquidglass draws her live (no stale snapshot). */
+.vivlos-art {
+  --art-sink: 90px;
+  position: absolute;
+  z-index: 0;
+  right: 50px;
+  bottom: calc(-1 * var(--art-sink));
+  height: 360px;
+  width: auto;
+  clip-path: inset(0 0 var(--art-sink) 0);
+  pointer-events: none;
+  user-select: none;
+}
+
 .presence {
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-sm);
+  position: relative;
+  z-index: 2;
+  border-radius: var(--radius-glass);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .presence-head {
@@ -155,13 +292,15 @@ code {
   align-items: center;
 }
 
+.presence .mono-dim { color: var(--text-secondary); }
+
 .presence-status {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: var(--text-secondary);
+  color: var(--text-main);
 }
 
 .status-dot {
@@ -171,9 +310,9 @@ code {
   background: var(--text-dim);
 }
 
-.status-dot.online { background: var(--accent-emerald); }
-.status-dot.idle { background: var(--accent-gold); }
-.status-dot.dnd { background: var(--accent-rose); }
+.status-dot.online { background: var(--status-online); }
+.status-dot.idle { background: var(--status-idle); }
+.status-dot.dnd { background: var(--status-dnd); }
 
 .presence-body {
   display: flex;
@@ -185,7 +324,7 @@ code {
   width: 40px;
   height: 40px;
   object-fit: cover;
-  border-radius: var(--radius-xs);
+  border-radius: 8px;
   flex-shrink: 0;
 }
 
@@ -199,14 +338,13 @@ code {
 }
 
 .activity-title-text {
-  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-bright);
 }
 
 .activity-sub-text {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
+  font-size: 0.85rem;
+  color: var(--text-main);
 }
 
 .presence-spotify {
@@ -222,66 +360,105 @@ code {
   justify-content: space-between;
   font-family: var(--font-mono);
   font-size: 0.68rem;
-  color: var(--text-dim);
+  color: var(--text-secondary);
 }
 
 .spotify-bar-track {
   height: 2px;
-  background: var(--border-hairline);
+  background: var(--border-medium);
 }
 
 .spotify-bar-fill {
   height: 100%;
   width: 0%;
-  background: var(--accent-emerald);
-  transition: width 0.8s linear;
+  background: var(--status-online);
 }
 
 /* ============================================================
-   TABS
+   TABS + GLASS LENS
+   Labels never change colour (the shader keeps a snapshot of them);
+   the lens alone marks the active tab.
    ============================================================ */
 .archive-nav {
-  display: flex;
-  gap: 28px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 172px));
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-medium);
-  overflow-x: auto;
-  scrollbar-width: none;
 }
 
+.nav-tab:nth-of-type(1) { --tab: var(--osu-blue); }
+.nav-tab:nth-of-type(2) { --tab: var(--osu-purple); }
+.nav-tab:nth-of-type(3) { --tab: var(--osu-lime); }
+.nav-tab:nth-of-type(4) { --tab: var(--osu-pink); }
+.nav-tab:nth-of-type(5) { --tab: var(--osu-yellow); }
+
 .nav-tab {
-  flex-shrink: 0;
-  padding: 10px 0;
-  margin-bottom: -1px;
-  border-bottom: 2px solid transparent;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  padding: 10px 8px 13px;
   font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-secondary);
+  color: var(--text-main);
   text-decoration: none;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+/* Each tab's own colour, as a short bar the lens magnifies */
+.nav-tab::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 5px;
+  width: 18px;
+  height: 3px;
+  margin-left: -9px;
+  border-radius: 2px;
+  background: var(--tab);
 }
 
 .nav-tab:hover { color: var(--text-bright); }
 
-.nav-tab[aria-current="page"] {
-  color: var(--text-bright);
-  border-bottom-color: var(--accent-cyan);
-}
-
 .tab-num {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--text-dim);
-  margin-right: 2px;
+  font-weight: 600;
+  color: var(--tab);
 }
-
-.nav-tab[aria-current="page"] .tab-num { color: var(--accent-cyan); }
 
 .tab-kanji {
   font-size: 0.72rem;
   font-weight: 400;
   color: var(--text-dim);
-  margin-left: 2px;
+}
+
+.tab-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0; /* fallback: tinted plate under the label */
+  border-radius: 12px;
+  pointer-events: none;
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+/* WebGL: the lens sits over the label and refracts it; the ring is
+   outside the box so the shader canvas doesn't cover it */
+.lg-on > .tab-lens {
+  z-index: 2;
+  background: none;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent) 60%, transparent),
+    0 6px 20px -6px color-mix(in oklab, var(--accent) 80%, transparent);
+}
+
+.archive-nav:has(.nav-tab[aria-current]:focus-visible) .tab-lens {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ============================================================
@@ -297,17 +474,28 @@ code {
 .archive-section[hidden] { display: none; }
 
 .section-heading {
-  font-size: 1.45rem;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 1.6rem;
   font-weight: 900;
-  letter-spacing: -0.01em;
+  line-height: 1.2;
   color: var(--text-bright);
+}
+
+.section-heading::before {
+  content: "";
+  align-self: center;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--accent);
 }
 
 .kanji-sub {
   font-size: 0.9rem;
   font-weight: 400;
-  color: var(--text-dim);
-  margin-left: 8px;
+  color: color-mix(in oklab, var(--accent) 70%, var(--text-dim));
 }
 
 /* ============================================================
@@ -333,10 +521,10 @@ code {
   font-weight: 700;
 }
 
-.narrative-prose em { color: var(--text-main); }
+.narrative-prose em { color: var(--accent); font-style: normal; }
 
 .lead-text {
-  font-size: 1.08rem;
+  font-size: 1.14rem;
   color: var(--text-main);
 }
 
@@ -353,7 +541,7 @@ code {
   border: none;
   padding: 0;
   font: inherit;
-  color: var(--accent-cyan);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -362,12 +550,12 @@ code {
 .link-btn:hover { color: var(--text-bright); }
 
 .data-pair-list {
-  border-left: 1px solid var(--border-medium);
+  border-left: 2px solid var(--accent);
   padding-left: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .data-pair dt {
@@ -381,6 +569,12 @@ code {
 /* ============================================================
    01 PROJECTS
    ============================================================ */
+.projects-dossier {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
 .project-entry {
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -394,12 +588,6 @@ code {
   border-top: none;
 }
 
-.projects-dossier {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
 .entry-meta-col {
   display: flex;
   flex-direction: column;
@@ -411,10 +599,25 @@ code {
 .entry-num {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-dim);
+  color: var(--accent);
 }
 
 .entry-status { color: var(--text-main); }
+
+.entry-status::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  vertical-align: 1px;
+  background: var(--dot, var(--text-dim));
+}
+
+.entry-status[data-state="live"] { --dot: var(--osu-lime); }
+.entry-status[data-state="ongoing"] { --dot: var(--osu-blue); }
+
 .entry-stack { color: var(--text-secondary); }
 
 .entry-body-col {
@@ -425,8 +628,8 @@ code {
 }
 
 .entry-title {
-  font-size: 1.2rem;
-  font-weight: 900;
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--text-bright);
 }
 
@@ -439,11 +642,11 @@ code {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 500;
-  color: var(--text-dim);
+  color: color-mix(in oklab, var(--accent) 60%, var(--text-dim));
 }
 
 .story-block p {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
 }
 
@@ -460,7 +663,7 @@ code {
 .spec-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
 }
 
 .spec-table caption,
@@ -470,6 +673,8 @@ code {
   color: var(--text-bright);
   padding-bottom: 8px;
 }
+
+.spec-table caption { color: var(--accent); }
 
 .spec-table tr { border-top: 1px solid var(--border-hairline); }
 
@@ -510,18 +715,18 @@ code {
 .player-avatar {
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   object-fit: cover;
 }
 
 .player-name {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 900;
   color: var(--text-bright);
   text-decoration: none;
 }
 
-.player-name:hover { color: var(--accent-cyan); }
+.player-name:hover { color: var(--accent); }
 
 .player-stats-row {
   display: flex;
@@ -542,6 +747,8 @@ code {
   color: var(--text-bright);
 }
 
+#osu-pp { color: var(--accent); }
+
 .table-container {
   border-top: 1px solid var(--border-medium);
   padding-top: 16px;
@@ -550,7 +757,7 @@ code {
 .scores-ledger {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.86rem;
+  font-size: 0.9rem;
 }
 
 .scores-ledger th {
@@ -569,7 +776,7 @@ code {
   vertical-align: middle;
 }
 
-.scores-ledger tbody tr:hover { background: var(--bg-surface); }
+.scores-ledger tbody tr:hover { background: color-mix(in oklab, var(--accent) 6%, transparent); }
 
 .scores-ledger .num {
   text-align: right;
@@ -587,9 +794,9 @@ code {
   color: var(--text-dim);
 }
 
-/* #1 play is the spotlight: gold marker, bigger title */
-.top-play .td-rank { color: var(--accent-gold); font-weight: 600; }
-.top-play .td-song-title { font-size: 1rem; }
+/* #1 play is the spotlight */
+.top-play .td-rank { color: var(--accent); font-weight: 600; }
+.top-play .td-song-title { font-size: 1.05rem; }
 
 .td-audio-btn {
   width: 28px;
@@ -598,22 +805,38 @@ code {
   place-items: center;
   background: none;
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-xs);
+  border-radius: 6px;
   color: var(--text-secondary);
   font-size: 0.65rem;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .td-audio-btn:hover,
 .td-audio-btn.playing {
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
-.td-audio-btn .pause-symbol { display: none; }
+/* Playing state: three level bars (they move only with animations on) */
+.eq {
+  display: none;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+}
+
+.eq i {
+  width: 2px;
+  height: 100%;
+  background: currentColor;
+  transform-origin: bottom;
+}
+
+.eq i:nth-child(1) { transform: scaleY(0.5); }
+.eq i:nth-child(3) { transform: scaleY(0.7); }
+
 .td-audio-btn.playing .play-symbol { display: none; }
-.td-audio-btn.playing .pause-symbol { display: inline; }
+.td-audio-btn.playing .eq { display: inline-flex; }
 
 .td-song-title {
   font-weight: 700;
@@ -621,14 +844,14 @@ code {
   text-decoration: none;
 }
 
-.td-song-title:hover { color: var(--accent-cyan); }
+.td-song-title:hover { color: var(--accent); }
 
 .td-song-diff {
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   color: var(--text-dim);
 }
 
-.td-pp { color: var(--text-bright); font-weight: 600; }
+.td-pp { color: var(--accent); font-weight: 600; }
 .td-dim { color: var(--text-secondary); }
 
 .td-mods, .td-grade {
@@ -639,8 +862,18 @@ code {
   white-space: nowrap;
 }
 
-.td-grade { font-weight: 600; }
-.grade-silver { color: #e2e8f0; }
+/* osu!lazer ModType colours */
+.mod-inc { color: var(--osu-red); }
+.mod-red { color: var(--osu-lime); }
+.mod-auto { color: var(--osu-blue); }
+
+.td-grade { font-size: 0.85rem; font-weight: 600; }
+.grade-ss { color: var(--rank-ss); }
+.grade-s { color: var(--rank-s); }
+.grade-a { color: var(--rank-a); }
+.grade-b { color: var(--rank-b); }
+.grade-c { color: var(--rank-c); }
+.grade-d { color: var(--rank-d); }
 
 .table-msg {
   text-align: center;
@@ -657,7 +890,7 @@ code {
   padding: 4px 0;
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: var(--accent-cyan);
+  color: var(--accent);
   cursor: pointer;
 }
 
@@ -682,7 +915,7 @@ code {
 }
 
 .lore-title {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-bright);
 }
@@ -700,12 +933,12 @@ code {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
 }
 
 .colophon-list li::before {
   content: "— ";
-  color: var(--accent-gold);
+  color: var(--accent);
 }
 
 .plate-image {
@@ -716,7 +949,7 @@ code {
 
 .editorial-plate figcaption {
   margin-top: 8px;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   color: var(--text-dim);
 }
 
@@ -736,19 +969,61 @@ code {
   bottom: 24px;
   right: 24px;
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-medium);
+  border: 1px solid var(--accent);
   color: var(--text-main);
   padding: 8px 14px;
-  border-radius: var(--radius-xs);
+  border-radius: 8px;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
   z-index: 10;
 }
 
 .toast-indicator.show { opacity: 1; }
+
+/* ============================================================
+   MOTION (Animations switch). Nothing moves without it.
+   ============================================================ */
+[data-motion="on"] { transition: --accent 0.5s ease; }
+
+[data-motion="on"] .switch-track { transition: background 0.2s ease; }
+[data-motion="on"] .switch-thumb { transition: transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1), background 0.2s ease; }
+
+/* Lens slide with a little overshoot; JS adds the squish */
+[data-motion="on"] .tab-lens { transition: transform 0.55s cubic-bezier(0.3, 1.45, 0.5, 1); }
+
+[data-motion="on"] .nav-tab,
+[data-motion="on"] a,
+[data-motion="on"] .link-btn,
+[data-motion="on"] .td-audio-btn,
+[data-motion="on"] .expand-table-btn { transition: color 0.15s ease, border-color 0.15s ease; }
+
+[data-motion="on"] .scores-ledger tbody tr { transition: background 0.15s ease; }
+[data-motion="on"] .spotify-bar-fill { transition: width 1s linear; }
+[data-motion="on"] .toast-indicator { transition: opacity 0.2s ease; }
+
+/* Tab enter: content arrives from the side you moved towards */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate(var(--dx, 0px), 10px);
+  }
+}
+
+[data-motion="on"] .rise {
+  animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+@keyframes eq {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+[data-motion="on"] .playing .eq i { animation: eq 0.8s ease-in-out infinite; }
+[data-motion="on"] .playing .eq i:nth-child(2) { animation-delay: -0.3s; }
+[data-motion="on"] .playing .eq i:nth-child(3) { animation-delay: -0.55s; }
 
 /* ============================================================
    RESPONSIVE
@@ -762,10 +1037,21 @@ code {
     gap: 28px;
   }
 
+  .site-masthead { min-height: 0; }
+
+  /* Leave headroom for Vivlos to peek over the card */
+  .presence { margin-top: 84px; }
+
+  .vivlos-art {
+    --art-sink: 60px;
+    right: 16px;
+    height: 260px;
+  }
+
   .data-pair-list {
     border-left: none;
     padding-left: 0;
-    border-top: 1px solid var(--border-medium);
+    border-top: 2px solid var(--accent);
     padding-top: 16px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -793,9 +1079,10 @@ code {
   }
 
   .top-status-bar > :first-child { width: 100%; }
-  /* All five tabs must stay visible — wrap rather than hide Lore off-screen */
+
+  /* 3 + 2 grid; the lens moves in both axes */
+  .archive-nav { grid-template-columns: repeat(3, 1fr); }
   .tab-kanji, .tab-num { display: none; }
-  .archive-nav { flex-wrap: wrap; gap: 0 20px; }
 
   /* Drop low-value columns instead of scrolling a 600px table */
   .col-combo, .td-combo,
@@ -803,10 +1090,4 @@ code {
 
   .scores-ledger th, .scores-ledger td { padding: 8px 6px; }
   .td-audio-btn { width: 32px; height: 32px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition-duration: 0.01ms !important;
-  }
 }
