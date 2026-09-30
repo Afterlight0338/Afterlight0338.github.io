@@ -7,7 +7,7 @@
 
   const DISCORD_USER_ID = "553169854304354304";
   const OSU_PROXY = "https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=14671577";
-  const OSU_DATA_PATH = "../data/osu.json";
+  const OSU_DATA_PATH = "/data/osu.json";
   // Pinned: npm versions are immutable, so this can't change under us
   const LIQUIDGLASS_URL = "https://cdn.jsdelivr.net/npm/@ybouane/liquidglass@1.0.3/dist/index.js";
 
@@ -146,7 +146,7 @@
 
   async function swapArt(name, animate) {
     const img = $('vivlos-art');
-    const src = `../assets/vivlos/${name}.webp`;
+    const src = `/assets/vivlos/${name}.webp`;
     if (img.getAttribute('src') === src) return;
     const seq = ++artSeq;
 
@@ -179,7 +179,7 @@
   }
 
   function preloadArt() {
-    new Set(Object.values(ART)).forEach(name => { new Image().src = `../assets/vivlos/${name}.webp`; });
+    new Set(Object.values(ART)).forEach(name => { new Image().src = `/assets/vivlos/${name}.webp`; });
   }
 
   // ------------------------------------------------------------

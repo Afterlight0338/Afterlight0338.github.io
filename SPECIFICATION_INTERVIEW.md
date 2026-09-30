@@ -2,14 +2,14 @@
 
 > **Single Source of Truth**: This document records the state of `vivlos.dev`: how the redesign is built, the rules that keep it working, every decision Afterlight has made, authoring templates, and what is left to do. Any AI agent (or Afterlight) resuming this project should start by reading this file, then `DESIGN_CONSTITUTION.md`.
 
-*Last updated: 2026-09-27, through commit `41e072e`.*
+*Last updated: 2026-09-30.*
 
 ---
 
 ## Quick Status Summary
 
-1. **Root site (`vivlos.dev/`)**: still in **placeholder mode** (`index.html` + `style.css`, no scripts). Waiting for the redesign to be promoted.
-2. **Redesign (`vivlos.dev/preview/`)**: live and working. Five perspective tabs, liquid glass (Discord card + tab lens), osu!lazer palette with one colour per tab, Torus Pro, an **Animations** switch, live Discord presence, live osu! stats, top 50 plays with audio previews. Copy is still a draft for Afterlight to rewrite.
+1. **vivlos.dev**: the redesign is live at the root since 2026-09-30. `/preview/` now only redirects there (keeping the tab hash). Missing paths get the custom `404.html`.
+2. **What it has**: Five perspective tabs, liquid glass (Discord card + tab lens), osu!lazer palette with one colour per tab, Torus Pro, an **Animations** switch, live Discord presence, live osu! stats, top 50 plays with audio previews. Copy is still a draft for Afterlight to rewrite.
 3. **Governing design document**: `DESIGN_CONSTITUTION.md` (symlinked as `AGENTS.md`). Its rules still apply. The one approved exception is glassmorphism, scoped in Part 2.
 
 ---
@@ -23,30 +23,29 @@
 Afterlight0338.github.io/
 ├── CNAME                      # vivlos.dev
 ├── .nojekyll                  # serve files raw (no Jekyll)
-├── index.html, style.css      # root placeholder page
-├── preview/                   # the redesign, served at vivlos.dev/preview/
-│   ├── index.html             # markup for all five tabs
-│   ├── style.css              # tokens, layout, glass fallback, motion
-│   └── app.js                 # tabs, motion switch, glass, Lanyard, osu!, audio
+├── index.html                 # markup for all five tabs, link-preview tags
+├── style.css                  # tokens, layout, glass fallback, motion
+├── app.js                     # tabs, motion switch, glass, Lanyard, osu!, audio
+├── 404.html                   # custom not-found page (absolute URLs, uses style.css)
+├── preview/index.html         # redirect to / for old links
 ├── assets/
 │   ├── fonts/                 # TorusPro Regular / SemiBold / Bold / Heavy (woff2)
-│   └── vivlos/                # casual, racing, stage, summer (transparent webp)
+│   ├── vivlos/                # casual, racing, stage, summer (transparent webp)
+│   └── og.jpg                 # 1200x630 link-preview image (screenshot of the header)
 ├── data/osu.json              # snapshot: profile + top 50 plays (fallback + score list)
 ├── worker/                    # Cloudflare Worker proxying the osu! API (osu-api-proxy)
-├── js/                        # old root scripts, unused since placeholder mode
-├── roxy/, site-1/, stripped/  # archived earlier versions
 ├── DESIGN_CONSTITUTION.md     # design rules (AGENTS.md is a symlink to it)
 └── SPECIFICATION_INTERVIEW.md # this file
 ```
 
-### 2. Page structure (`preview/index.html`)
+### 2. Page structure (`index.html`)
 * **Status rail**: domain, OS, UTC+8 clock, Animations switch (`#motion-switch`, `role="switch"`).
 * **Masthead** (`#masthead`, a liquidglass root). Direct children, in order: `.glass-backing`, `img#vivlos-art`, `.masthead-main` (kana, title, manifesto), `aside#lanyard-panel.glass` (Discord card).
 * **Tab bar** (`#archive-nav`, a second liquidglass root): `.glass-backing`, five `a.nav-tab` (`#about`, `#projects`, `#workstation`, `#rhythm`, `#lore`), `span#tab-lens.glass`.
 * **Sections**: `section.archive-section` per tab. JS sets `hidden` on all but the active one; without JS every section shows as one long page.
 * Default tab is Profile (`#about`). The URL hash keeps a tab linkable, and back/forward works (`pushState` + `popstate`).
 
-### 3. Styling (`preview/style.css`)
+### 3. Styling (`style.css`)
 * No framework or preprocessor. Tokens on `:root`.
 * **Accent**: `--accent` is registered with `@property` (so it can animate) and set per tab on `html[data-tab=…]`:
 
@@ -63,7 +62,7 @@ Afterlight0338.github.io/
 * **Motion**: every transition and animation is scoped under `[data-motion="on"]`. With the switch off (or no JS) nothing moves.
 * **Breakpoints**: 900px (single column, Discord card capped at 360px with headroom for Vivlos) and 640px (tabs become a 3 + 2 grid, tab numbers and kanji hidden, combo and grade columns dropped).
 
-### 4. Behaviour (`preview/app.js`, one IIFE)
+### 4. Behaviour (`app.js`, one IIFE)
 * **Motion switch**: defaults to `prefers-reduced-motion`; an explicit choice is stored in `localStorage["vivlos-motion"]` (wrapped in try/catch).
 * **Tabs**: `show(id)` sets `data-tab`, toggles `hidden`, moves the lens (`translate` + a WAAPI `scale` squish), swaps the Vivlos outfit, and staggers the new tab's blocks in from the direction of travel (`.rise`, `--dx`, `--i`).
 * **Vivlos outfit per tab**: Profile `summer`, Projects `racing`, Workstation `casual`, Rhythm `stage`, Lore `summer`. The swap drops her behind the card and pops her back up; the `clip-path` moves with the `transform` so she never shows below the masthead. Other outfits are preloaded after `load`.
@@ -74,7 +73,7 @@ Afterlight0338.github.io/
 * **Audio previews**: one `Audio` at a time from `https://b.ppy.sh/preview/{setId}.mp3`, volume 0.35. Playing buttons show three level bars (animated only with motion on).
 
 ### 5. Original implementation baseline (before the redesign)
-The pre-redesign site was a two-column layout (sticky left profile column, four identical rounded "mega-cards" on the right) with scripts `js/vivlos.js` (clock, copy toast), `js/lanyard.js` (presence) and `js/osu.js` (proxy fetch with `sessionStorage` cache, Top 1 banner, Top 5 list). It used cyan/gold/emerald/rose accents, Zen Kaku Gothic New, 20px card radius and radial-gradient backgrounds. Kept here only as the reference for Parts 2 and 3; none of it is used by `/preview`.
+The pre-redesign site was a two-column layout (sticky left profile column, four identical rounded "mega-cards" on the right) with scripts (since deleted) `js/vivlos.js` (clock, copy toast), `js/lanyard.js` (presence) and `js/osu.js` (proxy fetch with `sessionStorage` cache, Top 1 banner, Top 5 list). It used cyan/gold/emerald/rose accents, Zen Kaku Gothic New, 20px card radius and radial-gradient backgrounds. Kept here only as the reference for Parts 2 and 3; none of it is in the repo any more (removed 2026-09-30 along with `css/`, `roxy/`, `site-1/`, `stripped/`).
 
 ---
 
@@ -125,7 +124,7 @@ Status Legend:
 
 > Facts below come from each project's README and git history. The earlier catalog had several wrong descriptions; do not reuse them.
 
-**Featured on `/preview`:**
+**Featured on the site:**
 1. **Hitsound Studio** (`Afterlight0338/hitsound-studio`, live at hitsound.vivlos.dev): FL Studio-style lane editor for osu! hitsounding. TypeScript, Canvas, Web Audio; fully client-side; exports a `[Hitsounds]` diff and copies hitsounds without touching SV.
 2. **steal-framework** (`Afterlight0338/steal-framework`, live at steal.vivlos.dev): checks whether an osu! map copies another map of the same song (rhythm, positions, slider shapes, flipped/rotated/shifted variants) using the Hinamizawa mirror. TypeScript, Canvas, Vite.
 3. **osu! Beatmap Gacha** (`Afterlight0338/osu-beatmap-gacha`, live at gacha.vivlos.dev): gacha game that pulls osu! beatmaps as cards. React 19, TypeScript, Cloudflare Workers + D1, osu! OAuth.
@@ -147,36 +146,37 @@ Status Legend:
 | **2.1 Tab grouping** | 5 tabs: Profile / Projects / Workstation / Rhythm / Lore. |
 | **2.2 Featured projects** | Hitsound Studio (hitsound.vivlos.dev), steal-framework (steal.vivlos.dev), osu! Beatmap Gacha (gacha.vivlos.dev), re-fun60-ultra-tmr (replaced my-nix-setup, 2026-09-30), osu-skins. **Removed:** ry5088-flasher (dot-agi's repo; user only rewrote firmware with it), youtube-music-cli (half-baked private fork), veikk-s640-zero-smoothing (not published). |
 | **2.3 Default view / pinned bar** | Profile opens by default. Status rail + Discord presence stay above every tab. |
-| **Publish target** | Prototype lives at `vivlos.dev/preview/` (renamed from `dir-d`). Root stays on placeholders for now. |
+| **Publish target** | Built at `vivlos.dev/preview/` (renamed from `dir-d`), promoted to the root on 2026-09-30. `/preview/` redirects. |
 | **Rhythm games** | osu! standard + maimai. |
 | **Input settings** | SayoDevice K05 HE: actuation 1.5 mm / release 0.3 mm, RT 0.2 mm press / 0.4 mm release. Keyboards: HyperX Alloy Origins (Red) + Everglide AE68 PRO. |
 | **Links** | GitHub, osu!, Twitch, TikTok (@afterlight_1337), Discord copy. |
-| **Copy** | Current draft text ships in /preview; user will rewrite later. |
+| **Copy** | Afterlight rewrote the tagline, Profile bio and sidebar (2026-09-30); project write-ups are still drafted from READMEs. |
 
 ---
 
 # Part 6: Next Steps
 
-1. **Copy**: Afterlight rewrites the Profile text and the project write-ups. The current project text was drafted from each README and is marked as a draft in Part 5. Part 3 has the original text as a baseline.
+1. **Copy**: the project write-ups are still drafts from each README; rewrite them whenever. Part 3 has the original text as a baseline.
 2. **Look**: Afterlight to confirm the Vivlos size and outfit per tab, and the glass tuning.
-3. **Promote**: when approved, move `preview/` to the root. Asset paths in `preview/` use `../` (fonts, art, `data/osu.json`) and must be adjusted; keep the `?v=` versioning.
-4. **Optional clean-up**: remove the unused `js/` scripts and the archived `roxy/`, `site-1/`, `stripped/` once nothing links to them.
+3. **Done 2026-09-30**: promoted to the root, old files removed, link previews (`og:*` tags + `assets/og.jpg`), custom 404.
 
 **Known rough edges:**
 * The lens magnifies the label slightly at its top and bottom edges (real refraction, kept subtle).
 * The "Discord" label on the card is lower contrast where a bright part of an outfit sits behind it.
 * Japanese text arriving from Lanyard (e.g. a Spotify title) renders in the system font, because Zen Kaku is subset to the page's own glyphs.
-* Opening a deep link such as `/preview/#rhythm` scrolls the browser to that section.
+* Opening a deep link such as `/#rhythm` scrolls the browser to that section.
 
 ---
 
-# Part 7: Maintenance Rules (read before editing `/preview`)
+# Part 7: Maintenance Rules (read before editing the site)
 
 These are the non-obvious things that broke once. Each one has a comment at the relevant spot in the code.
 
 ### Deploying
-* **Bump `?v=` on `style.css` and `app.js` in `preview/index.html` whenever either file changes.** vivlos.dev is served with `cache-control: max-age=14400` (4 hours). Without a new URL, returning visitors get the new HTML with the old CSS/JS, and the page falls apart (this happened on 2026-09-27). Current: `?v=5`.
+* **Bump `?v=` on `style.css` and `app.js` in `index.html` (and on `style.css` in `404.html`) whenever either file changes.** vivlos.dev is served with `cache-control: max-age=14400` (4 hours). Without a new URL, returning visitors get the new HTML with the old CSS/JS, and the page falls apart (this happened on 2026-09-27). Current: `?v=6`.
 * GitHub Pages deploys in about 30 to 40 seconds after a push.
+* Asset URLs are absolute (`/assets/...`, `/data/...`) so they work from `404.html` at any depth.
+* **`assets/og.jpg`** is a screenshot of the header at 1200x630, taken in headless Brave with the live Discord status hidden (a frozen status would look wrong in every embed). Retake it if the header changes. Discord caches previews, so changes can take a while to show there.
 
 ### liquidglass (v1.0.3) constraints
 * Glass elements must be **direct children** of the root passed to `LiquidGlass.init`.
@@ -189,7 +189,7 @@ These are the non-obvious things that broke once. Each one has a comment at the 
 ### Fonts
 * Zen Kaku Gothic New is requested with Google Fonts `text=`, listing only the Japanese characters on the page. The library embeds every face of a loaded family, and the full sheet meant 242 downloads before the glass appeared. **When adding Japanese text, add its characters to that URL.** To regenerate the list:
   ```
-  node -e "const h=require('fs').readFileSync('preview/index.html','utf8');console.log(encodeURIComponent([...new Set(h.match(/[　-ヿ一-鿿＀-￯]/g))].sort().join('')))"
+  node -e "const h=require('fs').readFileSync('index.html','utf8');console.log(encodeURIComponent([...new Set(h.match(/[　-ヿ一-鿿＀-￯]/g))].sort().join('')))"
   ```
 * Torus is a commercial typeface licensed to ppy for osu!. Self-hosting it is Afterlight's decision (it is also served on hitsound.vivlos.dev).
 

@@ -2,468 +2,345 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
-  <title>placeholder • placeholder</title>
-  <meta name="description" content="placeholder">
-  <meta name="theme-color" content="#060911">
-  <link rel="icon" type="image/webp" href="assets/vivlos/casual.webp">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afterlight, vivlos.dev</title>
+  <meta name="description" content="I build random tools for my stupidly niche issues, break things that were already working fine, and spend a questionable amount of time playing rhythm games.">
+  <meta name="theme-color" content="#080b12">
+  <link rel="canonical" href="https://vivlos.dev/">
 
-  <!-- Google Fonts: Zen Kaku Gothic New & Maple Mono -->
+  <!-- Link previews (Discord, X, etc.). og.jpg is a screenshot of this page's header -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vivlos.dev/">
+  <meta property="og:site_name" content="vivlos.dev">
+  <meta property="og:title" content="Afterlight">
+  <meta property="og:description" content="I build random tools for my stupidly niche issues, break things that were already working fine, and spend a questionable amount of time playing rhythm games.">
+  <meta property="og:image" content="https://vivlos.dev/assets/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The top of vivlos.dev: Afterlight, with Vivlos behind a glass Discord card">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/webp" href="/assets/vivlos/casual.webp">
+
+  <link rel="preload" href="/assets/fonts/TorusPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/TorusPro-Heavy.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/500.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@5.3.0/600.css" rel="stylesheet">
+  <!-- Zen Kaku only covers the Japanese text Torus lacks. text= subsets it to the
+       exact glyphs on this page (2 tiny files instead of 242, liquidglass fetches
+       every face of a loaded family). Add new Japanese characters here; anything
+       missing (e.g. a Japanese Spotify title) falls back to the system font. -->
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap&text=%E3%81%84%E3%81%A4%E3%81%A6%E3%81%AB%E3%82%A2%E3%82%A3%E3%82%A4%E3%82%B2%E3%82%B9%E3%82%BF%E3%83%88%E3%83%95%E3%83%96%E3%83%A9%E3%83%AD%E3%83%B4%E3%83%BC%E4%BB%8B%E4%BD%99%E4%BD%9C%E5%88%B6%E5%99%A8%E5%B7%B1%E6%88%90%E6%A7%8B%E6%A9%9F%E7%89%A9%E7%99%BD%E7%B4%B9%E8%87%AA%E8%A8%98%E9%8C%B2%E9%9F%B3" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <!-- vivlos.dev is served with a 4h browser cache: bump ?v= whenever style.css or app.js change -->
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
-<div class="app-container">
+<div class="site-canvas">
 
-  <!-- ==========================================================
-       LEFT STAGE: COMPACT STICKY PROFILE & PRESENCE
-       ========================================================== -->
-  <aside class="left-stage">
+  <div class="top-status-bar">
+    <span>vivlos.dev</span>
+    <span><span class="mono-dim">running</span> NixOS 26.05 / Hyprland</span>
+    <span><span class="mono-dim">local time</span> <span id="clock-display">--:--:--</span> UTC+8</span>
+    <button type="button" class="motion-switch" id="motion-switch" role="switch" aria-checked="false">
+      <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+      Animations
+    </button>
+  </div>
 
-    <div class="profile-meta-card">
-      <div class="profile-header-top">
-        <div class="profile-avatar-thumb">
-          <img src="assets/vivlos/casual.webp" alt="placeholder">
-        </div>
-        <div class="profile-name-group">
-          <h1 class="profile-name">placeholder</h1>
-          <span class="domain-pill">placeholder</span>
-        </div>
-      </div>
+  <!-- LiquidGlass root: the art frame is what the glass card refracts -->
+  <header class="site-masthead" id="masthead">
+    <div class="glass-backing" aria-hidden="true"></div>
+    <img src="/assets/vivlos/summer.webp" alt="" class="vivlos-art" id="vivlos-art">
 
-      <p class="profile-tagline">
-        placeholder
+    <div class="masthead-main">
+      <span class="kana-rubi">アフターライト</span>
+      <h1 class="site-title">Afterlight</h1>
+      <p class="site-manifesto">
+        I build random tools for my stupidly niche issues, break things that were already working fine, and spend a questionable amount of time playing rhythm games.
       </p>
-
-      <!-- Live Discord Presence (Lanyard Sync) -->
-      <div class="presence-box" id="lanyard-card">
-        <div class="presence-header">
-          <div class="discord-user-pill">
-            <span class="status-dot" id="avatar-pip"></span>
-            <span>placeholder</span>
-          </div>
-          <div class="device-badges" id="device-badges">
-            <span title="placeholder">💻</span>
-          </div>
-        </div>
-
-        <!-- Custom Status -->
-        <div class="presence-status-label" id="discord-custom-status" style="display:none; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted);">
-          <span id="custom-emoji">💬</span> <span id="custom-status-val">placeholder</span>
-        </div>
-
-        <!-- Activity / Game / Spotify Body -->
-        <div class="presence-activity-body" id="activity-body">
-          <img class="activity-icon-img" id="activity-icon" src="assets/vivlos/casual.webp" alt="placeholder">
-          <div class="activity-text-group">
-            <span class="activity-type-label" id="activity-type">placeholder</span>
-            <span class="activity-title" id="activity-name">placeholder</span>
-            <span class="activity-subtitle" id="activity-state">placeholder</span>
-          </div>
-        </div>
-
-        <!-- Spotify Track Bar -->
-        <div class="spotify-progress-container" id="spotify-progress-wrap" style="display:none;">
-          <div class="spotify-track-bar">
-            <div class="spotify-track-fill" id="spotify-fill"></div>
-          </div>
-          <div class="spotify-time-row">
-            <span id="spotify-cur">placeholder</span>
-            <span id="spotify-tot">placeholder</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Jump Navigation -->
-      <nav class="nav-jump-list">
-        <a href="#about" class="nav-jump-item"><span>placeholder</span><span>→</span></a>
-        <a href="#projects" class="nav-jump-item"><span>placeholder</span><span>→</span></a>
-        <a href="#specs" class="nav-jump-item"><span>placeholder</span><span>→</span></a>
-        <a href="#osu" class="nav-jump-item"><span>placeholder</span><span>→</span></a>
-      </nav>
-
-      <!-- Socials Row -->
-      <div class="socials-bar">
-        <a class="social-link-btn" href="#" aria-label="placeholder">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.02-.01-1.86-2.78.62-3.37-1.22-3.37-1.22-.46-1.19-1.11-1.51-1.11-1.51-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.92 0 1.39-.01 2.51-.01 2.85 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
-        </a>
-        <button class="social-link-btn" aria-label="placeholder">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 5.4A17.5 17.5 0 0 0 15.9 4c-.2.4-.5.9-.6 1.3a16.5 16.5 0 0 0-4.8 0A9 9 0 0 0 9.8 4a17.6 17.6 0 0 0-4.4 1.4C2.6 9 1.9 12.5 2.2 16a17.7 17.7 0 0 0 5.3 2.7c.4-.6.8-1.2 1.1-1.9-.6-.2-1.2-.5-1.7-.9l.4-.3c3.3 1.5 6.9 1.5 10.2 0l.4.3c-.5.4-1.1.7-1.7.9.3.7.7 1.3 1.1 1.9a17.6 17.6 0 0 0 5.3-2.7c.4-4-.6-7.5-2.3-10.6ZM9.7 13.9c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm4.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
-        </button>
-        <a class="social-link-btn" href="#" aria-label="placeholder">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
-        </a>
-        <a class="social-link-btn" href="#" aria-label="placeholder">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.36-1.5V4h-2.62v13.1a2.7 2.7 0 1 1-2.19-2.66V11.9a5.3 5.3 0 1 0 4.81 5.28V9.4a6.9 6.9 0 0 0 4.36 1.56V8.36c-.34 0-.68-.03-1-.09Z"/></svg>
-        </a>
-        <a class="social-link-btn" href="#" aria-label="placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"></circle></svg>
-        </a>
-      </div>
-
-      <!-- Live Clock -->
-      <div class="clock-display">
-        <span>🕒</span>
-        <span id="live-clock-text">placeholder</span>
-      </div>
     </div>
 
-  </aside>
-
-
-  <!-- ==========================================================
-       RIGHT FEED: 4 UNIFIED COMBINED SECTION CARDS
-       ========================================================== -->
-  <main class="right-feed">
-
-    <!-- SECTION 1: ABOUT (Paired with Casual Vivlos) -->
-    <section class="unified-section-card" id="about">
-      <div class="card-header-flex">
-        <div class="card-title-group">
-          <span class="card-index-label">placeholder</span>
-          <h2 class="card-main-title">placeholder</h2>
-          <p class="card-subtext">placeholder</p>
-        </div>
-        <div class="section-character-art">
-          <img src="assets/vivlos/casual.webp" alt="placeholder" width="140" height="185">
+    <aside class="presence glass" id="lanyard-panel" aria-label="Discord presence">
+      <div class="presence-head">
+        <span class="mono-dim">Discord</span>
+        <span class="presence-status" id="presence-badge"><span class="status-dot" id="lanyard-pip"></span><span id="presence-text">connecting</span></span>
+      </div>
+      <div class="presence-body">
+        <img src="/assets/vivlos/casual.webp" alt="" class="avatar-small" width="40" height="40">
+        <div class="presence-meta">
+          <div class="activity-title-text" id="sidecar-activity-title">@afterlight_hd</div>
+          <div class="activity-sub-text" id="sidecar-activity-desc">…</div>
         </div>
       </div>
-
-      <p class="statement-text">
-        placeholder
-      </p>
-      <p class="statement-text">
-        placeholder
-      </p>
-      <p class="statement-text">
-        placeholder
-      </p>
-    </section>
-
-
-    <!-- SECTION 2: FEATURED REPOSITORIES (Paired with Stage Vivlos) -->
-    <section class="unified-section-card" id="projects">
-      <div class="card-header-flex">
-        <div class="card-title-group">
-          <span class="card-index-label">placeholder</span>
-          <h2 class="card-main-title">placeholder</h2>
-          <p class="card-subtext">placeholder</p>
+      <div class="presence-spotify" id="sidecar-spotify" hidden>
+        <div class="spotify-info-row">
+          <span>Spotify</span>
+          <span id="spotify-time">0:00 / 0:00</span>
         </div>
-        <div class="section-character-art">
-          <img src="assets/vivlos/stage.webp" alt="placeholder" width="140" height="185">
-        </div>
+        <div class="spotify-bar-track"><div class="spotify-bar-fill" id="spotify-fill"></div></div>
       </div>
+    </aside>
+  </header>
 
-      <div class="projects-list">
-        <!-- Project 1 -->
-        <a class="project-row-item" href="#" target="_blank" rel="noopener">
-          <div class="project-info-group">
-            <div class="project-title-row">
-              <span class="project-name">placeholder</span>
-              <span class="project-badge">placeholder</span>
-            </div>
-            <p class="project-desc-text">placeholder</p>
-          </div>
-          <div class="project-action-icon">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          </div>
-        </a>
+  <nav class="archive-nav" id="archive-nav" aria-label="Sections">
+    <div class="glass-backing" aria-hidden="true"></div>
+    <a href="#about" class="nav-tab"><span class="tab-num">00</span> Profile <span class="tab-kanji">自己紹介</span></a>
+    <a href="#projects" class="nav-tab"><span class="tab-num">01</span> Projects <span class="tab-kanji">制作物</span></a>
+    <a href="#workstation" class="nav-tab"><span class="tab-num">02</span> Workstation <span class="tab-kanji">機器構成</span></a>
+    <a href="#rhythm" class="nav-tab"><span class="tab-num">03</span> Rhythm <span class="tab-kanji">音ゲー</span></a>
+    <a href="#lore" class="nav-tab"><span class="tab-num">04</span> Lore <span class="tab-kanji">余白</span></a>
+    <span class="tab-lens glass" id="tab-lens" aria-hidden="true"></span>
+  </nav>
 
-        <!-- Project 2 -->
-        <a class="project-row-item" href="#" target="_blank" rel="noopener">
-          <div class="project-info-group">
-            <div class="project-title-row">
-              <span class="project-name">placeholder</span>
-              <span class="project-badge">placeholder</span>
-            </div>
-            <p class="project-desc-text">placeholder</p>
-          </div>
-          <div class="project-action-icon">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          </div>
-        </a>
+  <main class="content-stream">
 
-        <!-- Project 3 -->
-        <a class="project-row-item" href="#" target="_blank" rel="noopener">
-          <div class="project-info-group">
-            <div class="project-title-row">
-              <span class="project-name">placeholder</span>
-              <span class="project-badge">placeholder</span>
-            </div>
-            <p class="project-desc-text">placeholder</p>
-          </div>
-          <div class="project-action-icon">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          </div>
-        </a>
+    <!-- 00 PROFILE -->
+    <section class="archive-section" id="about">
+      <h2 class="section-heading">Profile <span class="kanji-sub">自己紹介</span></h2>
 
-        <!-- Project 4 -->
-        <a class="project-row-item" href="#" target="_blank" rel="noopener">
-          <div class="project-info-group">
-            <div class="project-title-row">
-              <span class="project-name">placeholder</span>
-              <span class="project-badge">placeholder</span>
-            </div>
-            <p class="project-desc-text">placeholder</p>
-          </div>
-          <div class="project-action-icon">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          </div>
-        </a>
+      <div class="narrative-grid">
+        <div class="narrative-prose">
+          <p class="lead-text">
+            Hey, I'm <strong>Afterlight</strong>. Most of the stuff I write starts with a very specific irritation: <em>"ts so ahh"</em>, or realizing that no one made the exact tool that solves a hyper-specific annoyance.
+          </p>
+          <p>
+            My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because the Nix logo got me, but it became a permanent home because declarative config sounds cool. It also lets me do random things without worrying about breaking anything.
+          </p>
+          <p>
+            Outside of that, I spend a borderline degenerate amount of time playing rhythm games, mostly <strong>osu!</strong> standard, plus <strong>maimai (I'm 12K!)</strong>.
+          </p>
+
+          <p class="links-row">
+            <a href="https://github.com/Afterlight0338" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">osu! ↗</a>
+            <a href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener">Twitch ↗</a>
+            <a href="https://www.tiktok.com/@afterlight_1337" target="_blank" rel="noopener">TikTok ↗</a>
+            <button type="button" class="link-btn" onclick="copyDiscord()">Discord @afterlight_hd <span class="mono-dim">(copy)</span></button>
+          </p>
+        </div>
+
+        <dl class="data-pair-list">
+          <div class="data-pair"><dt>Handle</dt><dd>Afterlight / RyoYamada</dd></div>
+          <div class="data-pair"><dt>Based in</dt><dd>Malaysia, UTC+8</dd></div>
+          <div class="data-pair"><dt>OS</dt><dd>NixOS 26.05 + Hyprland (Caelestia shell)</dd></div>
+          <div class="data-pair"><dt>Writes</dt><dd>C++, TypeScript</dd></div>
+          <div class="data-pair"><dt>Into</dt><dd>osu!, maimai, anime, eh idk really</dd></div>
+        </dl>
       </div>
     </section>
 
+    <!-- 01 PROJECTS -->
+    <section class="archive-section" id="projects">
+      <h2 class="section-heading">Projects <span class="kanji-sub">制作物</span></h2>
 
-    <!-- SECTION 3: SYSTEM SETUP & GEAR SPECS (Paired with Summer Vivlos) -->
-    <section class="unified-section-card" id="specs">
-      <div class="card-header-flex">
-        <div class="card-title-group">
-          <span class="card-index-label">placeholder</span>
-          <h2 class="card-main-title">placeholder</h2>
-          <p class="card-subtext">placeholder</p>
-        </div>
-        <div class="section-character-art">
-          <img src="assets/vivlos/summer.webp" alt="placeholder" width="140" height="185">
-        </div>
-      </div>
+      <div class="projects-dossier">
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">01</span>
+            <span class="entry-status" data-state="live">Live</span>
+            <span class="entry-stack">TypeScript · Canvas · Web Audio</span>
+            <a href="https://hitsound.vivlos.dev/" target="_blank" rel="noopener">hitsound.vivlos.dev ↗</a>
+            <a href="https://github.com/Afterlight0338/hitsound-studio" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">Hitsound Studio</h3>
+            <p class="entry-tagline">An FL Studio-style hitsound editor for osu! mappers, in the browser. (if you think hard enough, this is also basically a watered-down FL Studio web clone)</p>
+            <div class="story-block">
+              <h4 class="story-label">The problem</h4>
+              <p>Hitsounding in osu! means juggling sample sets, additions, volumes and custom indices across hundreds of timing lines. The usual workaround is a dummy 18-key mania diff in Mapping Tools, which says mappers want lanes; the workflow just isn't there.</p>
+            </div>
+            <div class="story-block">
+              <h4 class="story-label">What it does</h4>
+              <p>A channel-rack of lanes, each bound to a sample set, addition, index and volume, over a waveform with BPM-snapped grid and ghost notes from your other diffs. Exports a clean <code>[Hitsounds]</code> diff and can copy hitsounds into the mapset without touching slider velocity. Runs entirely client-side.</p>
+            </div>
+          </div>
+        </article>
 
-      <div class="specs-split-grid">
-        <!-- Machine Specs -->
-        <div class="spec-category-card">
-          <div class="spec-card-header">
-            <span>placeholder</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">02</span>
+            <span class="entry-status" data-state="live">Live</span>
+            <span class="entry-stack">TypeScript · Canvas · Vite</span>
+            <a href="https://steal.vivlos.dev/" target="_blank" rel="noopener">steal.vivlos.dev ↗</a>
+            <a href="https://github.com/Afterlight0338/steal-framework" target="_blank" rel="noopener">Repository ↗</a>
           </div>
-          <div class="spec-table">
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val cyan">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val emerald">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val gold">placeholder</span>
+          <div class="entry-body-col">
+            <h3 class="entry-title">steal-framework</h3>
+            <p class="entry-tagline">Checks whether an osu! map was stolen from another map of the same song.</p>
+            <div class="story-block">
+              <h4 class="story-label">How it works</h4>
+              <p>Give it a map link, ID or <code>.osz</code>. It pulls every other map of that song from the Hinamizawa mirror and compares rhythm timing, object positions and slider shapes, including flipped, rotated and shifted copies, then points at the exact stretches that match, on a playfield overlay you can scrub through.</p>
             </div>
           </div>
-        </div>
+        </article>
 
-        <!-- Input & Peripherals Specs -->
-        <div class="spec-category-card">
-          <div class="spec-card-header">
-            <span>placeholder</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"></path></svg>
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">03</span>
+            <span class="entry-status" data-state="live">Live</span>
+            <span class="entry-stack">React · TypeScript · Cloudflare Workers + D1</span>
+            <a href="https://gacha.vivlos.dev/" target="_blank" rel="noopener">gacha.vivlos.dev ↗</a>
+            <a href="https://github.com/Afterlight0338/osu-beatmap-gacha" target="_blank" rel="noopener">Repository ↗</a>
           </div>
-          <div class="spec-table">
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val gold">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val cyan">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-key">placeholder</span>
-              <span class="spec-val">placeholder</span>
+          <div class="entry-body-col">
+            <h3 class="entry-title">osu! Beatmap Gacha</h3>
+            <p class="entry-tagline">A gacha game where you pull osu! beatmaps instead of characters.</p>
+            <div class="story-block">
+              <p>Log in with your osu! account, summon beatmaps as collectible cards, keep a collection. Made for fun, a friend asked for it.</p>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </article>
 
-
-    <!-- SECTION 4: OSU! PERFORMANCE (Paired with Racing Vivlos) -->
-    <section class="unified-section-card" id="osu">
-      <div class="card-header-flex">
-        <div class="card-title-group">
-          <span class="card-index-label">placeholder</span>
-          <h2 class="card-main-title">placeholder</h2>
-          <p class="card-subtext">placeholder</p>
-        </div>
-        <div class="section-character-art">
-          <img src="assets/vivlos/racing.webp" alt="placeholder" width="140" height="185">
-        </div>
-      </div>
-
-      <div class="osu-performance-inner">
-        <!-- User Bar -->
-        <div class="osu-user-bar">
-          <div class="osu-profile-tag">
-            <img class="osu-avatar-mini" id="osu-avatar-img" src="assets/vivlos/racing.webp" alt="placeholder" width="44" height="44" style="width:44px; height:44px; max-width:44px; max-height:44px; border-radius:50%; object-fit:cover; flex-shrink:0;">
-            <div class="osu-user-meta">
-              <div class="osu-user-title-row">
-                <a class="osu-username-text" id="osu-username-display" href="#" target="_blank" rel="noopener">
-                  placeholder
-                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                </a>
-              </div>
-              <div class="osu-user-sub-row">
-                <span class="osu-flag-pill" id="osu-country-flag">placeholder</span>
-                <span class="osu-level-pill" id="osu-level-pill">placeholder</span>
-              </div>
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">04</span>
+            <span class="entry-status" data-state="ongoing">Work in progress</span>
+            <span class="entry-stack">C · AT32F405 · WebHID</span>
+            <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">re-fun60-ultra-tmr</h3>
+            <p class="entry-tagline">My own firmware and web driver for the MonsGeek FUN60 Ultra TMR, written after taking the stock one apart.</p>
+            <div class="story-block">
+              <h4 class="story-label">The problem</h4>
+              <p>With mechanical switches in this board, hard taps type the letter twice. The debounce slider in MonsGeek's app does nothing, there's no fixed firmware, and their web driver barely works on Linux.</p>
+            </div>
+            <div class="story-block">
+              <h4 class="story-label">What it does</h4>
+              <p>Reports a press the moment the contact closes, but only reports the release after it has stayed open for 8&nbsp;ms. Stock did 13 to 165 doubles per test run, this does 0 in 121 hard taps. It also does typing over USB and 2.4G, the Fn layer, per-key RGB and settings saved on the board, and comes with FUN60 Studio, a web driver to remap and tune it. Sleep and Bluetooth aren't done yet.</p>
             </div>
           </div>
-          <div class="osu-live-status-pill">
-            <span class="status-dot online"></span>
-            <span id="osu-live-tag">placeholder</span>
-          </div>
-        </div>
+        </article>
 
-        <!-- 4 Metrics Tiles -->
-        <div class="osu-metrics-grid">
-          <div class="osu-metric-tile">
-            <span class="metric-label">placeholder</span>
-            <span class="metric-value rose" id="osu-global-rank">placeholder</span>
-            <span class="metric-sub" id="osu-country-rank-sub">placeholder</span>
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">05</span>
+            <span class="entry-status">Archive</span>
+            <span class="entry-stack">.osk</span>
+            <a href="https://github.com/Afterlight0338/osu-skins" target="_blank" rel="noopener">Repository ↗</a>
           </div>
-          <div class="osu-metric-tile">
-            <span class="metric-label">placeholder</span>
-            <span class="metric-value cyan" id="osu-pp">placeholder</span>
-            <span class="metric-sub">placeholder</span>
+          <div class="entry-body-col">
+            <h3 class="entry-title">osu-skins</h3>
+            <p class="entry-tagline">The osu! skins I use, mix and keep around, downloadable as .osk.</p>
           </div>
-          <div class="osu-metric-tile">
-            <span class="metric-label">placeholder</span>
-            <span class="metric-value emerald" id="osu-acc">placeholder</span>
-            <span class="metric-sub">placeholder</span>
-          </div>
-          <div class="osu-metric-tile">
-            <span class="metric-label">placeholder</span>
-            <span class="metric-value gold" id="osu-plays">placeholder</span>
-            <span class="metric-sub">placeholder</span>
-          </div>
-        </div>
+        </article>
 
-        <!-- Scores Showcase -->
-        <div class="osu-scores-section">
-          <div class="osu-scores-section-heading">
-            <span>placeholder</span>
-          </div>
-
-          <!-- Top 1 Banner -->
-          <div id="osu-view-top1">
-            <div class="osu-top1-box" id="osu-top1-link">
-              <div class="osu-top1-inner">
-                <div class="top1-meta-left">
-                  <button class="audio-preview-btn top1-audio-btn" id="osu-top1-play-btn" title="placeholder">
-                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px;"><path d="M8 5v14l11-7z"/></svg>
-                    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                  </button>
-
-                  <div class="top1-song-info">
-                    <span class="top1-badge-tag">placeholder</span>
-                    <a class="top1-song-title" id="osu-top1-title" href="#" target="_blank" rel="noopener" style="text-decoration:none;">placeholder</a>
-                    <div class="top1-song-artist" id="osu-top1-artist">placeholder • <span class="score-diff-highlight">[placeholder]</span></div>
-                  </div>
-                </div>
-                <div class="top1-meta-right">
-                  <div class="top1-pp-val" id="osu-top1-pp">placeholder</div>
-                  <div class="top1-pills-row">
-                    <span class="osu-stat-pill" id="osu-top1-acc">placeholder</span>
-                    <span class="osu-stat-pill" id="osu-top1-combo">placeholder</span>
-                    <span id="osu-top1-mods-wrap"><span class="mod-pill mod-hd">placeholder</span></span>
-                    <span id="osu-top1-rank-wrap"><span class="osu-grade-badge grade-a">placeholder</span></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="osu-scores-section-heading" style="margin-top: 6px;">
-            <span>placeholder</span>
-          </div>
-
-          <!-- Top 50 List: Clean Dark Cards with Framed Thumbnails -->
-          <div class="osu-top5-container" id="osu-top5-items">
-            <!-- Score Card Item Skeleton -->
-            <div class="osu-score-card-item">
-              <span class="score-rank-badge gold">#1</span>
-              <button class="audio-preview-btn" title="placeholder">
-                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              </button>
-              <div class="score-main-content-link">
-                <div class="score-detail-text">
-                  <span class="score-title-text">placeholder</span>
-                  <span class="score-diff-text">placeholder • <span class="score-diff-highlight">[placeholder]</span></span>
-                </div>
-                <div class="score-metric-text">
-                  <span class="score-pp-val">placeholder</span>
-                  <div class="score-tags-row">
-                    <span class="score-acc-text">placeholder</span>
-                    <span class="score-combo-text">placeholder</span>
-                    <span class="mod-pill mod-hd">placeholder</span>
-                    <span class="osu-grade-badge grade-a">placeholder</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Expand / Collapse Button Container -->
-          <div id="osu-expand-container">
-            <div class="osu-expand-btn-wrap">
-              <button class="osu-expand-btn">
-                <span>placeholder</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-      <span>placeholder</span>
-      <div class="footer-gateway-status">
-        <span class="status-dot online" id="lanyard-ping-dot"></span>
-        <span id="lanyard-status-note">placeholder</span>
+    <!-- 02 WORKSTATION -->
+    <section class="archive-section" id="workstation">
+      <h2 class="section-heading">Workstation <span class="kanji-sub">機器構成</span></h2>
+
+      <div class="specs-composite-grid">
+        <table class="spec-table">
+          <caption>Machine</caption>
+          <tbody>
+            <tr><th scope="row">Laptop</th><td>Acer Nitro V 15</td></tr>
+            <tr><th scope="row">CPU</th><td>AMD Ryzen 5 7535HS (6C/12T)</td></tr>
+            <tr><th scope="row">GPU</th><td>NVIDIA RTX 3050 6GB</td></tr>
+            <tr><th scope="row">Memory</th><td>32GB DDR5 4800MHz</td></tr>
+            <tr><th scope="row">OS</th><td>NixOS 26.05</td></tr>
+            <tr><th scope="row">Compositor</th><td>Hyprland (Wayland)</td></tr>
+            <tr><th scope="row">Monitor</th><td>AOC 24G11ZE, 240Hz</td></tr>
+          </tbody>
+        </table>
+
+        <table class="spec-table">
+          <caption>Input</caption>
+          <tbody>
+            <tr><th scope="row">Keypad</th><td>SayoDevice K05 HE</td></tr>
+            <tr><th scope="row">Actuation</th><td>1.5 mm press / 0.3 mm release</td></tr>
+            <tr><th scope="row">Rapid trigger</th><td>0.2 mm press / 0.4 mm release</td></tr>
+            <tr><th scope="row">Tablet</th><td>Wacom Bamboo CTH-670</td></tr>
+            <tr><th scope="row">Tablet area</th><td>67.67 × 39.39 mm</td></tr>
+            <tr><th scope="row">Area ratio</th><td>1.718 : 1</td></tr>
+            <tr><th scope="row">Keyboards</th><td>HyperX Alloy Origins (Red) · Everglide AE68 PRO</td></tr>
+          </tbody>
+        </table>
       </div>
-    </footer>
+    </section>
+
+    <!-- 03 RHYTHM -->
+    <section class="archive-section" id="rhythm">
+      <h2 class="section-heading">Rhythm <span class="kanji-sub">音ゲー記録</span></h2>
+
+      <div class="rhythm-profile-strip">
+        <div class="player-identity">
+          <img src="https://a.ppy.sh/14671577" alt="" class="player-avatar" width="44" height="44">
+          <div>
+            <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener" class="player-name">RyoYamada</a>
+            <div class="mono-dim">osu! standard · <span id="osu-level">Lv 101</span></div>
+          </div>
+        </div>
+
+        <dl class="player-stats-row">
+          <div class="stat-unit"><dt>Global</dt><dd id="osu-rank">…</dd></div>
+          <div class="stat-unit"><dt>Malaysia</dt><dd id="osu-country">…</dd></div>
+          <div class="stat-unit"><dt>pp</dt><dd id="osu-pp">…</dd></div>
+          <div class="stat-unit"><dt>Accuracy</dt><dd id="osu-acc">…</dd></div>
+          <div class="stat-unit"><dt>Plays</dt><dd id="osu-plays">…</dd></div>
+        </dl>
+      </div>
+
+      <div class="table-container">
+        <table class="scores-ledger">
+          <caption>Top plays<span class="mono-dim">, press ▶ for the song preview</span></caption>
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th class="col-play"><span class="visually-hidden">Preview</span></th>
+              <th>Beatmap</th>
+              <th class="num">pp</th>
+              <th class="num">Acc</th>
+              <th class="num col-combo">Combo</th>
+              <th class="col-mods">Mods</th>
+              <th class="col-grade">Grade</th>
+            </tr>
+          </thead>
+          <tbody id="scores-tbody">
+            <tr><td colspan="8" class="table-msg">Loading scores…</td></tr>
+          </tbody>
+        </table>
+        <button type="button" class="expand-table-btn" id="expand-scores-btn" onclick="toggleScoreTable()" aria-expanded="false">Show all 50</button>
+      </div>
+    </section>
+
+    <!-- 04 LORE -->
+    <section class="archive-section" id="lore">
+      <h2 class="section-heading">Lore <span class="kanji-sub">ヴィブロスについて</span></h2>
+
+      <div class="lore-grid">
+        <div class="lore-narrative">
+          <h3 class="lore-title">Why vivlos.dev?</h3>
+          <p>
+            The name comes from <a href="https://umamusu.wiki/Vivlos" target="_blank" rel="noopener">Vivlos (ヴィブロス)</a> from Umamusume: Pretty Derby. There's no deep meaning behind it: I like Vivlos, I liked the name, and apparently I liked it enough to call the domain vivlos.dev, and I don't even play Uma.
+          </p>
+
+          <h4 class="colophon-title">Colophon</h4>
+          <ul class="colophon-list">
+            <li>Set in Torus Pro (osu!'s typeface) and Maple Mono. Colours are osu!lazer's own palette.</li>
+            <li>Static files on GitHub Pages; a Cloudflare Worker proxies the osu! API, Lanyard provides Discord presence.</li>
+            <li>Glass by <a href="https://github.com/ybouane/liquidglass" target="_blank" rel="noopener">liquidglass</a> (WebGL). Otherwise no frameworks, no trackers, hand-written HTML and CSS.</li>
+          </ul>
+        </div>
+
+        <figure class="editorial-plate">
+          <img src="/assets/vivlos/stage.webp" alt="Vivlos in her stage outfit" class="plate-image" loading="lazy">
+          <figcaption>Vivlos, stage outfit, the site's namesake.</figcaption>
+        </figure>
+      </div>
+    </section>
 
   </main>
 
+  <footer class="site-footer">© Afterlight · vivlos.dev</footer>
+
 </div>
 
+<div id="toast" class="toast-indicator" role="status" aria-live="polite"></div>
+
+<script src="app.js?v=6"></script>
 </body>
 </html>
