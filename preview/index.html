@@ -44,7 +44,7 @@
       <span class="kana-rubi">アフターライト</span>
       <h1 class="site-title">Afterlight</h1>
       <p class="site-manifesto">
-        I build tools out of spite, tweak things that were already working fine, daily-drive NixOS, and spend a questionable amount of time playing rhythm games.
+        I build random tools for my stupidly niche issues, break things that were already working fine, and spend a questionable amount of time playing rhythm games.
       </p>
     </div>
 
@@ -89,13 +89,13 @@
       <div class="narrative-grid">
         <div class="narrative-prose">
           <p class="lead-text">
-            Hey, I'm <strong>Afterlight</strong>. Most of the software I write starts with a very specific irritation: <em>"ts so ass im gonna make one my own"</em>, or realizing that no one made the exact tool that solves a hyper-specific annoyance.
+            Hey, I'm <strong>Afterlight</strong>. Most of the stuff I write starts with a very specific irritation: <em>"ts so ahh"</em>, or realizing that no one made the exact tool that solves a hyper-specific annoyance.
           </p>
           <p>
-            My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because larp, but it became a permanent home because declarative configuration fits how my brain operates. It also gives me a very convenient excuse to spend hours tweaking things that were already working perfectly fine.
+            My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because the Nix logo got me, but it became a permanent home because declarative config sounds cool. It also lets me do random things without worrying about breaking anything.
           </p>
           <p>
-            Outside of that, I spend a borderline degenerate amount of time playing rhythm games, mostly <strong>osu!</strong> standard, plus <strong>maimai</strong>.
+            Outside of that, I spend a borderline degenerate amount of time playing rhythm games, mostly <strong>osu!</strong> standard, plus <strong>maimai (I'm 12K!)</strong>.
           </p>
 
           <p class="links-row">
@@ -110,9 +110,9 @@
         <dl class="data-pair-list">
           <div class="data-pair"><dt>Handle</dt><dd>Afterlight / RyoYamada</dd></div>
           <div class="data-pair"><dt>Based in</dt><dd>Malaysia, UTC+8</dd></div>
-          <div class="data-pair"><dt>OS</dt><dd>NixOS 26.05 + Hyprland</dd></div>
+          <div class="data-pair"><dt>OS</dt><dd>NixOS 26.05 + Hyprland (Caelestia shell)</dd></div>
           <div class="data-pair"><dt>Writes</dt><dd>C++, TypeScript</dd></div>
-          <div class="data-pair"><dt>Into</dt><dd>osu!, maimai, Linux ricing</dd></div>
+          <div class="data-pair"><dt>Into</dt><dd>osu!, maimai, anime, eh idk really</dd></div>
         </dl>
       </div>
     </section>
@@ -132,7 +132,7 @@
           </div>
           <div class="entry-body-col">
             <h3 class="entry-title">Hitsound Studio</h3>
-            <p class="entry-tagline">An FL Studio-style hitsound editor for osu! mappers, in the browser.</p>
+            <p class="entry-tagline">An FL Studio-style hitsound editor for osu! mappers, in the browser. (if you think hard enough, this is also basically a watered-down FL Studio web clone)</p>
             <div class="story-block">
               <h4 class="story-label">The problem</h4>
               <p>Hitsounding in osu! means juggling sample sets, additions, volumes and custom indices across hundreds of timing lines. The usual workaround is a dummy 18-key mania diff in Mapping Tools, which says mappers want lanes; the workflow just isn't there.</p>
@@ -182,15 +182,20 @@
         <article class="project-entry">
           <div class="entry-meta-col">
             <span class="entry-num">04</span>
-            <span class="entry-status" data-state="ongoing">Ongoing</span>
-            <span class="entry-stack">Nix · Hyprland · Wayland</span>
-            <a href="https://github.com/Afterlight0338/my-nix-setup" target="_blank" rel="noopener">Repository ↗</a>
+            <span class="entry-status" data-state="ongoing">Work in progress</span>
+            <span class="entry-stack">C · AT32F405 · WebHID</span>
+            <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr" target="_blank" rel="noopener">Repository ↗</a>
           </div>
           <div class="entry-body-col">
-            <h3 class="entry-title">my-nix-setup</h3>
-            <p class="entry-tagline">Declarative NixOS workstation configuration, Hyprland window rules, and tablet mapping.</p>
+            <h3 class="entry-title">re-fun60-ultra-tmr</h3>
+            <p class="entry-tagline">My own firmware and web driver for the MonsGeek FUN60 Ultra TMR, written after taking the stock one apart.</p>
             <div class="story-block">
-              <p>My complete daily-driver environment defined in code, enough to rebuild this machine from scratch: compositor config, custom udev permissions for magnetic keypads, tablet area clamping, and audio routing.</p>
+              <h4 class="story-label">The problem</h4>
+              <p>With mechanical switches in this board, hard taps type the letter twice. The debounce slider in MonsGeek's app does nothing, there's no fixed firmware, and their web driver barely works on Linux.</p>
+            </div>
+            <div class="story-block">
+              <h4 class="story-label">What it does</h4>
+              <p>Reports a press the moment the contact closes, but only reports the release after it has stayed open for 8&nbsp;ms. Stock did 13 to 165 doubles per test run, this does 0 in 121 hard taps. It also does typing over USB and 2.4G, the Fn layer, per-key RGB and settings saved on the board, and comes with FUN60 Studio, a web driver to remap and tune it. Sleep and Bluetooth aren't done yet.</p>
             </div>
           </div>
         </article>

@@ -129,7 +129,7 @@ Status Legend:
 1. **Hitsound Studio** (`Afterlight0338/hitsound-studio`, live at hitsound.vivlos.dev): FL Studio-style lane editor for osu! hitsounding. TypeScript, Canvas, Web Audio; fully client-side; exports a `[Hitsounds]` diff and copies hitsounds without touching SV.
 2. **steal-framework** (`Afterlight0338/steal-framework`, live at steal.vivlos.dev): checks whether an osu! map copies another map of the same song (rhythm, positions, slider shapes, flipped/rotated/shifted variants) using the Hinamizawa mirror. TypeScript, Canvas, Vite.
 3. **osu! Beatmap Gacha** (`Afterlight0338/osu-beatmap-gacha`, live at gacha.vivlos.dev): gacha game that pulls osu! beatmaps as cards. React 19, TypeScript, Cloudflare Workers + D1, osu! OAuth.
-4. **my-nix-setup** (`Afterlight0338/my-nix-setup`): the declarative NixOS + Hyprland daily driver.
+4. **re-fun60-ultra-tmr** (`Afterlight0338/re-fun60-ultra-tmr`, local `~/ry5088-flasher`): Afterlight's own open firmware (C, AT32F405) and WebHID web driver for the MonsGeek FUN60 Ultra TMR. Fixes mechanical-switch double typing (eager press, 8 ms deferred release). Built on dot-agi's ry5088-flasher tooling. Replaced my-nix-setup on 2026-09-30 at Afterlight's request.
 5. **osu-skins** (`Afterlight0338/osu-skins`): Afterlight's skin collection, downloadable as `.osk` releases.
 
 **Not featured (Afterlight's call):**
@@ -145,7 +145,7 @@ Status Legend:
 | Question | Answer |
 | :--- | :--- |
 | **2.1 Tab grouping** | 5 tabs: Profile / Projects / Workstation / Rhythm / Lore. |
-| **2.2 Featured projects** | Hitsound Studio (hitsound.vivlos.dev), steal-framework (steal.vivlos.dev), osu! Beatmap Gacha (gacha.vivlos.dev), my-nix-setup, osu-skins. **Removed:** ry5088-flasher (dot-agi's repo; user only rewrote firmware with it), youtube-music-cli (half-baked private fork), veikk-s640-zero-smoothing (not published). |
+| **2.2 Featured projects** | Hitsound Studio (hitsound.vivlos.dev), steal-framework (steal.vivlos.dev), osu! Beatmap Gacha (gacha.vivlos.dev), re-fun60-ultra-tmr (replaced my-nix-setup, 2026-09-30), osu-skins. **Removed:** ry5088-flasher (dot-agi's repo; user only rewrote firmware with it), youtube-music-cli (half-baked private fork), veikk-s640-zero-smoothing (not published). |
 | **2.3 Default view / pinned bar** | Profile opens by default. Status rail + Discord presence stay above every tab. |
 | **Publish target** | Prototype lives at `vivlos.dev/preview/` (renamed from `dir-d`). Root stays on placeholders for now. |
 | **Rhythm games** | osu! standard + maimai. |
