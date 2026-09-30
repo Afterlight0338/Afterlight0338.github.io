@@ -534,3 +534,4 @@ That is the goal.
 **This website is not a résumé wearing CSS.**
 
 It is a personal website that happens to contain a résumé.
+
