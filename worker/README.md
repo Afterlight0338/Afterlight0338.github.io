@@ -86,3 +86,4 @@ Fetches any specified user's profile.
 - **OAuth Token Caching**: Tokens are cached in-memory and renewed automatically before expiration (~24h lifetime).
 - **Edge Caching**: Responses contain `Cache-Control: public, max-age=300, s-maxage=300` to cache responses for 5 minutes across Cloudflare's global edge network.
 - **CORS Protection**: Allows frontend AJAX requests safely without CORS issues.
+
