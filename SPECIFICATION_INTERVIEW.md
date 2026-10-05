@@ -2,7 +2,7 @@
 
 > **Single Source of Truth**: This document records the state of `vivlos.dev`: how the redesign is built, the rules that keep it working, every decision Afterlight has made, authoring templates, and what is left to do. Any AI agent (or Afterlight) resuming this project should start by reading this file, then `DESIGN_CONSTITUTION.md`.
 
-*Last updated: 2026-09-30.*
+*Last updated: 2026-10-07.*
 
 ---
 
@@ -65,11 +65,12 @@ Afterlight0338.github.io/
 ### 4. Behaviour (`app.js`, one IIFE)
 * **Motion switch**: defaults to `prefers-reduced-motion`; an explicit choice is stored in `localStorage["vivlos-motion"]` (wrapped in try/catch).
 * **Tabs**: `show(id)` sets `data-tab`, toggles `hidden`, moves the lens (`translate` + a WAAPI `scale` squish), swaps the Vivlos outfit, and staggers the new tab's blocks in from the direction of travel (`.rise`, `--dx`, `--i`).
+* **First load** (motion on only): the masthead text and the opening tab's blocks rise in with the same `.rise` stagger, and Vivlos is held behind the card until her image decodes, then pops up (`introArt`). Hovering the Discord card makes her hop (`initArtHop`, WAAPI id `hop`). All her moves go through `artPose(img, y)`, which shifts the clip with her.
 * **Vivlos outfit per tab**: Profile `summer`, Projects `racing`, Workstation `casual`, Rhythm `stage`, Lore `summer`. The swap drops her behind the card and pops her back up; the `clip-path` moves with the `transform` so she never shows below the masthead. Other outfits are preloaded after `load`.
 * **Glass**: after `load` and `document.fonts.ready`, dynamically imports liquidglass 1.0.3 from jsDelivr and initialises both roots in parallel. Skipped when WebGL is missing or `prefers-reduced-transparency: reduce`; on any failure the CSS glass stays.
 * **Clock**: `Intl.DateTimeFormat` with `Asia/Kuala_Lumpur`.
-* **Lanyard**: WebSocket `wss://api.lanyard.rest/socket`, Discord ID `553169854304354304`, reconnects after 6s. Shows Spotify (with progress), else the first activity, else the custom status.
-* **osu!** (user `14671577`): renders `data/osu.json` first, then overwrites stats from `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=14671577` (4s timeout). Top 5 plays, expandable to 50; row 1 is the spotlight.
+* **Lanyard**: WebSocket `wss://api.lanyard.rest/socket`, Discord ID `553169854304354304`, reconnects after 6s. Shows Spotify (with progress), else the first activity, else the custom status. Text that actually changes fades up (`.swap`); Lanyard resends unchanged presence often, and those don't animate.
+* **osu!** (user `14671577`): renders `data/osu.json` first, then overwrites stats from `https://osu-api-proxy.mfarrishahk.workers.dev/api/osu?user=14671577` (4s timeout). Live numbers that differ from the snapshot roll over to the new value and flash the accent, held until the Rhythm tab is visible (`pendingStats`). Top 5 plays, expandable to 50 (rows stagger in) and collapsible (extra rows leave bottom-up first); row 1 is the spotlight.
 * **Audio previews**: one `Audio` at a time from `https://b.ppy.sh/preview/{setId}.mp3`, volume 0.35. Playing buttons show three level bars (animated only with motion on).
 
 ### 5. Original implementation baseline (before the redesign)
@@ -100,7 +101,7 @@ Status Legend:
 | **Glassmorphism** | None | **Explicitly requested (2026-09-27)**, overrides the Constitution's default ban. Scope: Discord card + tab lens only, via [liquidglass](https://github.com/ybouane/liquidglass) 1.0.3 (WebGL, pinned on jsDelivr). CSS glass fallback; skipped under `prefers-reduced-transparency` | **decided** |
 | **Typography** | Zen Kaku Gothic New + Maple Mono | Torus Pro (osu!'s typeface, self-hosted in `assets/fonts/`); Zen Kaku kept only for Japanese glyphs; Maple Mono for data | **decided** |
 | **Colour** | Cyan/gold/emerald/rose accents | osu!lazer `OsuColour` palette, one colour per tab (blue / purple / lime / pink / yellow) that the whole page shifts to; lazer rank + mod colours in the scores table | **decided** |
-| **Animation** | Static | Behind an **Animations** switch in the status rail (defaults to OS reduced-motion, remembered per browser): tab content slides in from the travel direction, glass lens slides with squish, Vivlos outfit swap behind the card, eq bars on playing previews, staggered rows on expand | **decided** |
+| **Animation** | Static | Behind an **Animations** switch in the status rail (defaults to OS reduced-motion, remembered per browser): tab content slides in from the travel direction, glass lens slides with squish, Vivlos outfit swap behind the card, eq bars on playing previews, staggered rows on expand and collapse. Added 2026-10-07 at Afterlight's request: first-load entrance (header, tab content, Vivlos rising behind the card), Vivlos hop on hovering the Discord card, live osu! stats rolling to their new value, Discord text fading in when it changes | **decided** |
 
 ---
 
@@ -161,7 +162,6 @@ Status Legend:
 3. **Done 2026-09-30**: promoted to the root, old files removed, link previews (`og:*` tags + `assets/og.jpg`), custom 404.
 
 **Known rough edges:**
-* The lens magnifies the label slightly at its top and bottom edges (real refraction, kept subtle).
 * The "Discord" label on the card is lower contrast where a bright part of an outfit sits behind it.
 * Japanese text arriving from Lanyard (e.g. a Spotify title) renders in the system font, because Zen Kaku is subset to the page's own glyphs.
 * Opening a deep link such as `/#rhythm` scrolls the browser to that section.
@@ -173,7 +173,7 @@ Status Legend:
 These are the non-obvious things that broke once. Each one has a comment at the relevant spot in the code.
 
 ### Deploying
-* **Bump `?v=` on `style.css` and `app.js` in `index.html` (and on `style.css` in `404.html`) whenever either file changes.** vivlos.dev is served with `cache-control: max-age=14400` (4 hours). Without a new URL, returning visitors get the new HTML with the old CSS/JS, and the page falls apart (this happened on 2026-09-27). Current: `?v=6`.
+* **Bump `?v=` on `style.css` and `app.js` in `index.html` (and on `style.css` in `404.html`) whenever either file changes.** vivlos.dev is served with `cache-control: max-age=14400` (4 hours). Without a new URL, returning visitors get the new HTML with the old CSS/JS, and the page falls apart (this happened on 2026-09-27). Current: `?v=7`.
 * GitHub Pages deploys in about 30 to 40 seconds after a push.
 * Asset URLs are absolute (`/assets/...`, `/data/...`) so they work from `404.html` at any depth.
 * **`assets/og.jpg`** is a screenshot of the header at 1200x630, taken in headless Brave with the live Discord status hidden (a frozen status would look wrong in every embed). Retake it if the header changes. Discord caches previews, so changes can take a while to show there.
@@ -183,7 +183,7 @@ These are the non-obvious things that broke once. Each one has a comment at the 
 * The shader's scene starts **white**, so each root has a `.glass-backing` layer in the page colour. It overhangs by 20px (the library's `SHADOW_PAD`), which the 32px section gaps absorb. Do not shrink those gaps below 20px.
 * The library only redraws when something is marked dirty. **Anything that moves** (lens slide, Vivlos swap) must call `markChanged()` every frame while moving; that is `keepGlassFresh()` in `app.js`.
 * Non-glass children are rasterised once with html-to-image and cached. So the **tab labels must not change style** with state (the lens alone marks the active tab), and images must be **direct `<img>` children** of the root (a wrapped image leaves a frozen copy). CSS `opacity` is ignored by the library; hide things with `display: none`.
-* `fresnel` and `specular` are **0 on purpose**: the shader paints them as white from fixed virtual lights (one below the element) plus a "fake" environment reflection, which read as a grey shelf on the dark page. Lens `chromAberration` is 0 because it split the 3px tab bar's colour channels (blue showed olive).
+* `fresnel` and `specular` are **0 on purpose**: the shader paints them as white from fixed virtual lights (one below the element) plus a "fake" environment reflection, which read as a grey shelf on the dark page. Lens `chromAberration` is 0 because it split the 3px tab bar's colour channels (blue showed olive). The lens uses `bevelMode: 1` (dome): the default biconvex rim pulls samples about 12px inward, which drew copies of the label along the lens's top and bottom edges (fixed 2026-10-07).
 * Any `@font-face` inside a glass root must use **absolute URLs**: the library resolves font URLs against the page, not the stylesheet (fontsource's relative `./files/` paths 404'd).
 
 ### Fonts
