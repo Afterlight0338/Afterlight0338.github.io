@@ -1020,6 +1020,23 @@ code {
   animation-delay: calc(var(--i, 0) * 45ms);
 }
 
+/* Live data: a stat that just changed flashes the accent, new Discord text fades up */
+@keyframes stat-flash {
+  from { color: var(--accent); }
+}
+
+[data-motion="on"] .stat-unit dd.updated { animation: stat-flash 1.6s ease-out; }
+
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+[data-motion="on"] .presence .swap { animation: swap-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+[data-motion="on"] .status-dot { transition: background 0.3s ease; }
+
 @keyframes eq {
   0%, 100% { transform: scaleY(0.3); }
   50% { transform: scaleY(1); }
