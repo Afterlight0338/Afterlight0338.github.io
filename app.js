@@ -94,6 +94,7 @@
       placeLens(link, initial ? 'instant' : animate ? 'animate' : 'plain');
       swapArt(ART[id], animate);
       if (animate) enter($(id), dir);
+      if (id === 'rhythm') playStatTweens();
     }
 
     $('archive-nav').addEventListener('click', (e) => {
@@ -109,18 +110,25 @@
       if (link) placeLens(link, 'instant');
     });
     show(location.hash.slice(1), true);
+
+    // First load: the header settles, the tab's content follows, Vivlos rises behind the card
+    if (motionOn()) {
+      enter($('masthead'), 0, '.masthead-main > *');
+      enter($(current), 0, RISE_ITEMS, 3);
+      introArt();
+    }
   }
 
   // Stagger the new tab's blocks in from the direction of travel
   const RISE_ITEMS = ':scope > h2, .narrative-prose > *, .data-pair, .project-entry, .spec-table, ' +
     '.rhythm-profile-strip, .table-container, .lore-narrative, .editorial-plate';
 
-  function enter(section, dir) {
-    const items = section.querySelectorAll(RISE_ITEMS);
+  function enter(section, dir, sel = RISE_ITEMS, from = 0) {
+    const items = section.querySelectorAll(sel);
     section.style.setProperty('--dx', dir * 24 + 'px');
     items.forEach((el, i) => {
       el.classList.remove('rise');
-      el.style.setProperty('--i', Math.min(i, 10));
+      el.style.setProperty('--i', Math.min(from + i, 10));
     });
     void section.offsetWidth; // restart the animation if re-entering quickly
     items.forEach(el => el.classList.add('rise'));
@@ -158,24 +166,52 @@
       return;
     }
 
-    const sink = parseFloat(getComputedStyle(img).getPropertyValue('--art-sink')) || 0;
-    const drop = img.offsetHeight - sink;
-    const home = { transform: 'translateY(0)', clipPath: `inset(0 0 ${sink}px 0)` };
-    const down = { transform: `translateY(${drop}px)`, clipPath: `inset(0 0 ${sink + drop}px 0)` };
-
     keepGlassFresh('masthead', img, 300);
     // Already mid-swap (fast clicking): skip the exit, just change outfit
-    if (img.getAnimations().length === 0) {
-      await img.animate([home, down], { duration: 220, easing: 'cubic-bezier(0.5, 0, 0.75, 0)', fill: 'forwards' })
+    if (img.getAnimations().every(a => a.id === 'hop')) {
+      await img.animate([artPose(img, 0), artPose(img, 'down')], { duration: 220, easing: 'cubic-bezier(0.5, 0, 0.75, 0)', fill: 'forwards' })
         .finished.catch(() => {});
     }
     if (seq !== artSeq) return;
     img.src = src;
     await img.decode().catch(() => {});
     if (seq !== artSeq) return;
+    popUp(img);
+  }
+
+  // Vivlos moved by y px ('down' = fully behind the card), clip following
+  // so nothing shows below the masthead
+  function artPose(img, y) {
+    const sink = parseFloat(getComputedStyle(img).getPropertyValue('--art-sink')) || 0;
+    if (y === 'down') y = img.offsetHeight - sink;
+    return { transform: `translateY(${y}px)`, clipPath: `inset(0 0 ${sink + y}px 0)` };
+  }
+
+  function popUp(img) {
     img.getAnimations().forEach(a => a.cancel());
     keepGlassFresh('masthead', img, 700);
-    img.animate([down, home], { duration: 620, easing: 'cubic-bezier(0.3, 1.4, 0.5, 1)' });
+    img.animate([artPose(img, 'down'), artPose(img, 0)], { duration: 620, easing: 'cubic-bezier(0.3, 1.4, 0.5, 1)' });
+  }
+
+  // First load: hold her behind the card until the image is ready, then rise
+  async function introArt() {
+    const img = $('vivlos-art');
+    const seq = artSeq;
+    const down = artPose(img, 'down');
+    img.animate([down, down], { duration: 0, fill: 'forwards' });
+    await img.decode().catch(() => {});
+    if (seq === artSeq) popUp(img); // a tab click already took over otherwise
+  }
+
+  // Hovering the Discord card makes her hop
+  function initArtHop() {
+    const img = $('vivlos-art');
+    $('lanyard-panel').addEventListener('pointerenter', () => {
+      if (!motionOn() || img.getAnimations().length) return;
+      keepGlassFresh('masthead', img, 450);
+      const home = artPose(img, 0);
+      img.animate([home, artPose(img, -14), home], { id: 'hop', duration: 420, easing: 'cubic-bezier(0.3, 0.7, 0.4, 1)' });
+    });
   }
 
   function preloadArt() {
@@ -195,7 +231,9 @@
     brightness: -0.22, saturation: 0.25, shadowOpacity: 0.4, shadowSpread: 14, shadowOffsetY: 4,
   };
   const LENS_GLASS = {
-    cornerRadius: 12, zRadius: 9, blurAmount: 0, refraction: 0.45,
+    // bevelMode 1 (dome) magnifies evenly; the default biconvex rim pulled samples
+    // ~12px inward, which on a 48px-tall lens drew copies of the label along its edges
+    cornerRadius: 12, zRadius: 9, blurAmount: 0, refraction: 0.45, bevelMode: 1,
     chromAberration: 0, edgeHighlight: 0.2, specular: 0, fresnel: 0, // any aberration splits the 3px tab bar into the wrong colour
     brightness: 0.06, saturation: 0.3, shadowOpacity: 0.3, shadowSpread: 8, shadowOffsetY: 2,
   };
@@ -298,18 +336,25 @@
       });
     }
 
+    // Lanyard resends unchanged presence often; only real changes fade in
+    function setText(el, text) {
+      if (el.textContent === text) return;
+      el.textContent = text;
+      if (motionOn()) restartClass(el, 'swap');
+    }
+
     function updatePresence(d) {
       if (!d) return;
       const status = d.discord_status || 'offline';
-      statusText.textContent = status === 'dnd' ? 'do not disturb' : status;
+      setText(statusText, status === 'dnd' ? 'do not disturb' : status);
       pip.className = 'status-dot ' + status;
 
       clearInterval(spotifyTimer);
 
       if (d.listening_to_spotify && d.spotify) {
         spotifyWrap.hidden = false;
-        titleEl.textContent = d.spotify.song || 'Listening to Spotify';
-        descEl.textContent = d.spotify.artist || '';
+        setText(titleEl, d.spotify.song || 'Listening to Spotify');
+        setText(descEl, d.spotify.artist || '');
 
         const { start, end } = d.spotify.timestamps;
         const tick = () => {
@@ -327,11 +372,11 @@
       const act = (d.activities || []).find(a => a.type !== 4); // 4 = custom status
       const custom = (d.activities || []).find(a => a.type === 4);
       if (act) {
-        titleEl.textContent = act.name || 'In an app';
-        descEl.textContent = act.details || act.state || '';
+        setText(titleEl, act.name || 'In an app');
+        setText(descEl, act.details || act.state || '');
       } else {
-        titleEl.textContent = '@afterlight_hd';
-        descEl.textContent = (custom && custom.state) || (status === 'offline' ? 'Not around right now' : 'Not doing anything in particular');
+        setText(titleEl, '@afterlight_hd');
+        setText(descEl, (custom && custom.state) || (status === 'offline' ? 'Not around right now' : 'Not doing anything in particular'));
       }
     }
 
@@ -388,15 +433,51 @@
     A: ['A', 'a'], B: ['B', 'b'], C: ['C', 'c'], D: ['D', 'd'],
   };
 
-  function renderStats(p) {
+  const n = (v) => Math.round(v).toLocaleString('en-US');
+  const STATS = {
+    'osu-rank': ['global_rank', v => '#' + n(v)],
+    'osu-country': ['country_rank', v => '#' + n(v)],
+    'osu-pp': ['pp', n],
+    'osu-acc': ['hit_accuracy', v => v.toFixed(2) + '%'],
+    'osu-plays': ['play_count', n],
+  };
+  const pendingStats = new Map(); // element → [from, to]
+
+  // live: numbers that differ from the snapshot roll over to the new value
+  // (once the Rhythm tab is visible) and flash, so you can see they updated
+  function renderStats(p, live) {
     if (!p) return;
-    const n = (v) => Number(v).toLocaleString('en-US');
-    if (p.global_rank) $('osu-rank').textContent = '#' + n(p.global_rank);
-    if (p.country_rank) $('osu-country').textContent = '#' + n(p.country_rank);
-    if (p.pp) $('osu-pp').textContent = n(Math.round(p.pp));
-    if (p.hit_accuracy) $('osu-acc').textContent = Number(p.hit_accuracy).toFixed(2) + '%';
-    if (p.play_count) $('osu-plays').textContent = n(p.play_count);
+    for (const [id, [key, fmt]] of Object.entries(STATS)) {
+      const el = $(id);
+      const to = Number(p[key]);
+      if (!to) continue;
+      const from = el._v;
+      el._v = to;
+      if (live && from !== undefined && from !== to && motionOn()) pendingStats.set(el, [from, to]);
+      else el.textContent = fmt(to);
+    }
     if (p.level) $('osu-level').textContent = 'Lv ' + p.level;
+    if (!$('rhythm').hidden) playStatTweens();
+  }
+
+  function playStatTweens() {
+    if (!pendingStats.size) return;
+    const tweens = [...pendingStats];
+    pendingStats.clear();
+    const t0 = performance.now() + 250; // after the tab's own entrance
+    (function frame(now) {
+      const k = Math.min(Math.max((now - t0) / 700, 0), 1);
+      const ease = 1 - Math.pow(1 - k, 3);
+      for (const [el, [from, to]] of tweens) el.textContent = STATS[el.id][1](from + (to - from) * ease);
+      if (k < 1) requestAnimationFrame(frame);
+    })(performance.now());
+    tweens.forEach(([el]) => restartClass(el, 'updated'));
+  }
+
+  function restartClass(el, cls) {
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
   }
 
   async function loadOsuData() {
@@ -416,7 +497,7 @@
     try {
       const res = await fetch(OSU_PROXY, { signal: AbortSignal.timeout(4000) });
       const json = await res.json();
-      if (json.success) renderStats(json.data);
+      if (json.success) renderStats(json.data, true);
     } catch (err) {
       // proxy down: keep the osu.json snapshot
     }
@@ -464,7 +545,20 @@
     }).join('');
   }
 
-  window.toggleScoreTable = function () {
+  let collapsing = false;
+
+  window.toggleScoreTable = async function () {
+    if (collapsing) return;
+    // Collapse mirrors expand: the extra rows leave bottom-up before the table shrinks
+    if (isScoresExpanded && motionOn()) {
+      collapsing = true;
+      const rows = Array.from($('scores-tbody').rows).slice(5).reverse();
+      await Promise.all(rows.map((r, i) => r.animate(
+        [{ opacity: 1 }, { opacity: 0, transform: 'translateY(-6px)' }],
+        { duration: 180, delay: Math.min(i, 15) * 12, easing: 'ease-in', fill: 'forwards' }
+      ).finished)).catch(() => {});
+      collapsing = false;
+    }
     isScoresExpanded = !isScoresExpanded;
     renderScoreTable(isScoresExpanded ? 5 : undefined);
     const btn = $('expand-scores-btn');
@@ -501,6 +595,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     initMotionSwitch();
     initTabs();
+    initArtHop();
     initClock();
     initLanyard();
     loadOsuData();
