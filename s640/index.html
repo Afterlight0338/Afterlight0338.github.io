@@ -245,13 +245,17 @@ part run together, at least on this unit.</p>
 calls at a small routine in the free flash after the image (<code>0x0800C464</code> to <code>0x0800CFFF</code>,
 about 2.9 KB). It calls the original <code>0x2834</code>, then copies the newest sample (<code>histX[7]</code>,
 <code>histY[7]</code>) into <code>outX</code>/<code>outY</code> and marks a report pending. That is what <code>nosmooth-nohold</code>
-does, without changing a byte below <code>0x3000</code>. Only about 2 flash pages change.</p>
-<p><strong>Not known yet (check over SWD first):</strong></p>
+does, without changing a byte below <code>0x3000</code>. Only 2 flash pages change. This is the
+<code>nosmooth-hook</code> patch, built by <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/patches/hook.py"><code>patches/hook.py</code></a> (0.2.2, details in 7.9).</p>
+<p><strong>Answered from the code (not yet on a tablet):</strong></p>
 <ul>
-<li>whether the history is updated on every report even while the hold is active</li>
-<li>whether the report is built inside <code>0x2834</code> (a hook after it would then add one report,
-  about 4 ms, of lag) or after it returns</li>
-<li>when it is safe to set the report-pending flag <code>0x20001031</code> (never with no pen in range)</li>
+<li>The history is updated on every valid sample, before the hold is checked, so <code>hist[7]</code> is
+  always the newest raw position, held or not.</li>
+<li>The report is built in the main loop after <code>0x2834</code> returns (<code>bl 0x08008780</code> at
+  <code>0x080068D6</code>), so a hook right after the call adds no lag.</li>
+<li>The hook only marks a report pending when a new sample actually arrived this pass (the
+  history counter <code>0x2000107F</code> changed) and not in the rarely used mode A, the same cases
+  in which the stock firmware would run its output routine without the hold.</li>
 </ul>
 <p><strong>Why it is ultra mega risky:</strong></p>
 <ul>
@@ -267,6 +271,53 @@ does, without changing a byte below <code>0x3000</code>. Only about 2 flash page
 <p>A heavier variant that rewrites the first 12 KB from code running above <code>0x3000</code> has been
 suggested. It is not covered here: it is riskier than the hook, and it is not known whether
 the chip even allows it.</p>
+<h4 id="021-why-not-just-undo-the-smoothing-after-it-happens">0.2.1 Why not just undo the smoothing after it happens?</h4>
+<p>Fair question: if the smoothing lives in the first 12 KB, why not add "reverse smoothing"
+after it?</p>
+<ul>
+<li><strong>The average can only be half-undone.</strong> The output is the average of the last 8
+  positions. Knowing the last 8 outputs, you could in theory work back to the newest raw
+  position. But the firmware rounds every average down, which loses a little each time.
+  Working backwards multiplies that error by 8 and carries it into every later step, so the
+  result drifts and gets noisy fast.</li>
+<li><strong>The hold can't be undone at all.</strong> When the pen moves only a little, the firmware does
+  not update the output and does not send a report. Nothing leaves the chip, so there is
+  nothing to reverse.</li>
+</ul>
+<p><strong>What works instead: don't reverse it, go around it.</strong> The firmware keeps the raw positions
+in memory (the history, newest at <code>hist[7]</code>) and computes the average from them. Code after
+the 12 KB can read that raw value directly and put it in the output just before the report
+goes out. The smoothing still runs; its result just gets replaced. Think of a draft and a
+polished copy: turning the polished copy back into the draft is hard, but the draft is still
+on the desk, so you hand that over instead. That is the hook above, and because it also marks
+a report pending on every new sample, it gets past the hold too.</p>
+<p>Undoing it on the PC (an OpenTabletDriver filter) runs into the same two problems: the
+rounding, and the hold sending nothing.</p>
+<h4 id="022-trying-nosmooth-hook-swd-first">0.2.2 Trying <code>nosmooth-hook</code> (SWD first)</h4>
+<p><strong>Untested.</strong> Try it over SWD, with a probe that can put stock back, before anyone thinks
+about USB.</p>
+<ol>
+<li>Build it in a folder with <code>S640-251022.bin</code>. The script refuses anything but the exact
+   stock file, and checks that nothing below <code>0x08003000</code> changed:</li>
+</ol>
+<p><code>python3 hook.py s640_nosmooth_hook.bin
+   # s640_nosmooth_hook.bin 50344 bytes, sha256 4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c</code></p>
+<ol>
+<li>Flash it over SWD like any other image (0.1 for other probes), with the factory tags if
+   the chip was unlocked:</li>
+</ol>
+<p><code>openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_nosmooth_hook.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify; reset run; shutdown'</code></p>
+<ol>
+<li>Check that it behaves like <code>nosmooth-nohold</code> (7.5, 7.8): <code>still.py</code> shows a few units of
+   still-pen noise and about 267 reports per second, <code>stroke.py</code> gives about 0.4, the pen is
+   found again after lifting it away, and pressure and the pen buttons still work.</li>
+<li>If anything is off, flash <code>S640-251022.bin</code> or <code>s640_nosmooth_nohold.bin</code> back.</li>
+</ol>
+<p><strong>Over USB: no tool here, on purpose.</strong> Only once the SWD test passes. A USB tool would have
+to confirm the tablet runs exactly <code>S640-251022</code> above <code>0x3000</code> before writing anything, and
+then rewrite just two pages: <code>0x08006800</code> to <code>0x08006BFF</code> (both calls) and <code>0x0800C400</code> to
+<code>0x0800C7FF</code> (image tail plus the hook). Everything in "why it is ultra mega risky" above
+still applies.</p>
 <hr />
 <h2 id="1-quick-facts"><span class="h-num">01</span>Quick facts</h2>
 <div class="table-wrap"><table>
@@ -1056,7 +1107,9 @@ vector table: <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blo
 </tbody>
 </table></div>
 <p>Pages are 1 KB. The firmware references <code>0x0800C464</code> (the end of its own image) and the
-addresses above; nothing else past the image.</p>
+addresses above; nothing else past the image. The <code>0x0800C464</code> reference is a C startup
+table entry at <code>0x08007320</code> that zeroes <code>0x77C</code> bytes of RAM at <code>0x20001174</code>; its handler
+(<code>0x0800663E</code>) never reads the source address, so the flash after the image really is free.</p>
 <h3 id="43-factory-tags">4.3 Factory tags</h3>
 <p>Four 32-bit words at the end of flash. Each gates one function: if the word is wrong, that
 function returns without doing anything.</p>
@@ -3002,6 +3055,98 @@ on any mismatch. To go back to stock, flash <code>S640-251022.bin</code> the sam
 <li>With the Pico attached, <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/tools/outcheck.tcl"><code>tools/outcheck.tcl</code></a> prints the history buffer and the output
    coordinates five times. With nosmooth-nohold, <code>outX</code> equals the last <code>histX</code> value every time.</li>
 </ol>
+<h3 id="79-patch-nosmooth-hook-untested-the-same-result-without-touching-the-first-12-kb">7.9 Patch nosmooth-hook (untested): the same result without touching the first 12 KB</h3>
+<p><code>patches/hook.py OUT.bin</code>. Built and checked against the disassembly only; it has <strong>never
+run on a tablet</strong>. Why it exists and how to try it: 0.2.</p>
+<p>Changes (68 bytes appended at <code>0x0800C464</code>, 2 calls redirected; nothing below <code>0x08003000</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Offset</th>
+<th style="text-align: left;">Stock</th>
+<th style="text-align: left;">Hook</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>0x6822</code></td>
+<td style="text-align: left;"><code>fc f7 07 f8</code> (<code>bl 0x08002834</code>)</td>
+<td style="text-align: left;"><code>05 f0 1f fe</code> (<code>bl 0x0800C464</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0x685E</code></td>
+<td style="text-align: left;"><code>fb f7 e9 ff</code> (<code>bl 0x08002834</code>)</td>
+<td style="text-align: left;"><code>05 f0 01 fe</code> (<code>bl 0x0800C464</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0xC464</code></td>
+<td style="text-align: left;">end of image (erased flash)</td>
+<td style="text-align: left;">the routine below</td>
+</tr>
+</tbody>
+</table></div>
+<p>How each part was decided:</p>
+<ul>
+<li><strong>New sample or not.</strong> The 19-entry raw history counter <code>0x2000107F</code> changes on every valid
+  sample: it is incremented at <code>0x08002A52</code>, set to 1 when the pen is first found
+  (<code>0x08002A90</code>, all histories filled), and wraps from 19 to 3. Passes with no valid sample
+  leave <code>0x2834</code> before that: an invalid sample (<code>0xFFFF</code>) goes <code>0x080028DA</code> → <code>0x08002AFA</code> →
+  <code>0x08002F6A</code> → exit, and a too-weak signal exits at <code>0x08002A16</code>/<code>0x08002A24</code>. The hook compares
+  the counter before and after the call. (One corner: if the pen is found again while the
+  counter is already 1, that one pass is missed.)</li>
+<li><strong>Mode A.</strong> <code>0x2000107E</code> set means path A owns the output (<code>0x08002E62</code>), and the stock
+  output routine <code>0x08000310</code> does nothing in that case. The hook does the same.</li>
+<li><strong>No added lag.</strong> The report is built after <code>0x2834</code> returns: the main loop checks the
+  pending flag <code>0x20001031</code> at <code>0x080068A4</code> and calls the report builder at <code>0x080068D6</code>.</li>
+<li><strong>Registers.</strong> <code>0x2834</code> keeps r4 to r11 and returns nothing the main loop uses, and
+  <code>0x08000390</code>, called next, loads its own inputs. The hook keeps r4 to r6 and the stack
+  8-byte aligned.</li>
+<li><strong>Path B</strong> (5.8) can still run inside <code>0x2834</code> on a still pen and move the output; the hook
+  overwrites it right after, so it has no effect.</li>
+</ul>
+<pre><code>; ---- 0x08006816 .. 0x0800682e
+08006816:  fb f7 d1 fd   bl       #0x80023bc
+0800681a:  ff f7 5f fe   bl       #0x80064dc
+0800681e:  fa f7 75 fa   bl       #0x8000d0c
+08006822:  05 f0 1f fe   bl       #0x800c464
+08006826:  f9 f7 b3 fd   bl       #0x8000390
+0800682a:  fa f7 63 f9   bl       #0x8000af4
+; ---- 0x08006852 .. 0x0800686a
+08006852:  fc f7 b7 fb   bl       #0x8002fc4
+08006856:  ff f7 7d fe   bl       #0x8006554
+0800685a:  fa f7 57 fa   bl       #0x8000d0c
+0800685e:  05 f0 01 fe   bl       #0x800c464
+08006862:  f9 f7 95 fd   bl       #0x8000390
+08006866:  fa f7 5d f9   bl       #0x8000b24
+; ---- 0x0800c464 .. 0x0800c4a8
+0800c464:  70 b5         push     {r4, r5, r6, lr}
+0800c466:  0a 4c         ldr      r4, [pc, #0x28]    ; =0x2000107f
+0800c468:  25 78         ldrb     r5, [r4]
+0800c46a:  f6 f7 e3 f9   bl       #0x8002834
+0800c46e:  20 78         ldrb     r0, [r4]
+0800c470:  a8 42         cmp      r0, r5
+0800c472:  0c d0         beq      #0x800c48e
+0800c474:  07 48         ldr      r0, [pc, #0x1c]    ; =0x2000107e
+0800c476:  00 78         ldrb     r0, [r0]
+0800c478:  48 b9         cbnz     r0, #0x800c48e
+0800c47a:  07 49         ldr      r1, [pc, #0x1c]    ; =0x20000482
+0800c47c:  c8 89         ldrh     r0, [r1, #0xe]
+0800c47e:  07 4a         ldr      r2, [pc, #0x1c]    ; =0x20001040
+0800c480:  10 80         strh     r0, [r2]
+0800c482:  07 49         ldr      r1, [pc, #0x1c]    ; =0x2000139a
+0800c484:  c8 89         ldrh     r0, [r1, #0xe]
+0800c486:  50 80         strh     r0, [r2, #2]
+0800c488:  06 49         ldr      r1, [pc, #0x18]    ; =0x20001031
+0800c48a:  01 20         movs     r0, #1
+0800c48c:  08 70         strb     r0, [r1]
+0800c48e:  70 bd         pop      {r4, r5, r6, pc}
+0800c490:  7f 10 00 20   .word    0x2000107f
+0800c494:  7e 10 00 20   .word    0x2000107e
+0800c498:  82 04 00 20   .word    0x20000482
+0800c49c:  40 10 00 20   .word    0x20001040
+0800c4a0:  9a 13 00 20   .word    0x2000139a
+0800c4a4:  31 10 00 20   .word    0x20001031
+</code></pre>
 <hr />
 <h2 id="8-corrections-to-the-earlier-notes"><span class="h-num">08</span>Corrections to the earlier notes</h2>
 <p>The notes in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/tree/main/history/"><code>history/</code></a> were written with another AI assistant before this session. Wrong or
@@ -3160,6 +3305,10 @@ python3 tools/build_readme.py
 <tr>
 <td style="text-align: left;"><code>build_window_only.py</code></td>
 <td style="text-align: left;">the failed window-only build of 6.5, exactly as run (do not use)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>hook.py OUT.bin</code></td>
+<td style="text-align: left;"><code>nosmooth-hook</code> (7.9, <strong>untested</strong>): same effect as nosmooth-nohold, nothing below <code>0x08003000</code> changed</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>factory_tags_fc60.bin</code></td>
@@ -3356,6 +3505,10 @@ their Y and pressure values are fine.</p>
 <tr>
 <td style="text-align: left;">T = 80, <code>test_t80.bin</code></td>
 <td style="text-align: left;"><code>93ac3e22e1c5b2dcec173d932f73bb843625f46872f41e0a3a9edd3b510ccf51</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">nosmooth-hook (untested), <code>s640_nosmooth_hook.bin</code></td>
+<td style="text-align: left;"><code>4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">failed <code>--fast</code> build, <code>test_v3.bin</code></td>
@@ -3601,6 +3754,11 @@ as stored in flash.</p>
 <td style="text-align: left;"><a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/asm/patched_t80_tuner.lst"><code>asm/patched_t80_tuner.lst</code></a></td>
 <td style="text-align: left;"></td>
 <td style="text-align: left;">T = 80 tuner</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/asm/patched_hook.lst"><code>asm/patched_hook.lst</code></a></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">nosmooth-hook: redirected calls and the hook (untested)</td>
 </tr>
 </tbody>
 </table></div>
