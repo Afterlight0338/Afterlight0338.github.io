@@ -28,6 +28,10 @@ Afterlight0338.github.io/
 ├── app.js                     # tabs, motion switch, glass, Lanyard, osu!, audio
 ├── 404.html                   # custom not-found page (absolute URLs, uses style.css)
 ├── preview/index.html         # redirect to / for old links
+├── s640/                      # vivlos.dev/s640: Veikk S640 firmware notes (generated, see Part 7)
+│   ├── index.html             # built from README.md of Afterlight0338/s640-fw-docs-claude
+│   ├── s640.css               # page layout on top of /style.css tokens
+│   └── images/                # the two annotated board photos
 ├── assets/
 │   ├── fonts/                 # TorusPro Regular / SemiBold / Bold / Heavy (woff2)
 │   ├── vivlos/                # casual, racing, stage, summer (transparent webp)
@@ -133,7 +137,7 @@ Status Legend:
 5. **osu-skins** (`Afterlight0338/osu-skins`): Afterlight's skin collection, downloadable as `.osk` releases.
 
 **Not featured (Afterlight's call):**
-* **veikk-s640-zero-smoothing**: local only, not published. It is a USB DFU *firmware* patch for the Veikk S640's GD32F150 (removes the 2-sample average over USB; the other two filters need SWD). It is not a kernel driver.
+* **veikk-s640-zero-smoothing**: the code stays local, but the full write-up is public since 2026-10-06: repo `Afterlight0338/s640-fw-docs-claude` and the page vivlos.dev/s640. The tablet (MCU relabelled `VK1801`, a GD32F1x0-class Cortex-M3) was bricked by a DFU flash, recovered over SWD with a Pi Pico, and now runs a firmware patch that removes the 8-sample position average and the motion hold. The earlier DFU-only patch never worked (its sites were wrong). Not featured on the Projects tab (Afterlight's call, unchanged).
 * **ry5088-flasher**: dot-agi's repository (flasher + firmware for RongYuan RY5088 magnetic keyboards). Afterlight rewrote a keyboard firmware with it; not their project.
 * **youtube-music-cli**: a half-baked private fork (`Afterlight0338/ymc`); the commits are by involvex.
 * Others in the workspace (osu-splitter-cli, yt-music-obs-overlay, choicer-online, osu-winello, lazer-mapping, etc.) were not discussed.
@@ -196,6 +200,11 @@ These are the non-obvious things that broke once. Each one has a comment at the 
 ### Layout and browsers
 * `overflow-x: clip` lives on `.site-canvas`, not `body`: Chromium ignores it on `body`, which let the glass backings cause sideways scrolling on phones.
 * Afterlight uses **Brave**. Test in Brave (Chromium) as well as Firefox. Headless recipe used here: `puppeteer-core` launching `/run/current-system/sw/bin/brave` with `--use-angle=swiftshader --enable-unsafe-swiftshader`, waiting for `.glass > canvas` to appear twice.
+
+### /s640 (generated page)
+* Do not edit `s640/index.html` by hand. Edit `docs/src/*.md` in `Afterlight0338/s640-fw-docs-claude`, then run `python3 tools/build_readme.py` and `python3 tools/build_site_page.py <this repo>/s640` there (python-markdown needed).
+* The page loads `/style.css?v=7` (set in `tools/build_site_page.py`): when the main `?v=` is bumped, update it there and rebuild. `s640/s640.css` has its own `?v=`.
+* Repository paths in the text link to GitHub; only the two images in `s640/images/` are served from here.
 
 ### Writing
 * **No em dashes** in site copy or docs (Afterlight's preference). Use commas, colons or parentheses.
