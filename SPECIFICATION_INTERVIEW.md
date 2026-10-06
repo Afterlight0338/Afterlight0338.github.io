@@ -205,6 +205,9 @@ These are the non-obvious things that broke once. Each one has a comment at the 
 * Do not edit `s640/index.html` by hand. Edit `docs/src/*.md` in `Afterlight0338/s640-fw-docs-claude`, then run `python3 tools/build_readme.py` and `python3 tools/build_site_page.py <this repo>/s640` there (python-markdown needed).
 * The page loads `/style.css?v=7` (set in `tools/build_site_page.py`): when the main `?v=` is bumped, update it there and rebuild. `s640/s640.css` has its own `?v=`.
 * Repository paths in the text link to GitHub; only the two images in `s640/images/` are served from here.
+* Two versions on one page: the long one from `README.md` and the short one ("i aint reading allat" switch in the status rail, the main site's `.motion-switch` component) from `docs/short.md`. `#allat` or any `#tldr-…` link opens the short one.
+* A disclaimer gate covers the page until "I get it, let me in" is clicked (requested 2026-10-06). Remembered per browser in `localStorage["vivlos-s640-ack"]`; the chosen version in `localStorage["vivlos-s640-view"]`. Without JS there is no gate, the disclaimer shows inline and the long version is shown.
+* The page follows the main site's Animations choice (`localStorage["vivlos-motion"]`) for its few hover transitions.
 
 ### Writing
 * **No em dashes** in site copy or docs (Afterlight's preference). Use commas, colons or parentheses.
