@@ -227,6 +227,46 @@ pads 2, 3 and 5 as above, and swap the start of each OpenOCD command.</p>
 too. The tablet powers itself from USB.</p>
 <p><strong>No probe at all:</strong> there is no way yet. Veikk's USB updater cannot write the first 12 KB,
 where the patch is, and nothing else on USB can write flash. Opening the tablet is required.</p>
+<h3 id="02-untested-over-usb-flashing-ultra-mega-risky-pro-max-plus-5g-fold">0.2 Untested over USB flashing (ultra mega risky pro max plus 5g fold)</h3>
+<p><strong>Nothing in this section has been built or tested.</strong> It is a write-up of an idea, so that
+nobody has to work it out again. Don't try it on a tablet you can't recover over SWD.</p>
+<p><strong>Why USB is hard.</strong> On a tablet that still has Veikk's bootloader, the firmware can drop into
+Veikk's USB updater (3.1). That updater only writes from <code>0x08003000</code> up, and both
+zero-smoothing patches sit below that: the boxcar at <code>0x0310</code> and the hold at <code>0x17CA</code>
+(7.3, 7.4). In September <code>S640-251022</code> was flashed this way on this unit; only the part from
+<code>0x3000</code> up landed, and the tablet kept working. So stock's first 12 KB and 251022's upper
+part run together, at least on this unit.</p>
+<p><strong>The idea: go around the locked 12 KB.</strong> The call chain to the smoothing code is:</p>
+<pre><code>0x6602 main loop (writable) -bl-&gt; 0x2834 position + history (locked)
+                                    -bl-&gt; 0x1650 motion hold (locked)
+                                            -bl-&gt; 0x0310 boxcar (locked)
+</code></pre>
+<p>The main loop calls <code>0x2834</code> from <code>0x6822</code> and <code>0x685E</code>, both above <code>0x3000</code>. Point those two
+calls at a small routine in the free flash after the image (<code>0x0800C464</code> to <code>0x0800CFFF</code>,
+about 2.9 KB). It calls the original <code>0x2834</code>, then copies the newest sample (<code>histX[7]</code>,
+<code>histY[7]</code>) into <code>outX</code>/<code>outY</code> and marks a report pending. That is what <code>nosmooth-nohold</code>
+does, without changing a byte below <code>0x3000</code>. Only about 2 flash pages change.</p>
+<p><strong>Not known yet (check over SWD first):</strong></p>
+<ul>
+<li>whether the history is updated on every report even while the hold is active</li>
+<li>whether the report is built inside <code>0x2834</code> (a hook after it would then add one report,
+  about 4 ms, of lag) or after it returns</li>
+<li>when it is safe to set the report-pending flag <code>0x20001031</code> (never with no pen in range)</li>
+</ul>
+<p><strong>Why it is ultra mega risky:</strong></p>
+<ul>
+<li>An interrupted USB write is exactly how this tablet was bricked (3.1). If the main loop
+  crashes, the updater can't be reached again without SWD.</li>
+<li>Writing 2 pages of a 251022-based image onto a tablet running some other firmware version
+  mixes two builds and bricks it. A tool would have to identify the firmware first, or write
+  the whole 251022 upper part (about 38 pages, a much bigger risk window).</li>
+<li>Only one unit is known to run old-low-12-KB + 251022-upper. Others may not.</li>
+<li>This unit can't test the USB part at all: its bootloader is gone (3.6). The first real test
+  needs an untouched S640 <strong>and</strong> an SWD probe standing by.</li>
+</ul>
+<p>A heavier variant that rewrites the first 12 KB from code running above <code>0x3000</code> has been
+suggested. It is not covered here: it is riskier than the hook, and it is not known whether
+the chip even allows it.</p>
 <hr />
 <h2 id="1-quick-facts"><span class="h-num">01</span>Quick facts</h2>
 <div class="table-wrap"><table>
