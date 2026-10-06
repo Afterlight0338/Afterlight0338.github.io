@@ -183,6 +183,50 @@ are required after an unlock: without them the pen is never detected (3.7, seen 
 tablets). Writing them again on a tablet that has them does no harm.</p>
 <p><strong>Back to stock:</strong> the same command with <code>S640-251022.bin</code>.
 <strong>Not over USB:</strong> Veikk's USB updater skips the first 12 KB, which is where the patch is (3.1).</p>
+<h3 id="01-no-pi-pico">0.1 No Pi Pico?</h3>
+<p>Anything that speaks SWD and works with OpenOCD will do. <strong>Only the Pico was tested on this
+tablet</strong>; the rest is what should work, not what was tried. Wire SWCLK, SWDIO and GND to J1
+pads 2, 3 and 5 as above, and swap the start of each OpenOCD command.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Probe</th>
+<th style="text-align: left;">Cost</th>
+<th style="text-align: left;">Replace <code>-f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0'</code> with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Raspberry Pi Pico (tested)</td>
+<td style="text-align: left;">about $4</td>
+<td style="text-align: left;">(as written)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pico 2, or another RP2040 board with GP2/GP3 broken out</td>
+<td style="text-align: left;">$2 to $5</td>
+<td style="text-align: left;">(as written). Pico 2 needs <code>debugprobe_on_pico2.uf2</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">ST-Link V2 USB stick (clones are fine)</td>
+<td style="text-align: left;">about $3</td>
+<td style="text-align: left;"><code>-f interface/stlink.cfg -c 'transport select hla_swd; set CPUTAPID 0'</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Segger J-Link, or any CMSIS-DAP probe</td>
+<td style="text-align: left;">varies</td>
+<td style="text-align: left;"><code>-f interface/jlink.cfg -c 'transport select swd; set CPUTAPID 0'</code> (CMSIS-DAP: as written)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Raspberry Pi 2/3/4 GPIO header, no probe at all</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;"><code>-f interface/raspberrypi2-native.cfg -c 'transport select swd; set CPUTAPID 0'</code>, run on the Pi itself. SWCLK = GPIO11 (pin 23), SWDIO = GPIO25 (pin 22), GND = pin 25. On a Pi 4 also add <code>-c 'bcm2835gpio peripheral_base 0xFE000000'</code>. Not for the Pi 5</td>
+</tr>
+</tbody>
+</table></div>
+<p>On an ST-Link stick, use its SWCLK, SWDIO and GND pins and leave its 3.3V pin unconnected
+too. The tablet powers itself from USB.</p>
+<p><strong>No probe at all:</strong> there is no way yet. Veikk's USB updater cannot write the first 12 KB,
+where the patch is, and nothing else on USB can write flash. Opening the tablet is required.</p>
 <hr />
 <h2 id="1-quick-facts"><span class="h-num">01</span>Quick facts</h2>
 <div class="table-wrap"><table>
