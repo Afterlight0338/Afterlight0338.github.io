@@ -163,7 +163,9 @@ sha256sum s640_nosmooth_nohold.bin
 <p>The script checks the original bytes before it changes anything and stops on a mismatch.
 Without <code>--nohold</code> you get <code>nosmooth</code> (average removed, motion hold kept, 7.3).</p>
 <p><strong>3. Wire the Pico to J1</strong> (2.4): pad 2 (SWCLK) to GP2, pad 3 (SWDIO) to GP3, pad 5 (GND) to
-GND. Leave pad 1 (3V3) unconnected. Beep-test every wire from the Pico pin to the chip pin.</p>
+GND. Pad 4 (NRST) to GP1 is optional: this unit had it wired, but the commands below use
+<code>reset_config none</code>, so OpenOCD never drives it. Leave pad 1 (3V3) unconnected. Beep-test
+every wire from the Pico pin to the chip pin.</p>
 <p><strong>4. Connect and check read protection.</strong></p>
 <pre><code>openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; mdw 0x4002201C; shutdown'
 </code></pre>
