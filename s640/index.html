@@ -3552,6 +3552,12 @@ hashes in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/ma
   <code>0x080003AC</code> and <code>0x08000B24</code> do.</li>
 <li>The meaning of report bytes 11 and 12 (most likely tilt).</li>
 <li>Whether the unused <code>mov r5, sl</code> variant of nosmooth-nohold (7.4) behaves any differently in practice.</li>
+<li>Whether <code>nosmooth-hook</code> (7.9) behaves like <code>nosmooth-nohold</code> on a
+  real tablet over SWD, and after that, whether it can be written safely through Veikk's USB
+  updater on an untouched tablet (0.2).</li>
+<li>Pressure smoothing: the 8-sample pressure average and the 4-report tip debounce (5.7) are
+  still in every patch here.</li>
+<li>Whether a tablet with a different board than <code>HK1102 VER02b</code> exists at all (2.6).</li>
 <li>The S640 bootloader at <code>0x0800D800</code>: it is not in Veikk's update file. A flash dump from a
   working tablet would answer this and the settings questions.</li>
 </ul>
