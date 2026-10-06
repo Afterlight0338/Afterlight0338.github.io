@@ -6,43 +6,128 @@
   <title>Veikk S640 firmware notes, vivlos.dev</title>
   <meta name="description" content="Unbricking a Veikk S640 over SWD with a Pi Pico, how its firmware scans the pen, and removing the cursor smoothing. Every byte and measurement.">
   <meta name="theme-color" content="#080b12">
-  <link rel="icon" type="image/webp" href="/assets/vivlos/casual.webp">
+  <link rel="icon" type="image/webp" href="/assets/vivlos/racing.webp">
   <meta property="og:title" content="Veikk S640 firmware notes">
   <meta property="og:description" content="SWD unbrick, firmware internals and the zero-smoothing patch for the Veikk S640.">
   <meta property="og:url" content="https://vivlos.dev/s640/">
-  <!-- Generated from README.md by tools/build_site_page.py in https://github.com/Afterlight0338/s640-fw-docs-claude. Edit the source there.
-       Uses the main stylesheet's tokens and fonts: bump ?v= together with index.html -->
+  <!-- Generated from README.md and docs/short.md by tools/build_site_page.py in https://github.com/Afterlight0338/s640-fw-docs-claude.
+       Edit the source there. Uses the main stylesheet's tokens, fonts and switch:
+       bump ?v= together with index.html -->
   <link rel="stylesheet" href="/style.css?v=7">
-  <link rel="stylesheet" href="/s640/s640.css?v=1">
+  <link rel="stylesheet" href="/s640/s640.css?v=2">
+  <script>
+    /* Runs before the body paints: gate state, short/long view, the site-wide motion choice.
+       Storage can be blocked (private windows); everything falls back to the defaults. */
+    (function () {
+      var h = document.documentElement;
+      function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+      var m = get('vivlos-motion');
+      h.dataset.motion = m ? m : (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'off' : 'on');
+      if (get('vivlos-s640-ack') !== 'yes') h.classList.add('gated');
+      var hs = location.hash;  /* a link into one version opens that version */
+      h.dataset.view = /^#(allat|tldr-)/.test(hs) ? 'short'
+        : /^#\d/.test(hs) ? 'long' : (get('vivlos-s640-view') === 'short' ? 'short' : 'long');
+    })();
+  </script>
 </head>
-<body>
+<body id="top">
+
+  <section class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate-text">
+      <span class="gate-kicker">read this first</span>
+      <h1 id="gate-title">You're on your own.</h1>
+      
+<p><strong>This entire write-up was written by Claude Opus 5.5 on xHigh reasoning.</strong>
+I did not check every byte of it, and I am <strong>not responsible for anything in here that
+turns out to be wrong.</strong> Some of it probably is.</p>
+<p>Flash something because a web page told you to, turn your tablet into a very expensive
+coaster, and that is on you. Not me, not Claude, you.</p>
+<p>Read the code yourself. Measure with your own multimeter. Check every address and every
+command before you run it. Better yet, do the shi yourself and use this as a map, not a
+manual.</p>
+
+      <p class="gate-warned">You have been warned.</p>
+      <div class="gate-actions">
+        <button type="button" class="gate-accept" id="gate-accept">I get it, let me in</button>
+        <a class="gate-leave" href="/">nah, take me back</a>
+      </div>
+      <span class="gate-note">remembered in this browser</span>
+    </div>
+    <img class="gate-art" src="/assets/vivlos/racing.webp" alt="Vivlos, not responsible either">
+  </section>
+
   <div class="doc-canvas">
+    <div class="top-status-bar">
+      <a href="/#projects" class="status-home">vivlos.dev / s640</a>
+      <span><span class="mono-dim">unit</span> Veikk S640 V1</span>
+      <span><span class="mono-dim">firmware</span> S640-251022 + v2</span>
+      <button type="button" class="motion-switch" id="allat-switch" role="switch" aria-checked="false">
+        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        i aint reading allat
+      </button>
+    </div>
+
     <header class="doc-head">
-      <a class="doc-back" href="/#projects">vivlos.dev / projects</a>
-      <h1>Veikk S640: SWD unbrick, firmware internals, and the zero-smoothing patch</h1>
-      <p class="doc-meta">Written 2026-10-06 &middot; source, scripts and data on
-        <a href="https://github.com/Afterlight0338/s640-fw-docs-claude">GitHub</a></p>
+      <div class="doc-head-text">
+        <span class="doc-kicker"><span class="view-long">project notes, the long version</span><span class="view-short">the short version: what to do, what not to do</span></span>
+        <h1>Veikk S640: SWD unbrick, firmware internals, and the zero-smoothing patch</h1>
+        <p class="doc-meta">Written 2026-10-06 &middot; scripts, data and listings on <a href="https://github.com/Afterlight0338/s640-fw-docs-claude">GitHub</a></p>
+        <dl class="doc-stats">
+          <div><dt>report rate</dt><dd>250 Hz <span>scan-limited</span></dd></div>
+          <div><dt>lag removed</dt><dd>&asymp;14 ms <span>8-sample average</span></dd></div>
+          <div><dt>still jitter, v2</dt><dd>&asymp;0.03 mm <span>raw sensor noise</span></dd></div>
+          <div><dt>status</dt><dd>alive <span>unbricked over SWD</span></dd></div>
+        </dl>
+      </div>
+      <img class="doc-art" src="/assets/vivlos/racing.webp" alt="">
     </header>
+
+    <noscript>
+      <div class="doc-noscript"><strong>Disclaimer.</strong> 
+<p><strong>This entire write-up was written by Claude Opus 5.5 on xHigh reasoning.</strong>
+I did not check every byte of it, and I am <strong>not responsible for anything in here that
+turns out to be wrong.</strong> Some of it probably is.</p>
+<p>Flash something because a web page told you to, turn your tablet into a very expensive
+coaster, and that is on you. Not me, not Claude, you.</p>
+<p>Read the code yourself. Measure with your own multimeter. Check every address and every
+command before you run it. Better yet, do the shi yourself and use this as a map, not a
+manual.</p>
+ <strong>You have been warned.</strong></div>
+    </noscript>
+
     <nav class="doc-toc" aria-label="Contents">
       <details open>
         <summary>Contents</summary>
-        <ol>
-<li><a href="#1-quick-facts">1. Quick facts</a></li>
-<li><a href="#2-hardware">2. Hardware</a></li>
-<li><a href="#3-how-it-was-bricked-and-how-it-was-recovered">3. How it was bricked, and how it was recovered</a></li>
-<li><a href="#4-the-firmware-image">4. The firmware image</a></li>
-<li><a href="#5-how-the-firmware-works">5. How the firmware works</a></li>
-<li><a href="#6-report-rate-why-1000-hz-is-not-possible-here">6. Report rate: why 1000 Hz is not possible here</a></li>
-<li><a href="#7-zero-smoothing">7. Zero smoothing</a></li>
-<li><a href="#8-corrections-to-the-earlier-notes">8. Corrections to the earlier notes</a></li>
-<li><a href="#9-tools-scripts-and-data-in-this-repository">9. Tools, scripts and data in this repository</a></li>
-<li><a href="#10-checksums">10. Checksums</a></li>
-<li><a href="#11-open-questions">11. Open questions</a></li>
-<li><a href="#12-annotated-listings">12. Annotated listings</a></li>
+        <ol class="view-long">
+<li><a href="#1-quick-facts"><span class="toc-num">01</span>Quick facts</a></li>
+<li><a href="#2-hardware"><span class="toc-num">02</span>Hardware</a></li>
+<li><a href="#3-how-it-was-bricked-and-how-it-was-recovered"><span class="toc-num">03</span>How it was bricked, and how it was recovered</a></li>
+<li><a href="#4-the-firmware-image"><span class="toc-num">04</span>The firmware image</a></li>
+<li><a href="#5-how-the-firmware-works"><span class="toc-num">05</span>How the firmware works</a></li>
+<li><a href="#6-report-rate-why-1000-hz-is-not-possible-here"><span class="toc-num">06</span>Report rate: why 1000 Hz is not possible here</a></li>
+<li><a href="#7-zero-smoothing"><span class="toc-num">07</span>Zero smoothing</a></li>
+<li><a href="#8-corrections-to-the-earlier-notes"><span class="toc-num">08</span>Corrections to the earlier notes</a></li>
+<li><a href="#9-tools-scripts-and-data-in-this-repository"><span class="toc-num">09</span>Tools, scripts and data in this repository</a></li>
+<li><a href="#10-checksums"><span class="toc-num">10</span>Checksums</a></li>
+<li><a href="#11-open-questions"><span class="toc-num">11</span>Open questions</a></li>
+<li><a href="#12-annotated-listings"><span class="toc-num">12</span>Annotated listings</a></li>
+        </ol>
+        <ol class="view-short">
+<li><a href="#tldr-what-this-is"><span class="toc-num">01</span>What this is</a></li>
+<li><a href="#tldr-is-this-your-tablet"><span class="toc-num">02</span>Is this your tablet?</a></li>
+<li><a href="#tldr-what-you-need"><span class="toc-num">03</span>What you need</a></li>
+<li><a href="#tldr-wiring"><span class="toc-num">04</span>Wiring</a></li>
+<li><a href="#tldr-steps"><span class="toc-num">05</span>Steps</a></li>
+<li><a href="#tldr-do"><span class="toc-num">06</span>Do</a></li>
+<li><a href="#tldr-dont"><span class="toc-num">07</span>Don't</a></li>
+<li><a href="#tldr-what-you-get"><span class="toc-num">08</span>What you get</a></li>
+<li><a href="#tldr-if-something-goes-wrong"><span class="toc-num">09</span>If something goes wrong</a></li>
         </ol>
       </details>
     </nav>
+
     <main class="doc-body">
+      <article class="view-long">
 <p>Everything learned while bringing a bricked Veikk S640 drawing tablet back to life over SWD
 with a Raspberry Pi Pico, then reading its firmware to find out where the report rate and
 the cursor smoothing come from. Every number here was measured or read from the chip or the
@@ -55,7 +140,7 @@ SWD access requires removing the chip's read protection, and that <strong>erases
 including per-unit data that this document cannot give back to you (section 3.6).</p>
 </blockquote>
 <hr />
-<h2 id="1-quick-facts">1. Quick facts</h2>
+<h2 id="1-quick-facts"><span class="h-num">01</span>Quick facts</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -65,6 +150,11 @@ including per-unit data that this document cannot give back to you (section 3.6)
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align: left;">Unit used</td>
+<td style="text-align: left;">one Veikk S640, called <strong>V1</strong> in the earlier notes; no revision marking on the photographed parts of the PCB (2.1)</td>
+<td style="text-align: left;">owner, photos</td>
+</tr>
 <tr>
 <td style="text-align: left;">Tablet</td>
 <td style="text-align: left;">Veikk S640, USB <code>2feb:0001</code>, manufacturer string <code>VEIKK.INC</code>, product <code>S640</code></td>
@@ -143,8 +233,50 @@ including per-unit data that this document cannot give back to you (section 3.6)
 </tbody>
 </table></div>
 <hr />
-<h2 id="2-hardware">2. Hardware</h2>
-<h3 id="21-board">2.1 Board</h3>
+<h2 id="2-hardware"><span class="h-num">02</span>Hardware</h2>
+<h3 id="21-the-unit-these-notes-come-from">2.1 The unit these notes come from</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Model</td>
+<td style="text-align: left;">Veikk S640 (6 x 4 inch), the version the earlier notes call <strong>V1</strong>. Veikk also sells an "S640 V2"; nothing here was checked on one</td>
+</tr>
+<tr>
+<td style="text-align: left;">PCB revision</td>
+<td style="text-align: left;">no version or date marking on the parts of the board in the photos (front side around the MCU and the antenna front end)</td>
+</tr>
+<tr>
+<td style="text-align: left;">USB</td>
+<td style="text-align: left;"><code>2feb:0001</code>, <code>bcdDevice 0x0000</code>, strings <code>VEIKK.INC</code> / <code>S640</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">MCU</td>
+<td style="text-align: left;">marked <code>VEIKK VK1801</code>, LQFP64, device ID <code>0x13030410</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Firmware it came with</td>
+<td style="text-align: left;">unknown version, never read out (lost in the unlock, 3.6). The earlier notes measured <code>bInterval 3</code> on it</td>
+</tr>
+<tr>
+<td style="text-align: left;">Firmware now</td>
+<td style="text-align: left;"><code>S640-251022</code> with the v2 patch (7.4)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pen</td>
+<td style="text-align: left;">the pen that came with it; model not recorded. The hover frequency measurement returns a period of 2621 to 2687 TIMER2 ticks (5.7)</td>
+</tr>
+</tbody>
+</table></div>
+<p>If your tablet's MCU marking, USB ID, J1 layout or the bytes the patch scripts check differ
+from this table, <strong>stop</strong>: you have different hardware or firmware, and nothing below is
+known to apply.</p>
+<h3 id="22-board">2.2 Board</h3>
 <p><img loading="lazy" alt="Board with the J1 SWD wiring" src="images/s640_board_j1_swd_wiring.jpg" /></p>
 <p>Photo orientation used throughout this document: chip text <code>VK1801</code> upright, J1 is the
 vertical column of 5 gold through-holes to the left of the chip, <strong>pad 1 is the bottom hole</strong>.
@@ -202,7 +334,7 @@ The USB cable is soldered to pads at the top (red = 5 V, black = GND, green and 
 </tbody>
 </table></div>
 <p><a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/images/raw/IMG20260929140039.jpg"><code>images/raw/IMG20260929140039.jpg</code></a> shows the antenna front end (the HC4051 and MC4580 parts).</p>
-<h3 id="22-mcu-pins-that-matter">2.2 MCU pins that matter</h3>
+<h3 id="23-mcu-pins-that-matter">2.3 MCU pins that matter</h3>
 <p><img loading="lazy" alt="Chip and J1, rotated view" src="images/s640_mcu_pinout_top_view.jpg" /></p>
 <p>The second photo is the board rotated 90 degrees clockwise (pin-1 dot at the top left, J1 as
 a row above the chip). In it J1 pad 1 is the <strong>left</strong> hole, which is the same hole as
@@ -291,7 +423,7 @@ pinout and from what the firmware drives.</p>
 </tr>
 </tbody>
 </table></div>
-<h3 id="23-j1-debug-header">2.3 J1 debug header</h3>
+<h3 id="24-j1-debug-header">2.4 J1 debug header</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -378,14 +510,14 @@ pinout and from what the firmware drives.</p>
 </tbody>
 </table></div>
 <p>Physical pin numbers count from the USB end of the Pico, on the row that starts with GP0.</p>
-<h3 id="24-boot0-cannot-be-used">2.4 BOOT0 cannot be used</h3>
+<h3 id="25-boot0-cannot-be-used">2.5 BOOT0 cannot be used</h3>
 <p>BOOT0 (pin 60) measures <strong>0 Ω to GND</strong>. It is tied to ground on the board, so the chip
 can never be strapped into its ROM bootloader from BOOT0. Bridging pin 64 (3.3 V) to pin 60,
 which was tried on 2026-09-29, shorts the 3.3 V rail to GND. <strong>Do not do it.</strong> The tablet's
 "enter DFU" USB command (section 3.1) jumps to Veikk's own bootloader in flash, which needs
 working firmware to receive the command. With broken firmware, SWD is the only way in.</p>
 <hr />
-<h2 id="3-how-it-was-bricked-and-how-it-was-recovered">3. How it was bricked, and how it was recovered</h2>
+<h2 id="3-how-it-was-bricked-and-how-it-was-recovered"><span class="h-num">03</span>How it was bricked, and how it was recovered</h2>
 <h3 id="31-before-2026-10-06-from-the-earlier-notes-written-with-another-ai-assistant">3.1 Before 2026-10-06 (from the earlier notes, written with another AI assistant)</h3>
 <p>These facts come from <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/history/VEIKK_S640_REVERSE_ENGINEERING_original.md"><code>history/VEIKK_S640_REVERSE_ENGINEERING_original.md</code></a> and the
 scripts in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/tree/main/history/"><code>history/</code></a>. They were not re-tested on 2026-10-06 unless stated.</p>
@@ -447,7 +579,7 @@ pull-down (0 V on pad 2), PA13 (SWDIO) a pull-up (3.30 V on pad 3).</p>
 <li>Hold BOOTSEL and plug the Pico in. It appears as <code>2e8a:0003 RP2 Boot</code> with a drive called <code>RPI-RP2</code>.</li>
 <li>Copy <code>debugprobe_on_pico.uf2</code> onto it (SHA-256 in section 10). It re-enumerates as
    <code>2e8a:000c Raspberry Pi Debugprobe on Pico (CMSIS-DAP)</code>, firmware version 2.0.0.</li>
-<li>Wire it as in 2.3. Then plug in the tablet first and the Pico second.</li>
+<li>Wire it as in 2.4. Then plug in the tablet first and the Pico second.</li>
 </ol>
 <p>A charge-only USB cable is a common reason for the Pico not appearing at all.</p>
 <h3 id="34-connecting-and-what-went-wrong-first">3.4 Connecting, and what went wrong first</h3>
@@ -606,7 +738,7 @@ nix-shell -p openocd --run &quot;openocd -f interface/cmsis-dap.cfg -c 'transpor
 project through Veikk's USB DFU:</strong> it silently skips the first 12 KB, which is exactly where
 the zero-smoothing patches are, and an interrupted DFU flash is how this tablet was bricked.</p>
 <hr />
-<h2 id="4-the-firmware-image">4. The firmware image</h2>
+<h2 id="4-the-firmware-image"><span class="h-num">04</span>The firmware image</h2>
 <h3 id="41-files">4.1 Files</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -923,7 +1055,7 @@ and express keys were <strong>not tested</strong> after the restore.</p>
 <p><code>lsusb -v</code> on the restored tablet shows the same values. The host already polls the pen
 endpoints every 1 ms.</p>
 <hr />
-<h2 id="5-how-the-firmware-works">5. How the firmware works</h2>
+<h2 id="5-how-the-firmware-works"><span class="h-num">05</span>How the firmware works</h2>
 <h3 id="51-main-loop-and-modes">5.1 Main loop and modes</h3>
 <p>Everything runs in one loop in <code>main</code> (<code>0x0800664C</code>, <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/asm/33_main_loop.lst"><code>asm/33_main_loop.lst</code></a>). Interrupts
 only collect timer captures (TIMER2) and run a 200 Hz tick (TIMER5). The pen state machine
@@ -2076,7 +2208,7 @@ bursts plus integration waits. The rest of the work alone is more than 1 ms.</p>
 </tbody>
 </table></div>
 <hr />
-<h2 id="6-report-rate-why-1000-hz-is-not-possible-here">6. Report rate: why 1000 Hz is not possible here</h2>
+<h2 id="6-report-rate-why-1000-hz-is-not-possible-here"><span class="h-num">06</span>Report rate: why 1000 Hz is not possible here</h2>
 <h3 id="61-measured-rate">6.1 Measured rate</h3>
 <p>All measurements: pen reports read straight from the interface 2 hidraw node while
 OpenTabletDriver 0.6.7 was running (it puts the tablet into the vendor report mode).</p>
@@ -2388,7 +2520,7 @@ interpolation sees, which shifts the computed position. <strong>About 10 % more 
 </ul>
 <p>Always test lifting the pen away and bringing it back, and measure accuracy, not just Hz.</p>
 <hr />
-<h2 id="7-zero-smoothing">7. Zero smoothing</h2>
+<h2 id="7-zero-smoothing"><span class="h-num">07</span>Zero smoothing</h2>
 <h3 id="71-what-the-earlier-patch-claimed-and-what-is-true">7.1 What the earlier patch claimed, and what is true</h3>
 <p><a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/history/scripts/create_zero_smoothing_fw.py"><code>history/scripts/create_zero_smoothing_fw.py</code></a> patched three places:</p>
 <div class="table-wrap"><table>
@@ -2691,7 +2823,7 @@ on any mismatch. To go back to stock, flash <code>S640-251022.bin</code> the sam
    coordinates five times. With v2, <code>outX</code> equals the last <code>histX</code> value every time.</li>
 </ol>
 <hr />
-<h2 id="8-corrections-to-the-earlier-notes">8. Corrections to the earlier notes</h2>
+<h2 id="8-corrections-to-the-earlier-notes"><span class="h-num">08</span>Corrections to the earlier notes</h2>
 <p>The notes in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/tree/main/history/"><code>history/</code></a> were written with another AI assistant before this session. Wrong or
 unverified claims, and what is actually true:</p>
 <div class="table-wrap"><table>
@@ -2804,7 +2936,7 @@ unverified claims, and what is actually true:</p>
 </tbody>
 </table></div>
 <hr />
-<h2 id="9-tools-scripts-and-data-in-this-repository">9. Tools, scripts and data in this repository</h2>
+<h2 id="9-tools-scripts-and-data-in-this-repository"><span class="h-num">09</span>Tools, scripts and data in this repository</h2>
 <h3 id="91-layout">9.1 Layout</h3>
 <pre><code>README.md                    this document (generated, see below)
 docs/src/*.md                its source, with listing placeholders
@@ -3007,7 +3139,7 @@ their Y and pressure values are fine.</p>
 </tbody>
 </table></div>
 <hr />
-<h2 id="10-checksums">10. Checksums</h2>
+<h2 id="10-checksums"><span class="h-num">10</span>Checksums</h2>
 <p>SHA-256:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -3066,7 +3198,7 @@ their Y and pressure values are fine.</p>
 <p><a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/tools/gen_listings.sh"><code>tools/gen_listings.sh</code></a> rebuilds v1, v2 and T = 80 from the stock image and records their
 hashes in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/asm/patched_images.sha256"><code>asm/patched_images.sha256</code></a>; they match the table.</p>
 <hr />
-<h2 id="11-open-questions">11. Open questions</h2>
+<h2 id="11-open-questions"><span class="h-num">11</span>Open questions</h2>
 <ul>
 <li>What exactly the hold flag <code>0x2000107E</code> (path A) is for, and whether anything sets it.</li>
 <li>How the frequency measurement turns <code>72 MHz / period + band offset</code> into the pen's
@@ -3083,7 +3215,7 @@ hashes in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/ma
   working tablet would answer this and the settings questions.</li>
 </ul>
 <hr />
-<h2 id="12-annotated-listings">12. Annotated listings</h2>
+<h2 id="12-annotated-listings"><span class="h-num">12</span>Annotated listings</h2>
 <p>Generated from <code>S640-251022.bin</code> by <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/tools/listing.py"><code>tools/listing.py</code></a> (capstone, Thumb-2 with M-profile
 system instructions). Each line is <code>address: bytes  mnemonic operands</code>; PC-relative loads
 show the loaded value as <code>; =0x…</code>, and literal pools are printed as <code>.word</code>. Byte order is
@@ -5541,7 +5673,288 @@ as stored in flash.</p>
 
 <hr />
 <p><em>Measured, read and written on 2026-10-06. Corrections welcome as issues or pull requests.</em></p>
+      </article>
+      <article class="view-short">
+<h2 id="tldr-what-this-is"><span class="h-num">01</span>What this is</h2>
+<p>A Veikk S640 bricked by a bad USB flash, revived over SWD with a Raspberry Pi Pico, then
+patched so the firmware stops smoothing the cursor. This is the short version: what you need,
+what to run, what not to do. The long version has the why, the proof and every byte.</p>
+<h2 id="tldr-is-this-your-tablet"><span class="h-num">02</span>Is this your tablet?</h2>
+<p>Only go on if all of these match. If anything differs, stop.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Check</th>
+<th style="text-align: left;">Must be</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Tablet</td>
+<td style="text-align: left;">Veikk S640 (this one is the "V1"; an S640 V2 was never tested)</td>
+</tr>
+<tr>
+<td style="text-align: left;">USB ID when working</td>
+<td style="text-align: left;"><code>2feb:0001</code>, product <code>S640</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Chip marking</td>
+<td style="text-align: left;"><code>VEIKK VK1801</code>, 64 pins (16 per side)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Debug header</td>
+<td style="text-align: left;">J1, five gold through-holes in a row next to the chip</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="tldr-what-you-need"><span class="h-num">03</span>What you need</h2>
+<ul>
+<li>Raspberry Pi Pico (RP2040) and a USB cable that carries <strong>data</strong></li>
+<li><code>debugprobe_on_pico.uf2</code> (Raspberry Pi's official debugprobe firmware)</li>
+<li>4 female-to-male jumper wires</li>
+<li>a multimeter with a beep/continuity mode</li>
+<li>OpenOCD 0.12 (<code>nix-shell -p openocd</code> on NixOS)</li>
+<li><code>S640-251022.bin</code> (Veikk's firmware update, SHA-256 starts with <code>150fbc8b</code>)</li>
+<li>from the GitHub repo: <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/patches/nosmooth.py"><code>patches/nosmooth.py</code></a> and <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/patches/factory_tags_fc60.bin"><code>patches/factory_tags_fc60.bin</code></a></li>
+</ul>
+<h2 id="tldr-wiring"><span class="h-num">04</span>Wiring</h2>
+<p>Hold the board so the chip text <code>VK1801</code> reads upright. J1 is the column of 5 holes left of
+the chip. <strong>Pad 1 is the bottom one.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">J1 pad</th>
+<th style="text-align: left;">Signal</th>
+<th style="text-align: left;">Pico pin (count from the USB end, GP0 row)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">3V3</td>
+<td style="text-align: left;"><strong>nothing, leave it alone</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">SWCLK</td>
+<td style="text-align: left;">pin 4 (GP2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">SWDIO</td>
+<td style="text-align: left;">pin 5 (GP3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">NRST</td>
+<td style="text-align: left;">pin 2 (GP1), optional</td>
+</tr>
+<tr>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">GND</td>
+<td style="text-align: left;">pin 3 (GND)</td>
+</tr>
+</tbody>
+</table></div>
+<p><img loading="lazy" alt="J1 wiring" src="images/s640_board_j1_swd_wiring.jpg" /></p>
+<p>Then <strong>beep-test every wire from the Pico pin to the chip pin</strong>: GP2 to chip pin 49, GP3 to
+chip pin 46, GND to pad 5. GP2 and GP3 must <strong>not</strong> beep to each other. Most "it doesn't
+connect" problems are a wire that isn't touching or one that touches two holes.</p>
+<h2 id="tldr-steps"><span class="h-num">05</span>Steps</h2>
+<p><strong>1. Pico.</strong> Hold BOOTSEL, plug it in, copy <code>debugprobe_on_pico.uf2</code> onto the <code>RPI-RP2</code> drive.</p>
+<p><strong>2. Plug in the tablet first</strong>, then the Pico.</p>
+<p><strong>3. Connect.</strong></p>
+<pre><code>openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; mdw 0x4002201C; shutdown'
+</code></pre>
+<p>You want <code>SWD DPIDR 0x1ba01477</code> and <code>Cortex-M3 r2p1</code>. <code>cannot read IDR</code> = wiring, go back
+and beep-test.</p>
+<p><strong>4. Only if flash is read-protected</strong> (the value at <code>0x4002201C</code> ends in <code>2</code>, or flash reads
+fail). Unlocking <strong>erases everything</strong> on the chip, including Veikk's USB updater and per-unit
+settings that you cannot get back. Only do this on a tablet that is already dead.</p>
+<pre><code>openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; stm32f1x unlock 0; shutdown'
+</code></pre>
+<p>Then <strong>unplug the tablet and plug it back in.</strong></p>
+<p><strong>5. Build the patched firmware</strong> (in a folder with <code>S640-251022.bin</code> in it):</p>
+<pre><code>python3 nosmooth.py s640_firmware_nosmooth_v2.bin --nodeadzone
+sha256sum s640_firmware_nosmooth_v2.bin
+# 371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e
+</code></pre>
+<p><strong>6. Flash it, plus the factory tags</strong> (the tags only matter after an unlock, but writing them
+again does no harm):</p>
+<pre><code>openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_firmware_nosmooth_v2.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify; reset run; shutdown'
+</code></pre>
+<p>Look for <code>** Verified OK **</code> twice. The tablet restarts on its own.</p>
+<p>To go back to stock, flash <code>S640-251022.bin</code> the same way.</p>
+<h2 id="tldr-do"><span class="h-num">06</span>Do</h2>
+<ul>
+<li>Beep-test Pico pin to <strong>chip pin</strong>, not just to the J1 hole.</li>
+<li>Put <code>adapter speed</code> <strong>after</strong> <code>target/stm32f1x.cfg</code> (the target file overrides it otherwise).</li>
+<li>Use <code>reset_config none</code>. Connect-under-reset does not work on this board.</li>
+<li>Write the factory tags after any unlock. Without them the pen is never detected.</li>
+<li>Lift the pen away and bring it back after flashing anything, to check it is picked up again.</li>
+</ul>
+<h2 id="tldr-dont"><span class="h-num">07</span>Don't</h2>
+<ul>
+<li><strong>Don't bridge BOOT0 (pin 60) to 3.3 V.</strong> BOOT0 is wired straight to ground; that is a short.</li>
+<li><strong>Don't connect J1 pad 1</strong> (3V3) to the Pico. The tablet powers itself from USB.</li>
+<li><strong>Don't flash anything from this project through Veikk's USB updater / DFU.</strong> It skips the
+  first 12 KB (where the patch is) and an interrupted DFU flash is how this tablet died.</li>
+<li><strong>Don't use the old scripts in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/tree/main/history/"><code>history/</code></a></strong>: <code>flash_500hz.py</code> bricked it, and the old
+  "zero smoothing" image (<code>bx lr</code> at <code>0x08000310</code>) would stop all pen reports.</li>
+<li><strong>Don't expect 1000 Hz.</strong> The antenna scan takes about 3.9 ms, so 250 Hz is it. The USB side
+  is already 1 ms.</li>
+<li><strong>Don't try the speed hacks</strong>: skipping the pressure measurement kills pen detection, and
+  shrinking the coil window loses the pen for good once you lift it.</li>
+</ul>
+<h2 id="tldr-what-you-get"><span class="h-num">08</span>What you get</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Stock</th>
+<th style="text-align: left;">Patched (v2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Position smoothing</td>
+<td style="text-align: left;">8-sample average (about 14 ms of lag)</td>
+<td style="text-align: left;">none, every report is the newest sample</td>
+</tr>
+<tr>
+<td style="text-align: left;">Motion "deadzone"</td>
+<td style="text-align: left;">holds the cursor on small moves</td>
+<td style="text-align: left;">gone</td>
+</tr>
+<tr>
+<td style="text-align: left;">Reports, pen held still</td>
+<td style="text-align: left;">about 208 per second</td>
+<td style="text-align: left;">about 267 per second</td>
+</tr>
+<tr>
+<td style="text-align: left;">Report rate, pen moving</td>
+<td style="text-align: left;">250 Hz</td>
+<td style="text-align: left;">250 Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Still-pen jitter</td>
+<td style="text-align: left;">0 (hidden by the deadzone)</td>
+<td style="text-align: left;">about 0.03 mm (filter it in OpenTabletDriver if it bugs you)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pressure</td>
+<td style="text-align: left;">8-sample average, 4-report tip debounce</td>
+<td style="text-align: left;">unchanged</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="tldr-if-something-goes-wrong"><span class="h-num">09</span>If something goes wrong</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Symptom</th>
+<th style="text-align: left;">Likely cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>cannot read IDR</code></td>
+<td style="text-align: left;">wiring. Beep-test again</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Failed to read memory at 0x08000004</code></td>
+<td style="text-align: left;">flash is read-protected, see step 4</td>
+</tr>
+<tr>
+<td style="text-align: left;">tablet shows up on USB but the pen is never detected</td>
+<td style="text-align: left;">factory tags missing, write <code>factory_tags_fc60.bin</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">pen works, then never comes back after lifting it</td>
+<td style="text-align: left;">you flashed a build with the window hack, flash v2 again</td>
+</tr>
+<tr>
+<td style="text-align: left;">nothing on USB at all, no LED</td>
+<td style="text-align: left;">firmware broken. SWD in, flash <code>S640-251022.bin</code> + tags</td>
+</tr>
+</tbody>
+</table></div>
+        <p class="short-more">That's the short version. Flip the switch at the top for the
+        full write-up: how the firmware works, the proof for every claim, the failed experiments
+        and every byte.</p>
+      </article>
+      <footer class="doc-foot">
+        <a href="#top">back to top</a>
+        <span>vivlos.dev &middot; written 2026-10-06 &middot; <a href="https://github.com/Afterlight0338/s640-fw-docs-claude">source</a></span>
+      </footer>
     </main>
   </div>
+
+  <script>
+    (function () {
+      var h = document.documentElement;
+      function set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked */ } }
+
+      // gate
+      var accept = document.getElementById('gate-accept');
+      if (h.classList.contains('gated')) accept.focus();
+      accept.addEventListener('click', function () {
+        set('vivlos-s640-ack', 'yes');
+        h.classList.remove('gated');
+        window.scrollTo(0, 0);
+      });
+
+      // short / long switch
+      var sw = document.getElementById('allat-switch');
+      function show(view, scroll) {
+        h.dataset.view = view;
+        sw.setAttribute('aria-checked', view === 'short' ? 'true' : 'false');
+        if (scroll) window.scrollTo(0, 0);
+        spy();
+      }
+      sw.addEventListener('click', function () {
+        var next = h.dataset.view === 'short' ? 'long' : 'short';
+        set('vivlos-s640-view', next);
+        show(next, true);
+      });
+
+      // contents rail: mark the section being read
+      var links = {};
+      document.querySelectorAll('.doc-toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+      var current = null, io = null;
+      function spy() {
+        if (!('IntersectionObserver' in window)) return;
+        if (io) io.disconnect();
+        var heads = document.querySelectorAll(h.dataset.view === 'short' ? '.view-short h2' : '.view-long h2');
+        io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            if (current) current.classList.remove('is-current');
+            current = links[e.target.id];
+            if (current) current.classList.add('is-current');
+          });
+        }, { rootMargin: '0px 0px -75% 0px' });
+        heads.forEach(function (el) { io.observe(el); });
+      }
+      show(h.dataset.view, false);
+
+      // copy buttons on short code blocks (commands, not the long listings)
+      document.querySelectorAll('.doc-body pre').forEach(function (pre) {
+        if (pre.textContent.split('\n').length > 30 || !navigator.clipboard) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'copy-btn'; b.textContent = 'copy';
+        b.addEventListener('click', function () {
+          navigator.clipboard.writeText(pre.textContent.replace(/\n$/, '')).then(function () {
+            b.textContent = 'copied'; setTimeout(function () { b.textContent = 'copy'; }, 1400);
+          });
+        });
+        var wrap = document.createElement('div');  /* outside the scrolling pre, so it stays put */
+        wrap.className = 'code-wrap';
+        pre.parentNode.insertBefore(wrap, pre);
+        wrap.appendChild(pre);
+        wrap.appendChild(b);
+      });
+    })();
+  </script>
 </body>
 </html>
