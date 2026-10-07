@@ -182,7 +182,7 @@ Veikk's USB updater and the per-unit settings (3.5, 3.6):</p>
 are required after an unlock: without them the pen is never detected (3.7, seen on two
 tablets). Writing them again on a tablet that has them does no harm.</p>
 <p><strong>Back to stock:</strong> the same command with <code>S640-251022.bin</code>.
-<strong>Not over USB:</strong> Veikk's USB updater skips the first 12 KB, which is where the patch is (3.1).</p>
+<strong>Not over USB:</strong> Veikk's USB updater refuses the first 12 KB, which is where the patch is (0.3.1).</p>
 <h3 id="01-no-pi-pico">0.1 No Pi Pico?</h3>
 <p>Anything that speaks SWD and works with OpenOCD will do. <strong>Only the Pico was tested on this
 tablet</strong>; the rest is what should work, not what was tried. Wire SWCLK, SWDIO and GND to J1
@@ -226,16 +226,17 @@ pads 2, 3 and 5 as above, and swap the start of each OpenOCD command.</p>
 <p>On an ST-Link stick, use its SWCLK, SWDIO and GND pins and leave its 3.3V pin unconnected
 too. The tablet powers itself from USB.</p>
 <p><strong>No probe at all:</strong> there is no way yet. Veikk's USB updater cannot write the first 12 KB,
-where the patch is, and nothing else on USB can write flash. Opening the tablet is required.</p>
+where the patch is, and nothing else on USB can write flash. Opening the tablet is required.
+Two untested ideas for later: 0.2 and 0.3.</p>
 <h3 id="02-untested-over-usb-flashing-ultra-mega-risky-pro-max-plus-5g-fold">0.2 Untested over USB flashing (ultra mega risky pro max plus 5g fold)</h3>
 <p><strong>Nothing in this section has been built or tested.</strong> It is a write-up of an idea, so that
 nobody has to work it out again. Don't try it on a tablet you can't recover over SWD.</p>
 <p><strong>Why USB is hard.</strong> On a tablet that still has Veikk's bootloader, the firmware can drop into
 Veikk's USB updater (3.1). That updater only writes from <code>0x08003000</code> up, and both
 zero-smoothing patches sit below that: the boxcar at <code>0x0310</code> and the hold at <code>0x17CA</code>
-(7.3, 7.4). In September <code>S640-251022</code> was flashed this way on this unit; only the part from
-<code>0x3000</code> up landed, and the tablet kept working. So stock's first 12 KB and 251022's upper
-part run together, at least on this unit.</p>
+(7.3, 7.4). In September <code>S640-251022</code> was flashed this way on this unit, but that flash most
+likely changed nothing (3.1), so whether an older first 12 KB runs with 251022's upper part
+was never actually seen.</p>
 <p><strong>The idea: go around the locked 12 KB.</strong> The call chain to the smoothing code is:</p>
 <pre><code>0x6602 main loop (writable) -bl-&gt; 0x2834 position + history (locked)
                                     -bl-&gt; 0x1650 motion hold (locked)
@@ -264,13 +265,12 @@ does, without changing a byte below <code>0x3000</code>. Only 2 flash pages chan
 <li>Writing 2 pages of a 251022-based image onto a tablet running some other firmware version
   mixes two builds and bricks it. A tool would have to identify the firmware first, or write
   the whole 251022 upper part (about 38 pages, a much bigger risk window).</li>
-<li>Only one unit is known to run old-low-12-KB + 251022-upper. Others may not.</li>
+<li>No unit is known to run an older first 12 KB with 251022's upper part. A tablet updated to
+  251022 with Veikk's own tool should (0.3.3), but none has been checked.</li>
 <li>This unit can't test the USB part at all: its bootloader is gone (3.6). The first real test
   needs an untouched S640 <strong>and</strong> an SWD probe standing by.</li>
 </ul>
-<p>A heavier variant that rewrites the first 12 KB from code running above <code>0x3000</code> has been
-suggested. It is not covered here: it is riskier than the hook, and it is not known whether
-the chip even allows it.</p>
+<p>A heavier variant that rewrites the first 12 KB from code running above <code>0x3000</code> is in 0.3.</p>
 <h4 id="021-why-not-just-undo-the-smoothing-after-it-happens">0.2.1 Why not just undo the smoothing after it happens?</h4>
 <p>Fair question: if the smoothing lives in the first 12 KB, why not add "reverse smoothing"
 after it?</p>
@@ -318,6 +318,97 @@ to confirm the tablet runs exactly <code>S640-251022</code> above <code>0x3000</
 then rewrite just two pages: <code>0x08006800</code> to <code>0x08006BFF</code> (both calls) and <code>0x0800C400</code> to
 <code>0x0800C7FF</code> (image tail plus the hook). Everything in "why it is ultra mega risky" above
 still applies.</p>
+<h3 id="03-your-own-bootloader-over-usb-idea-untested">0.3 Your own bootloader over USB (idea, untested)</h3>
+<p><strong>Nothing in this section has been built or tested.</strong> Another user suggested it: get a small
+program onto the tablet through Veikk's updater, let that program overwrite the first 12 KB
+with an open bootloader, and flash complete images over USB from then on. Looking into it on
+2026-10-08 changed what this document says about the 12 KB lock (3.1, 3.4).</p>
+<h4 id="031-the-12-kb-lock-is-the-updaters-own-rule">0.3.1 The 12 KB lock is the updater's own rule</h4>
+<p>Veikk's updater matches GigaDevice's DFU example from the GD32F1x0 firmware library
+(<code>Examples/USBD/dev_firmware_update</code>, V3.8.0 checked), moved to <code>0x0800D800</code>: same USB ID
+<code>28e9:0189</code>, same <code>bcdDevice 1.00</code>, same layout string format. Its strings (<code>GD150C6T6</code>,
+<code>GD32 DFU in FS Mode</code>) differ from V3.8.0's, which fits an older library version. Its code
+was never read (it is gone from this unit, 3.6), so this is a close match, not proof.</p>
+<p>What that example does:</p>
+<ul>
+<li><strong>Erase and write refuse the bootloader's own area.</strong> <code>dfu_mem.c</code> fails both for any
+  address from <code>0x08000000</code> up to the app start (<code>IS_PROTECTED_AREA</code>). The example is meant
+  to sit at <code>0x08000000</code>, so that range protects the bootloader itself. Veikk moved it to
+  <code>0x0800D800</code> and left the range at 12 pages, along with a layout string for a 128 KB chip.</li>
+<li><strong>Failures are never reported.</strong> <code>dfu_core.c</code> ignores what erase and write return, so the
+  host hears "OK" for every block.</li>
+<li><strong>Write does not erase.</strong> Erasing is its own DFU command, and the flash controller won't
+  program a word that isn't blank.</li>
+</ul>
+<p>So the lock only binds the updater. Firmware code running from flash is not subject to it.</p>
+<h4 id="032-the-hardware-question-and-a-test-for-it">0.3.2 The hardware question, and a test for it</h4>
+<p>Read protection might still lock the first pages against the firmware itself; ST's F1 chips
+do that for pages 0 to 3. For this chip it is not known. A test on a tablet with an SWD probe
+attached, every step recoverable (not built yet):</p>
+<ol>
+<li>Flash <code>S640-251022</code> plus a small routine, run once from the main loop like the hook in
+   0.2, that programs <code>0xFFFFFFFF</code> onto one word in each of pages 0, 3, 4 and 11 and saves
+   <code>FMC_STAT</code> (<code>0x4002200C</code>) after each one in spare SRAM. Programming all ones can't change
+   a single bit.</li>
+<li>Turn read protection on (<code>stm32f1x lock 0</code>), then unplug the tablet and plug it back in.</li>
+<li>Attach with <code>reset_config none</code> and read the saved values. SRAM stays readable with
+   protection on (3.4). <code>WPERR</code> (bit 4) on a page means the hardware locks it. <code>PGERR</code>
+   (bit 2) or no error means the firmware can write it.</li>
+<li>Unlock and flash back as in section 0, steps 4 and 5.</li>
+</ol>
+<h4 id="033-the-real-problem-getting-the-first-stage-to-run">0.3.3 The real problem: getting the first stage to run</h4>
+<p>On an untouched tablet the first 12 KB is factory code nobody has read, and it holds the
+reset vector. In <code>S640-251022</code>, the reset handler (<code>0x08000190</code>, page 0) first calls
+<code>SystemInit</code> at <strong><code>0x080040F8</code></strong>, which is above <code>0x3000</code>, before anything else runs. So an
+image with the first stage at <code>0x080040F8</code> takes over at the next reset, before the firmware
+starts.</p>
+<p>That only works if the tablet's first 12 KB has the same layout as 251022's. It should on a
+tablet updated to 251022 with Veikk's own tool: the tool goes through the same updater, so it
+couldn't have replaced the first 12 KB either, and the tablet still has to boot. A USB tool
+would have to identify the firmware first, the same problem as in 0.2.</p>
+<p>Two rules keep the brick windows down to single page writes (tens of milliseconds each):</p>
+<ul>
+<li><strong>Upload the page with the entry first, and give the first stage a way back.</strong> If its
+  payload's checksum is bad (the upload was cut short), the first stage jumps to Veikk's
+  updater at <code>0x0800D800</code> instead, and the upload can be retried.</li>
+<li><strong>Order every later write so that a reset still reaches the first stage.</strong> Page 0 only
+  needs its reset handler to keep calling <code>0x080040F8</code>, so page 0 goes last.</li>
+</ul>
+<h4 id="034-two-places-to-put-the-new-bootloader">0.3.4 Two places to put the new bootloader</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">At <code>0x08000000</code> (the suggestion)</th>
+<th style="text-align: left;">At <code>0x0800D800</code>, replacing Veikk's</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">First stage writes</td>
+<td style="text-align: left;">the first 12 KB</td>
+<td style="text-align: left;"><code>0x0800D800</code> to <code>0x0800FBFF</code> (stops before the factory tags page)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Firmware it can flash afterwards</td>
+<td style="text-align: left;">only firmware built to start at <code>0x08003000</code>. <code>S640-251022</code> and the patches here start at <code>0x08000000</code>, so going back to them needs SWD</td>
+<td style="text-align: left;">complete images as they are, including <code>S640-251022</code> and the patches here</td>
+</tr>
+<tr>
+<td style="text-align: left;">Reachable after a bad flash</td>
+<td style="text-align: left;">yes, it runs first at every reset</td>
+<td style="text-align: left;">only through the first stage or working firmware, like Veikk's</td>
+</tr>
+<tr>
+<td style="text-align: left;">Needs 0.3.2 to come out "writable"</td>
+<td style="text-align: left;">yes, pages 0 to 11</td>
+<td style="text-align: left;">not to install it. To flash complete images afterwards, yes</td>
+</tr>
+</tbody>
+</table></div>
+<p>Either way the starting point is the same GigaDevice example, with the app start and the
+protected range set for where it lives. Veikk's build fits below the factory tags at
+<code>0x0800FC60</code>, so in under 9.1 KB.</p>
 <hr />
 <h2 id="1-quick-facts"><span class="h-num">01</span>Quick facts</h2>
 <div class="table-wrap"><table>
@@ -483,7 +574,7 @@ The USB cable is soldered to pads at the top (red = 5 V, black = GND, green and 
 <tr>
 <td style="text-align: left;">U7, U8, U18, U19, U21, U22</td>
 <td style="text-align: left;"><code>HC4051</code> 8-channel analog multiplexers</td>
-<td style="text-align: left;">select the antenna coils</td>
+<td style="text-align: left;">select the antenna coils, each with its own enable line (2.3)</td>
 </tr>
 <tr>
 <td style="text-align: left;">U10, U11, U14</td>
@@ -543,12 +634,12 @@ pinout and from what the firmware drives.</p>
 <tr>
 <td style="text-align: left;">22, 23</td>
 <td style="text-align: left;">PA6, PA7</td>
-<td style="text-align: left;">mux address lines (driven by the coil select routines)</td>
+<td style="text-align: left;">mux address lines, shared by all six muxes (driven by the coil select routines)</td>
 </tr>
 <tr>
 <td style="text-align: left;">24</td>
 <td style="text-align: left;">PC4</td>
-<td style="text-align: left;">mux address line</td>
+<td style="text-align: left;">mux address line, shared</td>
 </tr>
 <tr>
 <td style="text-align: left;">27</td>
@@ -563,7 +654,12 @@ pinout and from what the firmware drives.</p>
 <tr>
 <td style="text-align: left;">30</td>
 <td style="text-align: left;">PB11</td>
-<td style="text-align: left;">mux control (enable)</td>
+<td style="text-align: left;">mux enable, low = on (one per mux, 5.4)</td>
+</tr>
+<tr>
+<td style="text-align: left;">33 to 36</td>
+<td style="text-align: left;">PB12, PB13, PB14, PB15</td>
+<td style="text-align: left;">mux enables, low = on</td>
 </tr>
 <tr>
 <td style="text-align: left;">37 to 40</td>
@@ -573,7 +669,7 @@ pinout and from what the firmware drives.</p>
 <tr>
 <td style="text-align: left;">41</td>
 <td style="text-align: left;">PA8</td>
-<td style="text-align: left;">mux control (enable)</td>
+<td style="text-align: left;">mux enable, low = on</td>
 </tr>
 <tr>
 <td style="text-align: left;">44, 45</td>
@@ -763,13 +859,17 @@ scripts in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/tree/m
   <strong><code>0x0800D804</code></strong>. So the DFU bootloader is Veikk code at <code>0x0800D800</code> in the main flash,
   outside the firmware image.</li>
 <li><code>dfu-util</code> failed on that bootloader with <code>LIBUSB_ERROR_OTHER</code> on SET_INTERFACE, so a
-  custom pyusb flasher (<code>gd32_dfu_flash.py</code>) was used. The bootloader's descriptor marks the
-  first 12 KB (<code>12*001Ka</code>) as read-only, and writes there were silently ignored. Read-back was
-  refused.</li>
-<li><code>S640-251022.bin</code> was flashed through that DFU; only the part from <code>0x08003000</code> up
-  actually landed. The earlier notes record the tablet at 248.8 Hz before and 247.8 Hz after.</li>
-<li><code>flash_500hz.py</code> then erased the pages from <code>0x08003000</code> to the end of the image
-  (<code>0x08003000</code> to about <code>0x0800C7FF</code>) and started programming page by page. Per the owner,
+  custom pyusb flasher (<code>gd32_dfu_flash.py</code>) was used. It sent <code>S640-251022.bin</code> from
+  <code>0x08000000</code> in 2 KB blocks, every block was reported OK, and read-back was refused.</li>
+<li>The earlier notes concluded that the first 12 KB (<code>12*001Ka</code>, read-only in the descriptor)
+  was skipped and the rest landed. <strong>Most likely nothing landed</strong> (corrected 2026-10-08): the
+  updater refuses the first 12 KB, never reports a failure, and doesn't erase before writing,
+  and the script sent no erase commands, so the flash controller refused every word that
+  wasn't already blank (0.3.1). That fits the unchanged rate in the earlier notes (248.8 Hz
+  before, 247.8 Hz after).</li>
+<li><code>flash_500hz.py</code>, the first script that erased anything, then erased the pages from
+  <code>0x08003000</code> to the end of the image (<code>0x08003000</code> to about <code>0x0800C7FF</code>) and started
+  programming page by page. Per the owner,
   the script died partway through programming. Nothing in the script restores the erased pages
   if a step fails, so the flash was left with an intact first 12 KB (old code) and a partly
   erased rest. Its payload, <code>s640_firmware_500hz.bin</code>, only changed the three <code>bInterval</code>
@@ -880,10 +980,10 @@ failed because of read protection:</p>
 </tr>
 </tbody>
 </table></div>
-<p>Read protection explains why SWD could not read flash. Why the DFU bootloader refused the
-first 12 KB is not proven: its own descriptor declares those 12 pages read-only (<code>a</code>), and
-read protection on GigaDevice and ST parts also write-protects the first pages, so either
-could be the reason.</p>
+<p>Read protection explains why SWD could not read flash. It is most likely <strong>not</strong> why Veikk's
+updater refused the first 12 KB: that is an address check in the updater's own code (0.3.1).
+Whether read protection also stops the firmware itself from writing the first pages is a
+separate question, not tested yet (0.3.2).</p>
 <h3 id="35-removing-read-protection-mass-erase">3.5 Removing read protection (mass erase)</h3>
 <pre><code>openocd … -c 'init; halt; stm32f1x unlock 0; shutdown'
 </code></pre>
@@ -963,7 +1063,7 @@ motion hold and 8-sample average (5.8), the two things <code>nosmooth-nohold</co
 nix-shell -p openocd --run &quot;openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_nosmooth_nohold.bin 0x08000000 verify; reset run; shutdown'&quot;
 </code></pre>
 <p>Look for <code>** Verified OK **</code>. The tablet restarts by itself. <strong>Never flash images from this
-project through Veikk's USB DFU:</strong> it silently skips the first 12 KB, which is exactly where
+project through Veikk's USB DFU:</strong> it silently refuses the first 12 KB, which is exactly where
 the zero-smoothing patches are, and an interrupted DFU flash is how this tablet was bricked.</p>
 <hr />
 <h2 id="4-the-firmware-image"><span class="h-num">04</span>The firmware image</h2>
@@ -1664,10 +1764,12 @@ helper calls, counter, branch). One burst routine, start and end (the full 16 ar
 in order (<a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/asm/09_coil_measure.lst"><code>asm/09_coil_measure.lst</code></a>):</p>
 <ol>
 <li><code>[0x20000003] = 28</code>: the burst will be 28 carrier cycles.</li>
-<li><code>0x08000A8C</code>: sets PC4, PA7, PA6, PB11, PA8 and more high (all mux control lines idle).</li>
+<li><code>0x08000A8C</code>: sets PC4, PA6, PA7 (mux address) and PA8, PB11, PB12, PB13, PB14, PB15
+   (the six mux enables) high, so every mux is off.</li>
 <li>Coil/mux select routines from the 100-entry table at <code>0x08006A0C</code> for the first two
-   arguments (<code>0xFF</code> = skip). They set or clear PA6, PA7, PC4 (address) and PB11, PA8
-   (enable). Unused table slots point at <code>bx lr</code> stubs.</li>
+   arguments (<code>0xFF</code> = skip). Each sets the address on PA6, PA7 and PC4, then pulls one
+   enable low: PA8, PB11, PB12, PB13, PB14 or PB15, one per HC4051 (which line goes to which
+   chip was not traced). Unused table slots point at <code>bx lr</code> stubs.</li>
 <li>PB1 high (<code>0x0800132A</code>, BOP register).</li>
 <li>PC6 to PC9: push-pull outputs, then driven low (<code>0x08001290</code> init, <code>0x08001326</code> BC register).</li>
 <li><strong>Carrier burst</strong>: the channel's routine from <code>0x08006B9C</code>, 28 cycles on PC6 to PC9.</li>
@@ -3176,6 +3278,10 @@ unverified claims, and what is actually true:</p>
 <td style="text-align: left;">Veikk's own bootloader at <code>0x0800D800</code>, entered from the firmware (3.1). Erased by the unlock</td>
 </tr>
 <tr>
+<td style="text-align: left;">the "GD32 DFU ROM silently discards writes" to the first 12 KB, and "251022 firmware code beyond 12KB was updated successfully"</td>
+<td style="text-align: left;">the refusal is the updater's own address check, not the ROM or the chip (0.3.1). The rest most likely did not land either, because no erase commands were sent (3.1)</td>
+</tr>
+<tr>
 <td style="text-align: left;">pen interface <code>bInterval 3</code>, fix it with <code>usbhid.mousepoll=1</code></td>
 <td style="text-align: left;"><code>S640-251022</code> declares <code>bInterval 1</code> on every IN endpoint; host polling is not the limit. (The 3 ms may have been true for the tablet's previous firmware)</td>
 </tr>
@@ -3265,6 +3371,29 @@ unverified claims, and what is actually true:</p>
 <tr>
 <td style="text-align: left;">the J1 photo numbering 1 to 5 "left to right" differs from "bottom to top"</td>
 <td style="text-align: left;">they are the same holes, the photos are just rotated 90 degrees</td>
+</tr>
+</tbody>
+</table></div>
+<p>Corrections to this document (2026-10-08):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Said before</th>
+<th style="text-align: left;">Correct</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">the mux control lines are PA8 and PB11</td>
+<td style="text-align: left;">there are six enable lines, PA8 and PB11 to PB15, one per HC4051 (2.3, 5.4). Pointed out by another user</td>
+</tr>
+<tr>
+<td style="text-align: left;">read protection may be why Veikk's updater refuses the first 12 KB</td>
+<td style="text-align: left;">it is the updater's own address check (0.3.1). Whether read protection also locks pages against the firmware is a separate, open question (0.3.2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">in September only the part from <code>0x3000</code> up landed, so an old first 12 KB runs with 251022's upper part</td>
+<td style="text-align: left;">most likely nothing landed (3.1); no tablet is known to run that mix</td>
 </tr>
 </tbody>
 </table></div>
@@ -3558,8 +3687,12 @@ hashes in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/ma
 <li>Pressure smoothing: the 8-sample pressure average and the 4-report tip debounce (5.7) are
   still in every patch here.</li>
 <li>Whether a tablet with a different board than <code>HK1102 VER02b</code> exists at all (2.6).</li>
-<li>The S640 bootloader at <code>0x0800D800</code>: it is not in Veikk's update file. A flash dump from a
-  working tablet would answer this and the settings questions.</li>
+<li>Which HC4051 each enable line (PA8, PB11 to PB15) drives.</li>
+<li>Whether read protection stops the firmware itself from writing the first pages (0.3.2).
+  That decides whether the bootloader idea in 0.3 can work.</li>
+<li>The S640 bootloader at <code>0x0800D800</code>: it is not in Veikk's update file. It matches
+  GigaDevice's DFU example (0.3.1); a flash dump from a working tablet would confirm that and
+  answer the settings questions.</li>
 </ul>
 <hr />
 <h2 id="12-annotated-listings"><span class="h-num">12</span>Annotated listings</h2>
