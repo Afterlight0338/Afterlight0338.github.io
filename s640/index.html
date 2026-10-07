@@ -99,6 +99,8 @@ manual.</p>
       <details open>
         <summary>Contents</summary>
         <ol class="view-long">
+<li><a href="#-2-changelog"><span class="toc-num">-2</span>Changelog</a></li>
+<li><a href="#-1-what"><span class="toc-num">-1</span>What?</a></li>
 <li><a href="#0-how-to-flash"><span class="toc-num">00</span>How to flash</a></li>
 <li><a href="#1-quick-facts"><span class="toc-num">01</span>Quick facts</a></li>
 <li><a href="#2-hardware"><span class="toc-num">02</span>Hardware</a></li>
@@ -140,6 +142,47 @@ SHA-256 <code>150fbc8b…287b45</code>).</p>
 SWD access requires removing the chip's read protection, and that <strong>erases the whole flash</strong>,
 including per-unit data that this document cannot give back to you (section 3.6).</p>
 </blockquote>
+<h2 id="-2-changelog"><span class="h-num">-2</span>Changelog</h2>
+<p>Newest first. Small wording fixes are not listed.</p>
+<p><strong>2026-10-08</strong></p>
+<ul>
+<li>New 0.3: your own bootloader over USB (idea, untested). The 12 KB lock turned out to be a
+  rule inside Veikk's updater, not the chip.</li>
+<li>Pins: the muxes have six enable lines, PA8 and PB11 to PB15. PB12 to PB15 were missing
+  (2.3, 5.4). Pointed out by another user.</li>
+<li>Corrected: the September USB flash most likely changed nothing (3.1), so 0.2 no longer
+  assumes an old first 12 KB runs with 251022's upper part. All corrections are listed in 8.</li>
+</ul>
+<p><strong>2026-10-07</strong></p>
+<ul>
+<li>New 0 (how to flash) and 0.1 (probes other than the Pico).</li>
+<li>New 0.2: patching over USB without touching the first 12 KB, plus the untested
+  <code>nosmooth-hook</code> patch built for it (7.9).</li>
+<li>Patches renamed: v1 is now <code>nosmooth</code>, v2 is <code>nosmooth-nohold</code>. Same bytes, same hashes.</li>
+<li>New 2.6: "V1" and "V2" are report formats, not hardware.</li>
+<li>3.7: missing factory tags confirmed as the cause of a dead pen on a second tablet.</li>
+<li>8: the "Veikk pulled all firmware in 2021" story marked as unsourced.</li>
+</ul>
+<p><strong>2026-10-06</strong></p>
+<ul>
+<li>First version: the SWD unbrick, the firmware internals, why 1000 Hz isn't possible, and
+  the zero-smoothing patches. Later that day: the warning banner, the unit's details (2.1)
+  and the short version (<a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/docs/short.md"><code>docs/short.md</code></a>, vivlos.dev/s640).</li>
+</ul>
+<h2 id="-1-what"><span class="h-num">-1</span>What?</h2>
+<p>The S640's firmware smooths the pen position before sending it: an 8-sample average (about
+14 ms of lag) and a "hold" that keeps the cursor still on small moves. That is why the cursor
+lags behind and creeps into place when the pen slows down. This project gets rid of both.</p>
+<ul>
+<li><strong>Goal:</strong> every report carries the newest pen position, nothing averaged, nothing held
+  back. Done: <code>nosmooth-nohold</code> (7.4), flashed over SWD.</li>
+<li><strong>On the way:</strong> bringing the tablet back over SWD after an earlier attempt bricked it (3),
+  and reading the firmware to find where the smoothing actually is (5, 7).</li>
+<li><strong>Ruled out:</strong> a higher report rate. The antenna scan takes about 3.9 ms, so 250 Hz is the
+  ceiling (6).</li>
+<li><strong>Still open:</strong> pressure smoothing (5.7), and a way to do all this over USB without opening
+  the tablet (0.2, 0.3).</li>
+</ul>
 <h2 id="0-how-to-flash"><span class="h-num">00</span>How to flash</h2>
 <p>The short path. Section 3 explains every step, and <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/docs/short.md"><code>docs/short.md</code></a> has the
 same steps with the do's and don'ts.</p>
