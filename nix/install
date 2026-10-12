@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# curl -fsSL vivlos.dev/nix/install | bash
+# curl -fsSL vivlos.dev/nix/install | bash -s -- [lite|minimal|full|afterlight]
 # Clones my-nix-setup to ~/my-nix-setup and runs its setup wizard. Read it first if you like.
 main() {
   set -euo pipefail
@@ -16,6 +16,6 @@ main() {
   fi
   cd "$dir"
   # stdin is the curl pipe, so give the wizard the terminal
-  exec ./setup < /dev/tty
+  exec ./setup "$@" < /dev/tty
 }
 main "$@"
