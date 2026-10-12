@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# curl -fsSL vivlos.dev/nix/install | bash
+# Clones my-nix-setup to ~/my-nix-setup and runs its setup wizard. Read it first if you like.
+main() {
+  set -euo pipefail
+  [[ -e /etc/NIXOS ]] || { echo "This needs a running NixOS install." >&2; exit 1; }
+  dir=${MY_NIX_SETUP_DIR:-$HOME/my-nix-setup}
+  repo=https://github.com/Afterlight0338/my-nix-setup
+  git() { command git "$@" 2>/dev/null || nix-shell -p git --run "git $*"; }
+  if [[ -d $dir/.git ]]; then
+    echo "Updating $dir"
+    git -C "$dir" pull --ff-only
+  else
+    echo "Cloning into $dir"
+    git clone --depth 1 "$repo" "$dir"
+  fi
+  cd "$dir"
+  # stdin is the curl pipe, so give the wizard the terminal
+  exec ./setup < /dev/tty
+}
+main "$@"
