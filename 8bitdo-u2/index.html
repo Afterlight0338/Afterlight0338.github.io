@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en" data-tab="blog">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8BitDo Ultimate 2 trigger drift, vivlos.dev</title>
+  <meta name="description" content="Why an 8BitDo Ultimate 2 Wireless pressed its own triggers (an ADC clocked too fast), how it was found without soldering, and the 8-byte firmware fix.">
+  <meta name="theme-color" content="#080b12">
+  <link rel="icon" type="image/webp" href="/assets/vivlos/casual.webp">
+  <meta property="og:title" content="8BitDo Ultimate 2: the phantom trigger was the ADC clock">
+  <meta property="og:description" content="Trigger drift on an 8BitDo Ultimate 2 Wireless traced to bad ADC conversions, fixed by halving the ADC clock in firmware.">
+  <meta property="og:url" content="https://vivlos.dev/8bitdo-u2/">
+  <!-- Generated from README.md and docs/short.md by tools/build_site_page.py in https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude.
+       Edit the source there. Uses the main stylesheet's tokens, fonts and switch:
+       bump ?v= together with index.html -->
+  <link rel="stylesheet" href="/style.css?v=8">
+  <link rel="stylesheet" href="/s640/s640.css?v=2">
+  <script>
+    /* Runs before the body paints: gate state, short/long view, the site-wide motion choice.
+       Storage can be blocked (private windows); everything falls back to the defaults. */
+    (function () {
+      var h = document.documentElement;
+      function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+      var m = get('vivlos-motion');
+      h.dataset.motion = m ? m : (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'off' : 'on');
+      if (get('vivlos-8bitdo-ack') !== 'yes') h.classList.add('gated');
+      var hs = location.hash;  /* a link into one version opens that version */
+      h.dataset.view = /^#(allat|tldr-)/.test(hs) ? 'short'
+        : /^#\d/.test(hs) ? 'long' : (get('vivlos-8bitdo-view') === 'short' ? 'short' : 'long');
+    })();
+  </script>
+</head>
+<body id="top">
+
+  <section class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate-text">
+      <span class="gate-kicker">read this first</span>
+      <h1 id="gate-title">You're on your own.</h1>
+      
+<p><strong>This entire write-up was written by Claude Opus 5.5 on xHigh reasoning.</strong>
+I did not check every byte of it, and I am <strong>not responsible for anything in here that
+turns out to be wrong.</strong> Some of it probably is.</p>
+<p>Flash something because a web page told you to, turn your controller into a very expensive
+paperweight, and that is on you. Not me, not Claude, you.</p>
+<p>Read the code yourself. Check every address and every command before you run it. Better yet, do the shi yourself and use this as a map, not a
+manual.</p>
+
+      <p class="gate-warned">You have been warned.</p>
+      <div class="gate-actions">
+        <button type="button" class="gate-accept" id="gate-accept">I get it, let me in</button>
+        <a class="gate-leave" href="/">nah, take me back</a>
+      </div>
+      <span class="gate-note">remembered in this browser</span>
+    </div>
+    <img class="gate-art" src="/assets/vivlos/casual.webp" alt="Vivlos, not responsible either">
+  </section>
+
+  <div class="doc-canvas">
+    <div class="top-status-bar">
+      <a href="/#blog" class="status-home">vivlos.dev / 8bitdo-u2</a>
+      <span><span class="mono-dim">unit</span> 8BitDo Ultimate 2 Wireless</span>
+      <span><span class="mono-dim">firmware</span> 1.10 + ADC clock /8</span>
+      <button type="button" class="motion-switch" id="allat-switch" role="switch" aria-checked="false">
+        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        i aint reading allat
+      </button>
+    </div>
+
+    <header class="doc-head">
+      <div class="doc-head-text">
+        <span class="doc-kicker"><span class="view-long">project notes, the long version</span><span class="view-short">the short version: what to do, what not to do</span></span>
+        <h1>8BitDo Ultimate 2 Wireless: the phantom trigger was the ADC clock</h1>
+        <p class="doc-meta">Written 2026-10-22 &middot; tools, data and the patcher on <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude">GitHub</a></p>
+        <dl class="doc-stats">
+          <div><dt>bad ADC samples, stock</dt><dd>2.1% <span>exactly 2048 or 1023</span></dd></div>
+          <div><dt>after the fix</dt><dd>0 <span>of 14,080 samples</span></dd></div>
+          <div><dt>ADC clock</dt><dd>12 &rarr; 6 MHz <span>8 bytes of patch</span></dd></div>
+          <div><dt>status</dt><dd>fixed <span>0 phantom presses in 5 min</span></dd></div>
+        </dl>
+      </div>
+      <img class="doc-art" src="/assets/vivlos/casual.webp" alt="">
+    </header>
+
+    <noscript>
+      <div class="doc-noscript"><strong>Disclaimer.</strong> 
+<p><strong>This entire write-up was written by Claude Opus 5.5 on xHigh reasoning.</strong>
+I did not check every byte of it, and I am <strong>not responsible for anything in here that
+turns out to be wrong.</strong> Some of it probably is.</p>
+<p>Flash something because a web page told you to, turn your controller into a very expensive
+paperweight, and that is on you. Not me, not Claude, you.</p>
+<p>Read the code yourself. Check every address and every command before you run it. Better yet, do the shi yourself and use this as a map, not a
+manual.</p>
+ <strong>You have been warned.</strong></div>
+    </noscript>
+
+    <nav class="doc-toc" aria-label="Contents">
+      <details open>
+        <summary>Contents</summary>
+        <ol class="view-long">
+<li><a href="#-2-changelog"><span class="toc-num">-2</span>Changelog</a></li>
+<li><a href="#-1-what"><span class="toc-num">-1</span>What?</a></li>
+<li><a href="#0-how-to-flash-the-fix"><span class="toc-num">00</span>How to flash the fix</a></li>
+<li><a href="#1-the-controller"><span class="toc-num">01</span>The controller</a></li>
+<li><a href="#2-the-symptom"><span class="toc-num">02</span>The symptom</a></li>
+<li><a href="#3-what-it-wasnt"><span class="toc-num">03</span>What it wasn't</a></li>
+<li><a href="#4-two-chips-in-one-update-file"><span class="toc-num">04</span>Two chips in one update file</a></li>
+<li><a href="#5-the-update-path-and-the-bootloader"><span class="toc-num">05</span>The update path and the bootloader</a></li>
+<li><a href="#6-how-a-trigger-gets-read"><span class="toc-num">06</span>How a trigger gets read</a></li>
+<li><a href="#7-root-cause-the-adc-is-clocked-too-fast"><span class="toc-num">07</span>Root cause: the ADC is clocked too fast</a></li>
+<li><a href="#8-the-fix"><span class="toc-num">08</span>The fix</a></li>
+<li><a href="#9-the-patches-that-came-before-the-fix"><span class="toc-num">09</span>The patches that came before the fix</a></li>
+<li><a href="#10-corrections-and-open-questions"><span class="toc-num">10</span>Corrections and open questions</a></li>
+<li><a href="#11-reference"><span class="toc-num">11</span>Reference</a></li>
+        </ol>
+        <ol class="view-short">
+<li><a href="#tldr-what-this-is"><span class="toc-num">01</span>What this is</a></li>
+<li><a href="#tldr-is-this-your-controller"><span class="toc-num">02</span>Is this your controller?</a></li>
+<li><a href="#tldr-what-you-need"><span class="toc-num">03</span>What you need</a></li>
+<li><a href="#tldr-steps"><span class="toc-num">04</span>Steps</a></li>
+<li><a href="#tldr-undo"><span class="toc-num">05</span>Undo</a></li>
+<li><a href="#tldr-dont"><span class="toc-num">06</span>Don't</a></li>
+        </ol>
+      </details>
+    </nav>
+
+    <main class="doc-body">
+      <article class="view-long">
+<p>My 8BitDo Ultimate 2 Wireless started pressing its own triggers. LT, and later RT, sat at 20 to 70%
+with nothing touching them. Everyone's first guess (mine too) was a dying hall sensor. It wasn't.
+The co-processor that reads the triggers runs its ADC faster than this particular chip can handle,
+and every now and then a conversion comes out as exactly 2048. Halving the ADC clock in the
+firmware fixed it completely.</p>
+<p>This is everything learned on the way: the wrong turns, how 8BitDo's updater and bootloader work,
+how to get raw sensor data out of a stock controller without soldering anything, the proof, and
+the 8-byte patch. Every number here was measured on the controller or read from the firmware.
+Things that were not verified say so.</p>
+<p>Written 2026-10-22. Firmware analysed: 8BitDo's official Ultimate 2 Wireless update <code>1.10</code>
+(145,436 bytes, SHA-256 <code>968edee5…f5eb87</code>), plus <code>1.09</code> for comparison.</p>
+<blockquote>
+<p><strong>This only matters if your controller has the same fault.</strong> If your triggers are fine, there
+is nothing to fix. The patch has been tested on exactly one controller.</p>
+</blockquote>
+<h2 id="-2-changelog"><span class="h-num">-2</span>Changelog</h2>
+<p>Newest first. Small wording fixes are not listed.</p>
+<p><strong>2026-10-22</strong></p>
+<ul>
+<li>First version.</li>
+</ul>
+<h2 id="-1-what"><span class="h-num">-1</span>What?</h2>
+<p>Find out why the triggers of one Ultimate 2 Wireless press themselves, and fix it if it can be
+fixed. It could: it's a firmware setting, not broken hardware.</p>
+<h2 id="0-how-to-flash-the-fix"><span class="h-num">00</span>How to flash the fix</h2>
+<p>Linux only as written (the tools talk to <code>/dev/hidraw*</code> directly). You need Python 3 and, to
+build the patch, <code>llvm-mc</code> and <code>llvm-objcopy</code> (<code>nix-shell -p llvm python3</code> on NixOS).</p>
+<p><strong>0.1 Get the official files.</strong> 8BitDo's firmware list is public:</p>
+<pre><code>curl -s -X POST https://support.8bitdo.com/restapi/link/v1/client/firmware/select \
+  -H 'Content-Type: application/json' -d '{&quot;firmware_type&quot;:94,&quot;beta&quot;:1}'
+</code></pre>
+<p>Download the <code>fileURL</code> of <code>1.09</code> and <code>1.10</code> from the reply. Check them (the reply's <code>md5</code> field
+is the same for both versions, so don't trust it):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">SHA-256</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1.09</td>
+<td style="text-align: left;"><code>f754df15d0a3fde833f231c7d9d585490e22adfe9145a8dc1b7c85ab5515cbc1</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">1.10</td>
+<td style="text-align: left;"><code>968edee528c23d56e2059288f90c109fa5135f060de5b403e72d0b6c50f5eb87</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>0.2 Build the patched 1.10.</strong></p>
+<pre><code>python3 tools/patch_ch32.py u2w_1.10.dat u2w_1.10_adcfix.dat --adcdiv 8 --adc-only
+sha256sum u2w_1.10_adcfix.dat
+# c5e5d60c3929d5a0701c5dbd91736bc77fc817fcf91f82146f286263d5962833
+</code></pre>
+<p>If the hash differs, stop.</p>
+<p><strong>0.3 Find the controller's two HID nodes.</strong> Plug it in with a USB cable. The <em>vendor</em> node is the
+one whose report descriptor contains usage page <code>0xff7a</code>:</p>
+<pre><code>for h in /sys/class/hidraw/hidraw*; do
+  od -An -tx1 -v $h/device/report_descriptor | tr -d '\n' | grep -q '06 7a ff' &amp;&amp; basename $h
+done
+</code></pre>
+<p><strong>0.4 Flash 1.09, then the patch.</strong> The bootloader only re-flashes the co-processor when its
+version number changes (5.5), and the patch keeps 1.10's number. So go through 1.09 first:</p>
+<pre><code>python3 tools/bootflash.py /dev/hidrawV jump            # V = vendor node from 0.3
+# the controller re-enumerates as 2dc8:3208 &quot;8BitDo Boot&quot;; find its hidraw (B):
+grep -l 'HID_NAME=8BitDo 8BitDo Boot' /sys/class/hidraw/*/device/uevent
+python3 tools/bootflash.py /dev/hidrawB flash u2w_1.09.dat
+# boots into 1.09. Repeat 0.3, then:
+python3 tools/bootflash.py /dev/hidrawV jump
+python3 tools/bootflash.py /dev/hidrawB flash u2w_1.10_adcfix.dat
+</code></pre>
+<p><code>flash</code> checks the PID, erases, writes, reads everything back and only then restarts the
+controller. It refuses to touch anything below <code>0x5000</code>, where the bootloader lives.</p>
+<p><strong>0.5 Going back to stock.</strong> Same thing with the official files: <code>1.09</code>, then <code>1.10</code>. Flashing
+stock <code>1.10</code> straight over the patch keeps the patched co-processor, because the version
+numbers match.</p>
+<p><strong>0.6 If it ends up stuck in "8BitDo Boot".</strong> Nothing is broken: the bootloader is untouched.
+Flash any official file with <code>bootflash.py ... flash</code>, or just <code>bootflash.py /dev/hidrawB reset</code>
+if the last write completed. The official web updater can also leave it there, see 5.3.</p>
+<h2 id="1-the-controller"><span class="h-num">01</span>The controller</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Controller</td>
+<td style="text-align: left;">8BitDo Ultimate 2 Wireless (2.4 GHz), the Evernight edition. It runs the regular Ultimate 2 Wireless firmware</td>
+</tr>
+<tr>
+<td style="text-align: left;">Updater IDs</td>
+<td style="text-align: left;"><code>firmware_type</code> 94, product ID <code>0x6012</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">USB, normal</td>
+<td style="text-align: left;"><code>2dc8:310b</code> "8BitDo Ultimate 2 Wireless Controller for PC"</td>
+</tr>
+<tr>
+<td style="text-align: left;">USB, bootloader</td>
+<td style="text-align: left;"><code>2dc8:3208</code> "8BitDo Boot"</td>
+</tr>
+<tr>
+<td style="text-align: left;">Firmware on it</td>
+<td style="text-align: left;">1.10 (2026-05-13). 8BitDo's server only offers 1.09 and 1.10</td>
+</tr>
+<tr>
+<td style="text-align: left;">Triggers</td>
+<td style="text-align: left;">hall effect: a magnet in the tip of each trigger arm, a 3-pin SOT-23 sensor marked <code>G39F</code> on the back board under each tip</td>
+</tr>
+</tbody>
+</table></div>
+<p>Not to be confused with the Ultimate 2 <strong>Bluetooth</strong> (<code>firmware_type</code> 97): different hardware,
+encrypted firmware, nothing here applies to it.</p>
+<p><img loading="lazy" alt="Back board, hall sensors marked" src="images/board_back_hall_sensors.jpg" /></p>
+<p>This is the back of the controller, so LT is on the right of the photo (the trigger bracket says
+<code>L2</code> on that side). Each <code>G39F</code> sits right under its trigger's magnet. There are no wires to the
+sensor itself: the magnet moves closer, the voltage on the sensor's output pin changes. <code>G39F</code>
+probably is a GoChip GH39FKSW linear hall sensor (same package and name fragment), not confirmed.</p>
+<p><img loading="lazy" alt="LT trigger arm, magnet in the tip" src="images/lt_trigger_arm_magnet.jpg" /></p>
+<h2 id="2-the-symptom"><span class="h-num">02</span>The symptom</h2>
+<p>With nothing touching it, 8BitDo's Ultimate Software showed LT at 28 to 56% and jumping around.
+RT was fine at first and started doing the same a day later. Anything above <code>0x4D</code> (77 of 255,
+about 30%) also sets the digital LT/RT button bits in the report (4.2), so games saw real trigger
+presses. The owner remembered it starting after a firmware update.</p>
+<p>It comes and goes. Some captures, all with the controller lying on the desk:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Firmware</th>
+<th style="text-align: left;">Length</th>
+<th style="text-align: left;">LT</th>
+<th style="text-align: left;">RT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1.10</td>
+<td style="text-align: left;">5 s</td>
+<td style="text-align: left;">0 to 191, 96 events</td>
+<td style="text-align: left;">0 to 69, 8 events</td>
+</tr>
+<tr>
+<td style="text-align: left;">1.10, right after flashing it</td>
+<td style="text-align: left;">30 s</td>
+<td style="text-align: left;">0 to 137, 5,658 events</td>
+<td style="text-align: left;">quiet</td>
+</tr>
+<tr>
+<td style="text-align: left;">1.09</td>
+<td style="text-align: left;">30 s, quiet phase</td>
+<td style="text-align: left;">0, no events</td>
+<td style="text-align: left;">0, no events</td>
+</tr>
+<tr>
+<td style="text-align: left;">1.09</td>
+<td style="text-align: left;">30 s, a bit later</td>
+<td style="text-align: left;">0 to 179, 21,017 events</td>
+<td style="text-align: left;">0 to 83, 66 events</td>
+</tr>
+</tbody>
+</table></div>
+<p>"Events" are value changes seen by Linux (evdev, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/live.py"><code>tools/live.py</code></a>), so they also say how busy it
+was. Values are the report's 0 to 255.</p>
+<h2 id="3-what-it-wasnt"><span class="h-num">03</span>What it wasn't</h2>
+<p>Most of the time went into things that turned out to be wrong. They're kept here because each
+one looked convincing at the time, and two of them would have ended the investigation early.</p>
+<h3 id="31-the-bumpers">3.1 The bumpers</h3>
+<p>The first description was "LB/RB glitching". The main chip's button code (4.2) scans a 4×6 key
+matrix every 1 ms and reports each key from a single sample, with no debounce, so a bouncy
+bumper switch would pass straight through. All true, and all about the wrong input: the video
+showed the analog LT, not a bumper.</p>
+<h3 id="32-110-broke-it">3.2 "1.10 broke it"</h3>
+<p>Flashing 1.09 gave 0 events in 5 s and again in 30 s. Back on 1.10: 5,658 events in 30 s.
+That looked like proof, and 1.10's co-processor changes are almost all lighting code, so the
+story became "the new RGB code disturbs the analog readings". Then 1.09 drifted again: 21,017
+events in 30 s. The drift comes in phases, and short A/B tests happily land in a quiet one.
+Both versions set the ADC clock the same way (7.2), so the version never mattered.</p>
+<h3 id="33-calibration">3.3 Calibration</h3>
+<p>8BitDo's software can recalibrate the triggers, and the same commands work over raw HID
+(11.1): <code>81 05 00 3a 00</code> resets the trigger calibration, <code>81 05 00 3a 01</code> saves the newly learned
+range. Both were acknowledged. 30 s untouched afterwards: LT 0 to 139 with 2,271 events. No change.</p>
+<h3 id="34-the-lighting">3.4 The lighting</h3>
+<p>Since 1.10 mostly changed RGB code, the lighting was switched off over HID (<code>81 04 40 00 06</code>,
+11.1). 60 s before vs after: LT 23,900 → 8,800 events, RT 30,100 → 23,800. Still drifting.</p>
+<h3 id="35-hall-sensors-magnets-the-ribbon">3.5 Hall sensors, magnets, the ribbon</h3>
+<p>Before opening it, a flex test: pressing the left grip pegged LT at 255, pressing the middle of
+the back woke both triggers, pressing the right side did nothing. That pointed at the left
+sensor and the ribbon in the middle.</p>
+<p>Opened up, the multimeter found the sensor pins: one at 0 V (GND), one at a steady 3.35 V (VCC,
+doesn't move when the trigger is pulled), one that follows the trigger (OUT). The meter's other
+readings on OUT were impossible (+7.68 V against GND, −17.67 V from VCC to OUT on a 3.35 V
+part), so it couldn't say anything useful about OUT.</p>
+<p>Poking around the bare board with a plastic stick (each sensor, the ribbon, the contacts in the
+middle, the trigger motor plug) while logging: no spot made a difference. What the log did show:
+the drift hit <strong>both triggers at the same moments</strong>, and the jumps landed on <strong>the same few
+values</strong> over and over (LT 28, 52, 70, 83, 95, 133; RT 25, 48, 68, 80, 94). Two sensors failing
+in lockstep is unlikely, so it had to be something they share. That was the first real clue, and
+at that point the suspects were the sensors' shared power, ground, or the ribbon.</p>
+<p>The flex test result is still not explained, see 10.2.</p>
+<h3 id="36-filtering-it-away">3.6 Filtering it away</h3>
+<p>Two firmware patches tried to hide the drift: a spike filter, then a rest deadzone (section 9).
+Both helped and neither fixed it. They were useful anyway: they showed the output moving in fixed
+steps, which is what led to looking at raw ADC values.</p>
+<h2 id="4-two-chips-in-one-update-file"><span class="h-num">04</span>Two chips in one update file</h2>
+<h3 id="41-the-dat">4.1 The <code>.dat</code></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Offset</th>
+<th style="text-align: left;">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>0x00</code></td>
+<td style="text-align: left;">28-byte header: version (<code>0x6e</code> = 1.10), load address <code>0x5000</code>, size <code>0x23800</code>, PID <code>0x6012</code>, a 32-bit field that didn't match any checksum tried, 0, 0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0x1c</code></td>
+<td style="text-align: left;">main chip image (Telink, <code>KNLT</code> at +8). Word +<code>0x18</code> = end of its code (<code>0x17a64</code> in 1.10), followed by a CRC32</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0x1c + 0x17a68</code></td>
+<td style="text-align: left;">the co-processor's application, to the end of the file</td>
+</tr>
+</tbody>
+</table></div>
+<p>Offsets below are inside the image (header stripped) unless they're co-processor addresses.</p>
+<h3 id="42-main-chip-telink">4.2 Main chip: Telink</h3>
+<p>A Telink chip (TC32 instruction set) does USB, the 2.4 GHz radio, the buttons, remapping and
+macros, and builds the reports. Buttons are a 4×6 matrix scanned every 1 ms. Analog trigger
+values arrive from the co-processor over a UART, and anything above <code>0x4D</code> also sets the digital
+LT/RT bits. Decompiled with Ghidra and the TC32 module from <code>trust1995/Ghidra_TELINK_TC32</code>.</p>
+<h3 id="43-co-processor-wch-risc-v">4.3 Co-processor: WCH RISC-V</h3>
+<p>The rest of the file is a plain RISC-V application for a WCH microcontroller. It reads the
+sticks and triggers, the gyro, drives the lighting and stores calibration. Most likely a
+CH32X035: 48 MHz fixed clock, 20 KB RAM, and an ADC clock register that matches WCH's CH32X035
+SDK (7.5). Inferred from the code, the chip marking was not read.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">1.10</th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Load address</td>
+<td style="text-align: left;"><code>0x3000</code> (its own 12 KB bootloader sits below)</td>
+</tr>
+<tr>
+<td style="text-align: left;">RAM code</td>
+<td style="text-align: left;">flash <code>0x3100</code>, <code>0x1a04</code> bytes, copied to <code>0x20000000</code> at boot. Far calls from there show up as <code>0xe000xxxx</code> when disassembled at the flash address</td>
+</tr>
+<tr>
+<td style="text-align: left;">gp</td>
+<td style="text-align: left;"><code>0x20002288</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Stack top</td>
+<td style="text-align: left;"><code>0x20005000</code> (20 KB RAM)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Vector table</td>
+<td style="text-align: left;"><code>mtvec = 0x3004</code>, vectored. Reserved slots 4 and 7 hold 8BitDo's length and version (5.5)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="44-109-vs-110">4.4 1.09 vs 1.10</h3>
+<p>The main chip's code is identical except for the power-off routine. The co-processor changes
+are lighting code (a new RGB type handler, extra logging) and one new UART command. Nothing
+touches the ADC or the triggers, which fits 3.2.</p>
+<h2 id="5-the-update-path-and-the-bootloader"><span class="h-num">05</span>The update path and the bootloader</h2>
+<h3 id="51-the-official-updater">5.1 The official updater</h3>
+<p><code>web.8bitdo.com</code> is a WebHID page and works on Linux in Chromium and Brave, no driver needed.
+It lists every version the server has (so 1.09 is selectable), and <strong>Ctrl+click on the update
+button opens a file picker for a local <code>.dat</code></strong>. Its protocol code is in
+<code>p_connectDevice-*.js</code>; <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/bootflash.py"><code>tools/bootflash.py</code></a> is a reimplementation of the bootloader-mode part.</p>
+<h3 id="52-bootloader-protocol">5.2 Bootloader protocol</h3>
+<p>In the bootloader the controller is <code>2dc8:3208</code> with one HID interface: 64-byte reports, no
+report ID. Each request is <code>05, cmd u16, params u16, len u16, crc16 u16, total_len u32,
+offset u32, data…</code> (little endian). The reply repeats the fields from byte 2; success is
+reply cmd 0 with params equal to the command sent, reply data starts at byte 18.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">cmd</th>
+<th style="text-align: left;">What</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">read PID</td>
+<td style="text-align: left;">answers <code>0x6012</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">read flash</td>
+<td style="text-align: left;">32 bytes at <code>offset</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">erase</td>
+<td style="text-align: left;"><code>total_len</code> bytes from <code>offset</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">write</td>
+<td style="text-align: left;">46 bytes, <code>crc16</code> = CRC-16/MODBUS of the data</td>
+</tr>
+<tr>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">reset</td>
+<td style="text-align: left;">no reply, boots the image</td>
+</tr>
+<tr>
+<td style="text-align: left;">195</td>
+<td style="text-align: left;">"read CRC"</td>
+<td style="text-align: left;">returned values didn't match a CRC-16 of the data, not used</td>
+</tr>
+<tr>
+<td style="text-align: left;">196</td>
+<td style="text-align: left;">save</td>
+<td style="text-align: left;"><strong>never answers</strong> (5.3)</td>
+</tr>
+</tbody>
+</table></div>
+<p>The image is written at <code>0x5000</code>. The bootloader lives at <code>0</code> to <code>0x5000</code>; the tools here refuse
+to erase or write below <code>0x5000</code>.</p>
+<h3 id="53-why-the-website-says-update-failed">5.3 Why the website says "update failed"</h3>
+<p>After writing, the website sends cmd 196 and waits for a reply that never comes. It reports
+"update failed" and never sends the reset, so the controller stays in "8BitDo Boot". The image
+was fine: all <code>0x23800</code> bytes read back identical to the official file, and a plain reset
+(cmd 7) booted it. <code>bootflash.py</code> skips cmd 196.</p>
+<h3 id="54-getting-into-the-bootloader">5.4 Getting into the bootloader</h3>
+<p>From the running controller, on the vendor interface (usage page <code>0xff7a</code>), send report
+<code>81 05 00 51 00</code>. The firmware writes <code>0x5a</code> into retained analog register <code>0x3c</code> and reboots,
+and the bootloader sees the flag and stays. The website's own jump command (12) does nothing on
+this model.</p>
+<h3 id="55-what-the-bootloader-checks-before-booting">5.5 What the bootloader checks before booting</h3>
+<p>Read out the bootloader with cmd 5 (<code>0</code> to <code>0x5000</code>) and decompiled it with the same TC32 setup.
+If the <code>0x3c</code> flag isn't set:</p>
+<ol>
+<li><strong>Main image:</strong> the Telink code ends with a standard CRC32; the byte-sum of everything
+   before that CRC must equal the word right after it.</li>
+<li><strong>Co-processor image:</strong> length = u32 at co-processor offset <code>0x14</code>; the 32-bit byte-sum of
+   the first <code>length</code> bytes must equal the u32 stored right after them. Otherwise it stays in
+   the bootloader. This is what rejected the first patched file here: the new code sat past
+   <code>length</code> and the sum was stale.</li>
+<li><strong>Co-processor version:</strong> it reads the version from the co-processor (its address
+   <code>0x08003020</code>) and compares it with u32 at offset <code>0x20</code> of the image. <strong>Only if they differ</strong>
+   does it re-flash the co-processor: erase 4 KB pages, write 256-byte chunks up to <code>length</code>,
+   then send the stored sum for the co-processor's own bootloader to check.</li>
+</ol>
+<p>Point 3 is why installing the patch goes through 1.09 first (0.4).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">1.09</th>
+<th style="text-align: left;">1.10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">co-processor <code>length</code></td>
+<td style="text-align: left;"><code>0xbbdc</code></td>
+<td style="text-align: left;"><code>0xbc44</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">stored sum</td>
+<td style="text-align: left;"><code>0x004c9bc0</code></td>
+<td style="text-align: left;"><code>0x004cb5e5</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">version word</td>
+<td style="text-align: left;"><code>0x6d</code></td>
+<td style="text-align: left;"><code>0x6e</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-how-a-trigger-gets-read"><span class="h-num">06</span>How a trigger gets read</h2>
+<p>All co-processor addresses, 1.10.</p>
+<h3 id="61-adc-and-dma">6.1 ADC and DMA</h3>
+<p>The ADC reads six inputs: four stick axes, LT and RT. One channel at a time: DMA collects <strong>84
+conversions</strong> into a buffer, an interrupt copies it into that channel's array (six arrays of 84
+values at <code>gp-836</code>) and starts the next channel. The ADC clock is set once at init (7.5).</p>
+<h3 id="62-averaging">6.2 Averaging</h3>
+<p>A loop sums samples <strong>4 to 83</strong> of each array (sample 0 still holds the previous channel) and
+divides by 10, so the "raw" value is 8 × the mean of 80 conversions. For LT and RT that value
+goes straight into the raw table at <code>gp-1796</code> (entries 4 and 5); the stick values get more
+processing first.</p>
+<h3 id="63-scaling">6.3 Scaling</h3>
+<p><code>scale(axis)</code> at <code>0x5920</code>: <code>(raw - min) * 1023 / (max - min)</code>, clamped to 0 to 1023, with min and
+max from calibration. Then a 1024-entry response curve at <code>0xdec0</code> turns that into 0 to 255.
+The curve is steep near zero (<code>curve[26] = 24</code>), so small values get amplified. The result goes
+over the UART to the main chip and into the USB report.</p>
+<p>The two calls that do this for LT and RT are in the RAM code at flash <code>0x3a06</code> and <code>0x3a12</code>.</p>
+<h3 id="64-what-one-bad-sample-does">6.4 What one bad sample does</h3>
+<p>If one of the 80 samples reads 2048 instead of 1041, the raw value goes up by
+(2048 − 1041) / 10 ≈ <strong>100</strong>. This unit's calibrated trigger range is about 4,000 raw, so that's
+26 of 1023 after scaling, and <strong>24 of 255 in the report</strong>: a phantom 9% press from one wrong
+conversion out of 80. Two bad samples, 47. Three, 67. That's the ladder of repeating values
+from 3.5 (the exact numbers shift a little with where each trigger rests).</p>
+<h2 id="7-root-cause-the-adc-is-clocked-too-fast"><span class="h-num">07</span>Root cause: the ADC is clocked too fast</h2>
+<h3 id="71-getting-raw-values-out-without-soldering">7.1 Getting raw values out without soldering</h3>
+<p>The firmware has no debug output for the ADC, and measuring the sensors with a multimeter went
+nowhere (3.5). But there is one existing round trip from the PC into the co-processor and back:
+<code>81 04 41 00</code> makes the main chip ask the co-processor for its lighting mode (UART command
+<code>0x1b</code>), and the one-byte answer comes back to the PC in byte 18 of the reply.</p>
+<p>So the diagnostic builds point the co-processor's call at <code>0x4862</code> (which fetches that byte) at
+a small routine of their own, and the byte becomes a data stream. A frame starts with <code>FF</code>, the
+data is split into 7-bit pieces so <code>FF</code> can't appear inside it. Polling as fast as USB allows
+gives about 270 bytes per second:</p>
+<ul>
+<li><code>--diag</code>: raw LT, RT and stick X from the raw table, 39 frames per second (<a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/telem.py"><code>tools/telem.py</code></a>)</li>
+<li><code>--diag2</code>: a full copy of the LT and RT sample arrays, 84 + 84 values, about one every 1.2 s
+  (<a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/telem2.py"><code>tools/telem2.py</code></a>)</li>
+</ul>
+<p>Everything else keeps working while it runs.</p>
+<h3 id="72-raw-values-a-lattice">7.2 Raw values: a lattice</h3>
+<p><img loading="lazy" alt="Raw LT and RT values with the controller untouched, stock ADC clock" src="images/raw_lattice_div4.png" /></p>
+<p>60 s untouched at the stock clock (<a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/telem_raw_div4_60s.log"><code>data/telem_raw_div4_60s.log</code></a>). LT rests at 8330 and RT at
+8602, and every excursion lands <strong>exactly</strong> 100 (LT) or about 97 (RT) above the last step:
+8330, 8430, 8530, 8630… The stick, read the same way, mostly stayed within ±10 of 17930
+(17788 to 18020 over the minute). Noise doesn't make steps of exactly 100.
+Whole extra samples do: 100 raw is one sample being about 1,000 off (6.4).</p>
+<h3 id="73-the-sample-arrays-exactly-2048">7.3 The sample arrays: exactly 2048</h3>
+<p><img loading="lazy" alt="One LT sample array at 12 MHz with four samples of exactly 2048, and one at 6 MHz with none" src="images/dma_buffer_div4_vs_div8.png" /></p>
+<p>72 snapshots at the stock clock (<a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/snap_div4_90s.log"><code>data/snap_div4_90s.log</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/snapstats.py"><code>tools/snapstats.py</code></a>). Samples 4 to
+83, the ones that get averaged:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">LT</th>
+<th style="text-align: left;">RT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Rest value</td>
+<td style="text-align: left;">1041</td>
+<td style="text-align: left;">1075</td>
+</tr>
+<tr>
+<td style="text-align: left;">Spread of the normal samples</td>
+<td style="text-align: left;">±2 (std 2.1)</td>
+<td style="text-align: left;">±2 (std 1.5)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bad samples</td>
+<td style="text-align: left;">122 of 5,760 (2.12%)</td>
+<td style="text-align: left;">94 of 5,760 (1.63%)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Snapshots with at least one</td>
+<td style="text-align: left;">31 of 72</td>
+<td style="text-align: left;">28 of 72</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bad values</td>
+<td style="text-align: left;">2048 ×113, 1023 ×8, 1052 ×1</td>
+<td style="text-align: left;">2048 ×89, 1023 ×3, 1792 ×1, 1055 ×1</td>
+</tr>
+</tbody>
+</table></div>
+<p>The bad samples sit at random positions in the array, and they are <strong>exactly</strong> <code>0x800</code> (2048) or
+<code>0x3FF</code> (1023). A sensor or a noisy supply would give random wrong values. These are bit patterns.</p>
+<h3 id="74-why-exactly-2048">7.4 Why exactly 2048</h3>
+<p>The ADC is a successive approximation type: it finds the value one bit at a time, most
+significant first. "Is the input above half scale?" If yes, set bit 11, then ask about the
+next half, and so on down to bit 0.</p>
+<p>At 1041 the first answer should be no. If the comparator hasn't settled when it's asked and
+says yes, bit 11 is set, and every later step correctly decides the input is below each new
+threshold, so all the remaining bits come out 0: <strong><code>0x800</code></strong>. The same thing one step later
+(bit 10 wrongly cleared) gives <strong><code>0x3FF</code></strong>. Wrong decisions on the top bits, where the
+comparator needs the most time, are the classic sign of an ADC clocked faster than it can settle.</p>
+<p>Why the triggers and not the sticks: a trigger at rest sits near 1040, far below 2048, so a
+wrong top bit adds about 1,000. A centred stick sits around 2240, close to 2048, so the same
+mistake costs much less, and the stick deadzone hides it.</p>
+<h3 id="75-the-clock">7.5 The clock</h3>
+<p>The ADC init writes the clock setting once, into ADC register <code>CTLR3</code> (<code>0x40012450</code>, bits 0 to 8):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">1.09</th>
+<th style="text-align: left;">1.10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Code</td>
+<td style="text-align: left;"><code>c.li a1,19</code> / <code>jal 0x9940</code> at <code>0x6ca6</code></td>
+<td style="text-align: left;">the same at <code>0x6cd6</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Value</td>
+<td style="text-align: left;"><code>0x13</code></td>
+<td style="text-align: left;"><code>0x13</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>In WCH's CH32X035 SDK, <code>0x13</code> is <code>ADC_CLK_Div4</code>: 48 MHz / 4 = <strong>12 MHz</strong>. The SDK's divider
+values follow <code>((N-1) &gt;&gt; 1) &lt;&lt; 4 | (N-1)</code>, so /8 is <code>0x37</code>. Whether 12 MHz is inside the chip's
+rated range was not checked: it's the value 8BitDo ships, and it fails on this one.</p>
+<h3 id="76-the-test">7.6 The test</h3>
+<p>Same diagnostic build, only the clock changed to /8 (6 MHz), 88 snapshots
+(<a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/snap_div8_90s.log"><code>data/snap_div8_90s.log</code></a>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">12 MHz (stock)</th>
+<th style="text-align: left;">6 MHz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LT bad samples</td>
+<td style="text-align: left;">122 of 5,760</td>
+<td style="text-align: left;"><strong>0 of 7,040</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">RT bad samples</td>
+<td style="text-align: left;">94 of 5,760</td>
+<td style="text-align: left;"><strong>0 of 7,040</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Snapshots with any</td>
+<td style="text-align: left;">31 and 28 of 72</td>
+<td style="text-align: left;">0 of 88</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="8-the-fix"><span class="h-num">08</span>The fix</h2>
+<h3 id="81-what-changes">8.1 What changes</h3>
+<p>Stock 1.10 plus the clock, nothing else:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Where (co-processor)</th>
+<th style="text-align: left;">Stock</th>
+<th style="text-align: left;">Patched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>0x6cd6</code></td>
+<td style="text-align: left;"><code>c.li a1,19</code> / <code>jal 0x9940</code> (<code>cd 45 ef 20 90 46</code>)</td>
+<td style="text-align: left;"><code>jal 0xec60</code> / <code>c.nop</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0xec60</code></td>
+<td style="text-align: left;">zero padding</td>
+<td style="text-align: left;"><code>li a1,0x37</code> / <code>j 0x9940</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">length word (offset <code>0x14</code>)</td>
+<td style="text-align: left;"><code>0xbc44</code></td>
+<td style="text-align: left;"><code>0xbc68</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">byte-sum (after the length)</td>
+<td style="text-align: left;"><code>0x004cb5e5</code></td>
+<td style="text-align: left;">recomputed</td>
+</tr>
+</tbody>
+</table></div>
+<p>The helper loads the /8 value and jumps into the original clock function, which returns to the
+code right after <code>0x6cd6</code>. The length grows by the helper so the bootloader sums and installs
+it (5.5). <code>tools/patch_ch32.py --adcdiv 8 --adc-only</code> builds it and checks the original bytes
+first.</p>
+<h3 id="82-result">8.2 Result</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Test</th>
+<th style="text-align: left;">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">5 min untouched (<a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/adcfix_untouched_300s.log"><code>data/adcfix_untouched_300s.log</code></a>)</td>
+<td style="text-align: left;"><strong>0 LT events, 0 RT events</strong> (a separate check right after showed the stick still reporting, so the reader was alive)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Owner's pull test, 4.5 min (<a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/adcfix_user_pull_test.log"><code>data/adcfix_user_pull_test.log</code></a>)</td>
+<td style="text-align: left;">45 LT and 38 RT presses, all real: full pulls to 255 and partial ones (61 to 98). No spikes. 2.5 minutes in the middle with no events at all</td>
+</tr>
+<tr>
+<td style="text-align: left;">Version</td>
+<td style="text-align: left;">still reports 1.10</td>
+</tr>
+</tbody>
+</table></div>
+<p>On stock firmware every capture showed drift within seconds.</p>
+<h3 id="83-what-it-costs">8.3 What it costs</h3>
+<p>Each conversion takes twice as long. Estimated from the settings (not measured), one round over
+all six inputs goes from about 0.7 ms to about 1.5 ms, so the analog values in each report are
+on average well under 1 ms older. The USB report rate, the buttons and the gyro don't change.</p>
+<h2 id="9-the-patches-that-came-before-the-fix"><span class="h-num">09</span>The patches that came before the fix</h2>
+<p>All built by <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/patch_ch32.py"><code>tools/patch_ch32.py</code></a> and kept so the numbers can be checked.</p>
+<h3 id="91-getting-code-into-the-co-processor">9.1 Getting code into the co-processor</h3>
+<p>The co-processor image ends with about 340 bytes of zero padding after its initialised data
+(<code>0xec44</code> to <code>0xed98</code>), enough for small routines. The two trigger calls at <code>0x3a06</code>/<code>0x3a12</code> and
+the lighting-mode call at <code>0x4862</code> are <code>auipc</code>/<code>jalr</code> pairs and easy to point elsewhere. The early
+builds also set bit <code>0x40</code> in the lighting-mode answer, as a marker that the patched code was
+really running (with the 1.09 hop from 0.4, it was).</p>
+<h3 id="92-spike-filter-t32-n24">9.2 Spike filter (<code>T=32 N=24</code>)</h3>
+<p>A change of up to 32 (of 1023) passes at once; a bigger jump only counts after 24 calls in a
+row. 60 s untouched: off zero 5.2% (LT) and 6.2% (RT) of the time, against 23 to 67% in short
+stock captures. Better, but most of what was left climbed one step at a time, and each step
+was "small".</p>
+<h3 id="93-rest-deadzone-dz115">9.3 Rest deadzone (<code>DZ=115</code>)</h3>
+<p>Scaled values under 115 read 0 and the rest is stretched back to 0 to 1023, in front of the
+filter. The deadzone itself worked (the new steps showed up exactly where predicted), but the
+next 60 s landed in a bad phase: off zero 21% and 25% of the time, mostly 5 to 8 steps up. A
+deadzone big enough for the bad phases would have eaten about 30% of the trigger.</p>
+<h3 id="94-diagnostic-builds">9.4 Diagnostic builds</h3>
+<p><code>--diag</code> and <code>--diag2</code> (7.1). They also carry the 9.2/9.3 code; the raw values they report are
+from before it.</p>
+<h2 id="10-corrections-and-open-questions"><span class="h-num">10</span>Corrections and open questions</h2>
+<h3 id="101-corrections">10.1 Corrections</h3>
+<p>Things said during the investigation that turned out wrong. Kept so nobody repeats them.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Said</th>
+<th style="text-align: left;">Actually</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">The bumpers glitch</td>
+<td style="text-align: left;">It was the analog LT (3.1)</td>
+</tr>
+<tr>
+<td style="text-align: left;">1.10 introduced the drift</td>
+<td style="text-align: left;">It comes in phases and is on both versions; 1.09 sets the same clock (3.2, 7.5)</td>
+</tr>
+<tr>
+<td style="text-align: left;">The new lighting code disturbs the ADC</td>
+<td style="text-align: left;">Lighting off changed nothing that matters (3.4)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Faulty left hall sensor, ribbon or magnet</td>
+<td style="text-align: left;">Both triggers fail in lockstep with bit-pattern values; the sensors are fine (7.3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Each step of the ladder is one ADC count, and the trigger range is only about 40 counts</td>
+<td style="text-align: left;">Each step is one bad sample out of 80, about 100 raw. The range is about 4,000 raw (6.4)</td>
+</tr>
+<tr>
+<td style="text-align: left;">The update file's co-processor part has no checksum</td>
+<td style="text-align: left;">Length at <code>0x14</code>, byte-sum right after it, checked by the bootloader (5.5)</td>
+</tr>
+<tr>
+<td style="text-align: left;">The website's "update failed" means the flash failed</td>
+<td style="text-align: left;">The write completes, the bootloader just never answers the save command (5.3)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="102-open-questions">10.2 Open questions</h3>
+<ul>
+<li><strong>The flex test.</strong> Before opening the controller, pressing the left grip pegged LT at 255 and
+  pressing the middle of the back woke both triggers (3.5). Bad ADC samples don't explain a
+  solid 255. Maybe flexing moved the trigger arm, maybe it landed in a bad phase. Not
+  repeated with the fix.</li>
+<li><strong>Why only this unit.</strong> The replacement controller, same firmware, doesn't drift. Probably a
+  slower ADC on this particular chip. A guess.</li>
+<li><strong>Why it comes in phases.</strong> Minutes of quiet, then bursts. Temperature or supply voltage are
+  the obvious suspects; nothing was measured.</li>
+<li><strong>Other units.</strong> Untested. If yours drifts the same way (steps of the same size on both
+  triggers), the diagnostic builds in 7.1 can check it without opening anything.</li>
+<li><strong>The chip.</strong> CH32X035 is inferred from the code (4.3).</li>
+<li><strong>The cost.</strong> 8.3 is an estimate. Counting ADC rounds per second on stock and patched would
+  settle it.</li>
+</ul>
+<h2 id="11-reference"><span class="h-num">11</span>Reference</h2>
+<h3 id="111-hid-commands-running-controller">11.1 HID commands (running controller)</h3>
+<p>Output report <code>0x81</code> on the vendor interface (usage page <code>0xff7a</code>), 64 bytes including the
+report ID. <code>tools/hidcmd.py /dev/hidrawN 81 ...</code> sends one and prints the replies.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Send</th>
+<th style="text-align: left;">Does</th>
+<th style="text-align: left;">Reply</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>81 05 00 21 01</code></td>
+<td style="text-align: left;">read version</td>
+<td style="text-align: left;"><code>02 22 6e …</code> = 1.10</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>81 05 00 3a 00</code></td>
+<td style="text-align: left;">reset trigger calibration</td>
+<td style="text-align: left;"><code>02 3b …</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>81 05 00 3a 01</code></td>
+<td style="text-align: left;">save trigger calibration</td>
+<td style="text-align: left;"><code>02 3b …</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>81 05 00 36 00</code> / <code>01</code></td>
+<td style="text-align: left;">reset all / stick calibration</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>81 04 40 00 &lt;mode&gt;</code></td>
+<td style="text-align: left;">set lighting mode, saved</td>
+<td style="text-align: left;"><code>02 04 04 00 40 …</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>81 04 41 00</code></td>
+<td style="text-align: left;">read lighting mode</td>
+<td style="text-align: left;">byte 18</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>81 05 00 51 00</code></td>
+<td style="text-align: left;">reboot into the bootloader (5.4)</td>
+<td style="text-align: left;">none, it disconnects</td>
+</tr>
+</tbody>
+</table></div>
+<p>Lighting modes: 0 none, 1 power-on, 2 dynamic (default), 3 hot wheel, 4 solid,
+5 "dynamic mingmo", 6 off, 7 max.</p>
+<h3 id="112-co-processor-addresses-110">11.2 Co-processor addresses (1.10)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Address</th>
+<th style="text-align: left;">What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>0x3a06</code>, <code>0x3a12</code></td>
+<td style="text-align: left;">calls <code>scale(4)</code> (LT) and <code>scale(5)</code> (RT), RAM code</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0x4862</code></td>
+<td style="text-align: left;">call that fetches the lighting mode for UART command <code>0x1b</code>, RAM code</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0x5920</code></td>
+<td style="text-align: left;"><code>scale(axis)</code>: raw to 0..1023</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0x6cd6</code></td>
+<td style="text-align: left;">ADC clock setup (<code>0x13</code> = /4)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0x9940</code></td>
+<td style="text-align: left;">writes the ADC clock register (<code>ADC + 0x50</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0xdec0</code></td>
+<td style="text-align: left;">response curve, 1024 bytes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0xec44</code> to <code>0xed98</code></td>
+<td style="text-align: left;">zero padding (patch space)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gp-836</code></td>
+<td style="text-align: left;">six arrays of 84 samples</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gp-1796</code></td>
+<td style="text-align: left;">raw table, u16 per axis (4 = LT, 5 = RT)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="113-tools">11.3 Tools</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/bootflash.py"><code>tools/bootflash.py</code></a></td>
+<td style="text-align: left;">bootloader flasher: <code>jump</code>, <code>probe</code>, <code>flash</code>, <code>reset</code>. Never writes below <code>0x5000</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/patch_ch32.py"><code>tools/patch_ch32.py</code></a></td>
+<td style="text-align: left;">builds the fix and the earlier patches (8, 9)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/hidcmd.py"><code>tools/hidcmd.py</code></a></td>
+<td style="text-align: left;">sends one vendor report, prints replies</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/live.py"><code>tools/live.py</code></a></td>
+<td style="text-align: left;">live LT/RT bars from evdev, logs every change</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/telem.py"><code>tools/telem.py</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/telem2.py"><code>tools/telem2.py</code></a></td>
+<td style="text-align: left;">read the diagnostic builds (7.1)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/snapstats.py"><code>tools/snapstats.py</code></a></td>
+<td style="text-align: left;">bad-sample statistics for <code>telem2.py</code> logs</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/farcalls.py"><code>tools/farcalls.py</code></a></td>
+<td style="text-align: left;">resolves <code>auipc</code>/<code>jalr</code> far calls in a rizin listing, RAM code aware</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/plots.py"><code>tools/plots.py</code></a></td>
+<td style="text-align: left;">the two charts</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/build_readme.py"><code>tools/build_readme.py</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/build_site_page.py"><code>tools/build_site_page.py</code></a></td>
+<td style="text-align: left;">this README and the vivlos.dev page</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="114-data">11.4 Data</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/snap_div4_90s.log"><code>data/snap_div4_90s.log</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/snap_div8_90s.log"><code>data/snap_div8_90s.log</code></a></td>
+<td style="text-align: left;">sample-array snapshots, 12 MHz and 6 MHz (7.3, 7.6)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/telem_raw_div4_60s.log"><code>data/telem_raw_div4_60s.log</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/telem_raw_div4_probe.log"><code>data/telem_raw_div4_probe.log</code></a></td>
+<td style="text-align: left;">raw LT/RT/stick X, stock clock (7.2)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/adcfix_untouched_300s.log"><code>data/adcfix_untouched_300s.log</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/adcfix_user_pull_test.log"><code>data/adcfix_user_pull_test.log</code></a></td>
+<td style="text-align: left;">the fix (8.2)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/filter_v1_untouched_60s.log"><code>data/filter_v1_untouched_60s.log</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/filter_v2_deadzone_untouched_60s.log"><code>data/filter_v2_deadzone_untouched_60s.log</code></a></td>
+<td style="text-align: left;">9.2, 9.3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/stock_110_untouched_5s.log"><code>data/stock_110_untouched_5s.log</code></a>, <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/stock_109_untouched_4s.log"><code>data/stock_109_untouched_4s.log</code></a></td>
+<td style="text-align: left;">short stock captures</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/data/stock_110_poke_test.log"><code>data/stock_110_poke_test.log</code></a></td>
+<td style="text-align: left;">the bare-board poke test (3.5)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Log lines are <code>unix_time axis value</code> (evdev, 0..255), <code>unix_time LT RT LX</code> (raw) or
+<code>unix_time</code> followed by 168 samples (snapshots).</p>
+      </article>
+      <article class="view-short">
+<h2 id="tldr-what-this-is"><span class="h-num">01</span>What this is</h2>
+<p>An 8BitDo Ultimate 2 Wireless whose triggers pressed themselves. Not a broken sensor: the chip
+that reads the triggers runs its ADC too fast, and now and then a reading comes out as exactly
+2048 instead of about 1040. Each bad reading shows up as a phantom 9% press. Halving the ADC clock
+in the firmware fixed it: 0 phantom presses in 5 minutes, full range still there.</p>
+<p>This is the short version: is it your problem, what to run, how to undo it. The long version
+has the proof, the wrong turns and every byte.</p>
+<h2 id="tldr-is-this-your-controller"><span class="h-num">02</span>Is this your controller?</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Check</th>
+<th style="text-align: left;">Must be</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Controller</td>
+<td style="text-align: left;">8BitDo Ultimate 2 <strong>Wireless</strong> (2.4 GHz). Not the Bluetooth model</td>
+</tr>
+<tr>
+<td style="text-align: left;">USB ID</td>
+<td style="text-align: left;"><code>2dc8:310b</code> when running</td>
+</tr>
+<tr>
+<td style="text-align: left;">Firmware</td>
+<td style="text-align: left;">1.10</td>
+</tr>
+<tr>
+<td style="text-align: left;">Symptom</td>
+<td style="text-align: left;">LT and/or RT read above zero with nothing touching them, jumping in steps of roughly 24, 47, 67 (of 255)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Tested on exactly one controller. If your triggers are fine, leave it alone.</p>
+<h2 id="tldr-what-you-need"><span class="h-num">03</span>What you need</h2>
+<ul>
+<li>Linux, Python 3, a USB cable</li>
+<li><code>llvm-mc</code> and <code>llvm-objcopy</code> to build the patch (<code>nix-shell -p llvm python3</code> on NixOS)</li>
+<li>from the GitHub repo: <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/patch_ch32.py"><code>tools/patch_ch32.py</code></a> and <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude/blob/main/tools/bootflash.py"><code>tools/bootflash.py</code></a></li>
+<li>8BitDo's official <code>1.09</code> and <code>1.10</code> files:</li>
+</ul>
+<pre><code>curl -s -X POST https://support.8bitdo.com/restapi/link/v1/client/firmware/select \
+  -H 'Content-Type: application/json' -d '{&quot;firmware_type&quot;:94,&quot;beta&quot;:1}'
+</code></pre>
+<p>Download the two <code>fileURL</code>s and check them:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">SHA-256</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1.09</td>
+<td style="text-align: left;"><code>f754df15d0a3fde833f231c7d9d585490e22adfe9145a8dc1b7c85ab5515cbc1</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">1.10</td>
+<td style="text-align: left;"><code>968edee528c23d56e2059288f90c109fa5135f060de5b403e72d0b6c50f5eb87</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="tldr-steps"><span class="h-num">04</span>Steps</h2>
+<p><strong>1. Build the patch</strong> and check its hash. If it differs, stop.</p>
+<pre><code>python3 tools/patch_ch32.py u2w_1.10.dat u2w_1.10_adcfix.dat --adcdiv 8 --adc-only
+sha256sum u2w_1.10_adcfix.dat
+# c5e5d60c3929d5a0701c5dbd91736bc77fc817fcf91f82146f286263d5962833
+</code></pre>
+<p><strong>2. Find the controller's vendor node</strong> (call it <code>hidrawV</code>):</p>
+<pre><code>for h in /sys/class/hidraw/hidraw*; do
+  od -An -tx1 -v $h/device/report_descriptor | tr -d '\n' | grep -q '06 7a ff' &amp;&amp; basename $h
+done
+</code></pre>
+<p><strong>3. Flash 1.09 first.</strong> The controller only re-flashes the trigger chip when the version number
+changes, and the patch keeps 1.10's number.</p>
+<pre><code>python3 tools/bootflash.py /dev/hidrawV jump
+grep -l 'HID_NAME=8BitDo 8BitDo Boot' /sys/class/hidraw/*/device/uevent   # -&gt; hidrawB
+python3 tools/bootflash.py /dev/hidrawB flash u2w_1.09.dat
+</code></pre>
+<p><strong>4. Then the patch.</strong> Find <code>hidrawV</code> again (step 2), then:</p>
+<pre><code>python3 tools/bootflash.py /dev/hidrawV jump
+python3 tools/bootflash.py /dev/hidrawB flash u2w_1.10_adcfix.dat
+</code></pre>
+<p><code>flash</code> erases, writes, reads everything back and only then restarts the controller. It never
+touches the bootloader.</p>
+<p><strong>5. Check it.</strong> Leave the controller alone for a few minutes: LT and RT should stay at 0. Pull
+both triggers all the way: they should still reach 255.</p>
+<h2 id="tldr-undo"><span class="h-num">05</span>Undo</h2>
+<p>Steps 3 and 4 with the official files: <code>1.09</code>, then <code>1.10</code>. Official <code>1.10</code> straight over the
+patch keeps the patched trigger chip.</p>
+<h2 id="tldr-dont"><span class="h-num">06</span>Don't</h2>
+<ul>
+<li>Don't use 8BitDo's website for the patched file. It does write it, then waits forever for an
+  answer the bootloader never sends, says "update failed" and leaves the controller in
+  "8BitDo Boot". If that happens: <code>python3 tools/bootflash.py /dev/hidrawB reset</code>.</li>
+<li>Don't flash any of the other experiments from <code>patch_ch32.py</code> unless you've read section 9.</li>
+<li>Don't use this on the Ultimate 2 Bluetooth. Different hardware.</li>
+</ul>
+        <p class="short-more">That's the short version. Flip the switch at the top for the
+        full write-up: the wrong turns, how the updater and bootloader work, the proof for every
+        claim and every byte.</p>
+      </article>
+      <footer class="doc-foot">
+        <a href="#top">back to top</a>
+        <span>vivlos.dev &middot; written 2026-10-22 &middot; <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude">source</a></span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var h = document.documentElement;
+      function set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked */ } }
+
+      // gate
+      var accept = document.getElementById('gate-accept');
+      if (h.classList.contains('gated')) accept.focus();
+      accept.addEventListener('click', function () {
+        set('vivlos-8bitdo-ack', 'yes');
+        h.classList.remove('gated');
+        window.scrollTo(0, 0);
+      });
+
+      // short / long switch
+      var sw = document.getElementById('allat-switch');
+      function show(view, scroll) {
+        h.dataset.view = view;
+        sw.setAttribute('aria-checked', view === 'short' ? 'true' : 'false');
+        if (scroll) window.scrollTo(0, 0);
+        spy();
+      }
+      sw.addEventListener('click', function () {
+        var next = h.dataset.view === 'short' ? 'long' : 'short';
+        set('vivlos-8bitdo-view', next);
+        show(next, true);
+      });
+
+      // contents rail: mark the section being read
+      var links = {};
+      document.querySelectorAll('.doc-toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+      var current = null, io = null;
+      function spy() {
+        if (!('IntersectionObserver' in window)) return;
+        if (io) io.disconnect();
+        var heads = document.querySelectorAll(h.dataset.view === 'short' ? '.view-short h2' : '.view-long h2');
+        io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            if (current) current.classList.remove('is-current');
+            current = links[e.target.id];
+            if (current) current.classList.add('is-current');
+          });
+        }, { rootMargin: '0px 0px -75% 0px' });
+        heads.forEach(function (el) { io.observe(el); });
+      }
+      show(h.dataset.view, false);
+
+      // copy buttons on short code blocks (commands, not the long listings)
+      document.querySelectorAll('.doc-body pre').forEach(function (pre) {
+        if (pre.textContent.split('\n').length > 30 || !navigator.clipboard) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'copy-btn'; b.textContent = 'copy';
+        b.addEventListener('click', function () {
+          navigator.clipboard.writeText(pre.textContent.replace(/\n$/, '')).then(function () {
+            b.textContent = 'copied'; setTimeout(function () { b.textContent = 'copy'; }, 1400);
+          });
+        });
+        var wrap = document.createElement('div');  /* outside the scrolling pre, so it stays put */
+        wrap.className = 'code-wrap';
+        pre.parentNode.insertBefore(wrap, pre);
+        wrap.appendChild(pre);
+        wrap.appendChild(b);
+      });
+    })();
+  </script>
+</body>
+</html>
