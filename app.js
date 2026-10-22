@@ -11,10 +11,10 @@
   // Pinned: npm versions are immutable, so this can't change under us
   const LIQUIDGLASS_URL = "https://cdn.jsdelivr.net/npm/@ybouane/liquidglass@1.0.3/dist/index.js";
 
-  const TABS = ['about', 'projects', 'workstation', 'rhythm', 'lore'];
+  const TABS = ['about', 'projects', 'workstation', 'rhythm', 'lore', 'blog'];
   const DEFAULT_TAB = 'about';
   // Which Vivlos outfit stands behind the Discord card on each tab
-  const ART = { about: 'summer', projects: 'racing', workstation: 'casual', rhythm: 'stage', lore: 'summer' };
+  const ART = { about: 'summer', projects: 'racing', workstation: 'casual', rhythm: 'stage', lore: 'summer', blog: 'racing' };
 
   const glass = { masthead: null, nav: null };
 
