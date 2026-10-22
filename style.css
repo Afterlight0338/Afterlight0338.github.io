@@ -70,6 +70,7 @@ html[data-tab="projects"]    { --accent: var(--osu-purple); }
 html[data-tab="workstation"] { --accent: var(--osu-lime); }
 html[data-tab="rhythm"]      { --accent: var(--osu-pink); }
 html[data-tab="lore"]        { --accent: var(--osu-yellow); }
+html[data-tab="blog"]        { --accent: var(--osu-red); }
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -386,7 +387,7 @@ code {
 .archive-nav {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 172px));
+  grid-template-columns: repeat(6, minmax(0, 172px));
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border-medium);
 }
@@ -396,6 +397,7 @@ code {
 .nav-tab:nth-of-type(3) { --tab: var(--osu-lime); }
 .nav-tab:nth-of-type(4) { --tab: var(--osu-pink); }
 .nav-tab:nth-of-type(5) { --tab: var(--osu-yellow); }
+.nav-tab:nth-of-type(6) { --tab: var(--osu-red); }
 
 .nav-tab {
   position: relative;
@@ -1049,6 +1051,11 @@ code {
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+/* Six tabs need the whole 1032px row; narrower, two rows of three (kanji kept) */
+@media (max-width: 1020px) {
+  .archive-nav { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (max-width: 900px) {
   .site-masthead,
   .narrative-grid,
@@ -1105,7 +1112,7 @@ code {
 
   .top-status-bar > :first-child { width: 100%; }
 
-  /* 3 + 2 grid; the lens moves in both axes */
+  /* 3 + 3 grid; the lens moves in both axes */
   .archive-nav { grid-template-columns: repeat(3, 1fr); }
   .tab-kanji, .tab-num { display: none; }
 
