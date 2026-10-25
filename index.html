@@ -378,6 +378,28 @@
             </div>
           </div>
         </article>
+
+        <article class="project-entry">
+          <div class="entry-meta-col">
+            <span class="entry-num">2026-09-30</span>
+            <span class="entry-status" data-state="ongoing">In progress</span>
+            <span class="entry-stack">AT32F405 · C · WebHID</span>
+            <a href="/fun60/">Read it</a>
+            <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr" target="_blank" rel="noopener">Repository ↗</a>
+          </div>
+          <div class="entry-body-col">
+            <h3 class="entry-title">FUN60 Ultra TMR: new firmware for a keyboard that typed twice</h3>
+            <p class="entry-tagline">Mechanical switches double typed, so the stock firmware got replaced.</p>
+            <div class="story-block">
+              <h4 class="story-label">The problem</h4>
+              <p>With mechanical switches, hard taps typed the letter twice, and MonsGeek's debounce slider did nothing. The first attempt, a firmware Gemini built and flashed, bricked the board on the wrong USB port, so the case came apart and one pad got bridged to bring it back.</p>
+            </div>
+            <div class="story-block">
+              <h4 class="story-label">What came out of it</h4>
+              <p>Stock v306 decompiled and mapped pin by pin, then new firmware on Artery's BSP: presses go out at once, releases wait 8&nbsp;ms. Stock did 13 to 165 doubles per run, this does 0 in 121 hard taps. Plus per-key RGB, 2.4G through the stock dongle, and a web driver to replace MonsGeek's.</p>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
