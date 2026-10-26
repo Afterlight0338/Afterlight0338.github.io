@@ -146,13 +146,28 @@ scratch after taking the stock firmware apart.</p>
 </ul>
 <p>It turned into a full replacement firmware. It's still a work in progress, so read the
 <a href="#2-status">status list</a> before you flash anything.</p>
-<p>Written 2026-09-30, firmware v0.11. Stock firmware analysed: v306 for board 2307.</p>
+<p>Written 2026-09-30, updated 2026-10-26 for firmware v0.12. Stock firmware analysed: v306 for board 2307.</p>
 <blockquote>
-<p><strong>This firmware is for mechanical switches.</strong> It treats every key as a plain switch, so the
-stock magnetic switches probably won't work right. Tested on exactly one keyboard.</p>
+<p><strong>v0.12 is extremely experimental.</strong> It was written without the keyboard plugged in and has
+never run on one: not with magnetic switches, not even with mechanical ones. It could type
+wrong, miss keys or not type at all. If you just want a working keyboard, flash <strong>v0.11</strong>
+instead (<code>git checkout v0.11</code>, then build as below): mechanical switches only, tested, typing
+every day on my board. If v0.12 misbehaves, recovery is the same as always (<a href="#4-the-brick">section 4</a>),
+but holding Esc while plugging in may not work with a magnetic Esc; the watchdog failsafe does.</p>
 </blockquote>
 <h2 id="-2-changelog"><span class="h-num">-2</span>Changelog</h2>
 <p>Newest first. Small wording fixes are not listed.</p>
+<p><strong>2026-10-26</strong></p>
+<ul>
+<li>FUN60 Studio reworked after MonsGeek's own driver: Device, Keys, Travel, Lighting, Test and
+  Settings pages; switch connection mode and pair from the page; box and press-to-select;
+  live travel of every key. Hosted at https://driver.vivlos.dev.</li>
+<li>Firmware v0.12, <strong>extremely experimental</strong>: basic magnetic switch support, never run on a
+  keyboard yet. The last tested firmware is tagged <code>v0.11</code>. Each key learns
+  where it rests and how deep it goes, like stock does, and presses at a percent of that travel
+  (50 % by default, released under 35 %). Mechanical and magnetic switches can be mixed. The web
+  driver's thresholds are percents now (protocol v5). Saved settings reset to defaults once.</li>
+</ul>
 <p><strong>2026-10-25</strong></p>
 <ul>
 <li>Docs reorganised into this one README (the old <code>docs/story.md</code>, <code>docs/hw-map.md</code> and
@@ -258,12 +273,17 @@ wireless (Windows), and the middle disconnects the battery. Every pin and timing
 <li>stock's indicator lights: the mode key blinks or stays lit, battery level on Esc
   (Fn + Space), charging, low battery, Caps Lock, Win lock (Fn + Win)</li>
 <li>battery level and charging state</li>
-<li>settings saved on the keyboard: keymap, lighting, debounce, thresholds</li>
-<li>FUN60 Studio, a web driver: remap, lighting, performance, save and restore, a double-press tester</li>
+<li>settings saved on the keyboard: keymap, lighting, debounce, actuation</li>
+<li>FUN60 Studio, a web driver at driver.vivlos.dev: remap, connection modes, live key travel,
+  lighting, a press test and a double-press tester, save and restore</li>
 <li>recovery without opening the case (hold Esc while plugging in), plus a watchdog failsafe</li>
 </ul>
 <p>Built, not tested yet:</p>
 <ul>
+<li>magnetic switches (v0.12): each key learns its rest and bottom like stock (bottom starts
+  400 counts under rest), presses at a percent of that travel. Holding Esc while plugging in
+  still uses mechanical thresholds, so with a magnetic Esc it may not reach the bootloader; the
+  watchdog failsafe still does.</li>
 <li>Bluetooth 1 to 3 (Fn + E, R, T; hold 3 s to pair, it shows up as "FUN60 Ultra-1/2/3")</li>
 </ul>
 <p>Not done:</p>
@@ -273,9 +293,8 @@ wireless (Windows), and the middle disconnects the battery. Every pin and timing
 <li>the web driver over 2.4G (USB cable only for now)</li>
 <li>Mac mode: the switch's top position is read but ignored</li>
 <li>NKRO: 6 keys at once, like a boot keyboard</li>
-<li>magnetic switch features: rapid trigger, per-key actuation, calibration. The firmware treats
-  every key as a plain switch with one threshold tuned for mechanical switches, so the stock
-  magnetic switches probably won't work right.</li>
+<li>magnetic switch extras: rapid trigger, a different actuation per key, calibration that
+  survives a power cycle, stock's travel-to-millimetre curve (actuation is a percent, not mm)</li>
 <li>the MonsGeek app will not work with this firmware, and that's not planned</li>
 </ul>
 <h2 id="3-the-double-typing"><span class="h-num">03</span>The double typing</h2>
@@ -510,9 +529,14 @@ reconnected without pairing again.</p>
 <p>With the cable in, the keyboard starts in USB mode. Unplug it (with the Caps Lock switch at the
 top or bottom) and it carries on in the last wireless mode.</p>
 <h2 id="10-web-driver"><span class="h-num">10</span>Web driver</h2>
-<p>FUN60 Studio, in <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/tree/main/driver/"><code>driver/</code></a>:</p>
+<p>FUN60 Studio, in <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/tree/main/driver/"><code>driver/</code></a>. It's hosted at <strong>https://driver.vivlos.dev</strong>, or run it locally:</p>
 <pre><code class="language-sh">nix-shell -p python3 --run driver/serve.sh     # then open http://127.0.0.1:8060
 </code></pre>
+<p>Pages: Device (battery, switching between USB, Bluetooth 1 to 3 and 2.4G, pairing), Keys
+(base and Fn layers; click, Shift-click, drag a box or press keys on the keyboard to select;
+swap, presets), Travel (actuation, live depth of every key, a travel graph for one key),
+Lighting, Test (press every key once, double-press tester) and Settings (save, backup, firmware,
+theme). Without a keyboard it runs a demo that your own keyboard drives.</p>
 <p>It needs a Chromium-based browser (Chrome, Chromium, Brave) for WebHID, plus access to the
 keyboard's hidraw node. A udev rule does that:</p>
 <pre><code>KERNEL==&quot;hidraw*&quot;, SUBSYSTEM==&quot;hidraw&quot;, ATTRS{idVendor}==&quot;3151&quot;, TAG+=&quot;uaccess&quot;
@@ -1076,7 +1100,7 @@ has the brick, the recovery, the wrong turns and every pin.</p>
 </tr>
 <tr>
 <td style="text-align: left;">Switches</td>
-<td style="text-align: left;"><strong>mechanical</strong>. The stock magnetic switches probably won't work right</td>
+<td style="text-align: left;"><strong>mechanical</strong>. Magnetic support is new in v0.12, <strong>extremely experimental</strong>, never run on a keyboard; tag <code>v0.11</code> is the last tested firmware</td>
 </tr>
 </tbody>
 </table></div>
