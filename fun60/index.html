@@ -177,8 +177,9 @@ may not work with a magnetic Esc; the watchdog failsafe does.</p>
   host tests replay it through the real key code.</li>
 <li>FUN60 Studio: Advanced page (SnapKey, mod-tap, toggle, DKS, macros with a recorder), per-key
   actuation and rapid trigger on the Travel page, calibration (store, clear, relearn), new
-  lighting effects and per-key colour painting, NKRO and profiles on the Settings page. It no
-  longer mixes up replies when two tabs are open at once.</li>
+  lighting effects and per-key colour painting, NKRO and profiles on the Settings page. With
+  two tabs open, the last one to connect has the keyboard and the other says so, instead of both
+  getting each other's replies.</li>
 <li>The browser flasher has now flashed a real keyboard: v0.11 and v0.12 from Brave, 2 s for the
   bootloader, under 2 s to write, settings put back after.</li>
 </ul>
@@ -619,6 +620,12 @@ Without a keyboard, the driver runs a demo.</p>
   raw sensor grid live. <code>--keys</code> shows the keymap in RAM and what's held, <code>--power</code> battery and
   charging, <code>--radio</code> the wireless link, <code>--mode 24g</code> switches mode from the PC.</li>
 <li><a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/blob/main/scripts/analyze_session.py"><code>scripts/analyze_session.py</code></a>: makes sense of a <code>rawscan.py --record</code> capture.</li>
+<li><a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/tree/main/scripts/hwtest/"><code>scripts/hwtest/</code></a>: checks that need the keyboard but nobody at it. <code>backup.py</code> dumps every
+  setting to a JSON file (do it before flashing). <code>usb_reports.py</code> presses keys from the PC and
+  reads what really goes out over USB: NKRO, the 6-key report, SnapKey, a macro, media keys. It
+  only sends codes that do nothing on a desktop, and changes nothing it doesn't put back.
+  <code>driver_smoke.mjs</code> runs FUN60 Studio in headless Brave against the keyboard (it needs a
+  browser policy that allows the device, see the file).</li>
 <li><a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/blob/main/scripts/build_readme.py"><code>scripts/build_readme.py</code></a>, <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/blob/main/scripts/build_site_page.py"><code>scripts/build_site_page.py</code></a>: build this README from <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/tree/main/docs/src/"><code>docs/src/</code></a>, and
   the vivlos.dev page from it and <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr/blob/main/docs/short.md"><code>docs/short.md</code></a>.</li>
 </ul>
