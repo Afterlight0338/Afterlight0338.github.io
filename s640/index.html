@@ -144,6 +144,11 @@ including per-unit data that this document cannot give back to you (section 3.6)
 </blockquote>
 <h2 id="-2-changelog"><span class="h-num">-2</span>Changelog</h2>
 <p>Newest first. Small wording fixes are not listed.</p>
+<p><strong>2026-10-28</strong></p>
+<ul>
+<li>0.3.2 tested: read protection doesn't lock any page against the firmware, page 0
+  included. Also how to reset a protected chip without replugging.</li>
+</ul>
 <p><strong>2026-10-08</strong></p>
 <ul>
 <li><code>nosmooth-hook</code> tested on a tablet over SWD: in a blind test it played like
@@ -371,7 +376,7 @@ then rewrite just two pages: <code>0x08006800</code> to <code>0x08006BFF</code> 
 <code>0x0800C7FF</code> (image tail plus the hook). Everything in "why it is ultra mega risky" above
 still applies.</p>
 <h3 id="03-your-own-bootloader-over-usb-idea-untested">0.3 Your own bootloader over USB (idea, untested)</h3>
-<p><strong>Nothing in this section has been built or tested.</strong> Another user suggested it: get a small
+<p><strong>Only 0.3.2 has been tested; nothing else here has been built.</strong> Another user suggested it: get a small
 program onto the tablet through Veikk's updater, let that program overwrite the first 12 KB
 with an open bootloader, and flash complete images over USB from then on. Looking into it on
 2026-10-08 changed what this document says about the 12 KB lock (3.1, 3.4).</p>
@@ -393,21 +398,36 @@ was never read (it is gone from this unit, 3.6), so this is a close match, not p
   program a word that isn't blank.</li>
 </ul>
 <p>So the lock only binds the updater. Firmware code running from flash is not subject to it.</p>
-<h4 id="032-the-hardware-question-and-a-test-for-it">0.3.2 The hardware question, and a test for it</h4>
-<p>Read protection might still lock the first pages against the firmware itself; ST's F1 chips
-do that for pages 0 to 3. For this chip it is not known. A test on a tablet with an SWD probe
-attached, every step recoverable (not built yet):</p>
+<h4 id="032-read-protection-does-not-lock-pages-tested-2026-10-28">0.3.2 Read protection does not lock pages (tested 2026-10-28)</h4>
+<p>ST's F1 chips lock pages 0 to 3 against the firmware while read protection is on. <strong>This
+chip doesn't lock any page.</strong> Tested on the owner's tablet over SWD
+(<a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/patches/rdptest.s"><code>patches/rdptest.s</code></a>, log in
+<a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/data/rdptest_2026-10-28.txt"><code>data/rdptest_2026-10-28.txt</code></a>):</p>
 <ol>
-<li>Flash <code>S640-251022</code> plus a small routine, run once from the main loop like the hook in
-   0.2, that programs <code>0xFFFFFFFF</code> onto one word in each of pages 0, 3, 4 and 11 and saves
-   <code>FMC_STAT</code> (<code>0x4002200C</code>) after each one in spare SRAM. Programming all ones can't change
-   a single bit.</li>
-<li>Turn read protection on (<code>stm32f1x lock 0</code>), then unplug the tablet and plug it back in.</li>
-<li>Attach with <code>reset_config none</code> and read the saved values. SRAM stays readable with
-   protection on (3.4). <code>WPERR</code> (bit 4) on a page means the hardware locks it. <code>PGERR</code>
-   (bit 2) or no error means the firmware can write it.</li>
-<li>Unlock and flash back as in section 0, steps 4 and 5.</li>
+<li>Image: <code>nosmooth-hook</code> with a 192-byte routine at <code>0x0800C4A8</code>. The reset handler's
+   SystemInit literal (<code>0x080001AC</code>) points to it, so it runs at every boot, pen or not, and
+   then calls SystemInit. Alignment padding words in pages 0, 2, 3, 4, 5 and 8 (never
+   executed, they sit in front of literal pools) are set to <code>0xFFFF</code>, plus a blank word in
+   page 51 as a control.</li>
+<li>For each page the routine programs <code>0x0000</code> into the first slot still reading <code>0xFFFF</code>
+   and logs <code>FMC_STAT</code> and the readback in spare SRAM (<code>0x20001F80</code>). This is a real bit
+   change, not a write of all ones.</li>
+<li>Read protection off: every page <code>FMC_STAT = 0x20</code> (done, no error), readback <code>0000</code>.</li>
+<li><code>stm32f1x lock 0</code>, then a reset through NRST <strong>with SWD idle</strong> (see below). The firmware
+   booted with protection on (<code>OBSTAT = 0xFFFFFF02</code>) and enumerated. Again every page
+   <code>0x20</code> and readback <code>0000</code>: no <code>WPERR</code>, page 0 included.</li>
+<li>Unlocked (mass erase) and wrote the full 64 KB backup back, byte-identical.</li>
 </ol>
+<p>So with protection on, firmware running from flash can rewrite every page, including the
+first 12 KB. That leaves 0.3.3 as the only real obstacle.</p>
+<p>Side finding: after any SWD access since power-on, the chip blocks flash for the core while
+protection is on, so a reset from OpenOCD just locks up ("clearing lockup after double
+fault"). No replug is needed: pulse NRST with the probe and keep SWD quiet until the firmware
+has run. With debugprobe, J1 pad 4 wired to GP1 as in section 0:</p>
+<pre><code>openocd -f interface/cmsis-dap.cfg -c 'transport select swd' \
+  -c 'reset_config srst_only srst_nogate' -c init \
+  -c 'adapter assert srst' -c 'sleep 100' -c 'adapter deassert srst' -c shutdown
+</code></pre>
 <h4 id="033-the-real-problem-getting-the-first-stage-to-run">0.3.3 The real problem: getting the first stage to run</h4>
 <p>On an untouched tablet the first 12 KB is factory code nobody has read, and it holds the
 reset vector. In <code>S640-251022</code>, the reset handler (<code>0x08000190</code>, page 0) first calls
@@ -452,9 +472,9 @@ would have to identify the firmware first, the same problem as in 0.2.</p>
 <td style="text-align: left;">only through the first stage or working firmware, like Veikk's</td>
 </tr>
 <tr>
-<td style="text-align: left;">Needs 0.3.2 to come out "writable"</td>
-<td style="text-align: left;">yes, pages 0 to 11</td>
-<td style="text-align: left;">not to install it. To flash complete images afterwards, yes</td>
+<td style="text-align: left;">Blocked by read protection?</td>
+<td style="text-align: left;">no, firmware can write pages 0 to 11 (0.3.2)</td>
+<td style="text-align: left;">no (0.3.2)</td>
 </tr>
 </tbody>
 </table></div>
@@ -1034,8 +1054,8 @@ failed because of read protection:</p>
 </table></div>
 <p>Read protection explains why SWD could not read flash. It is most likely <strong>not</strong> why Veikk's
 updater refused the first 12 KB: that is an address check in the updater's own code (0.3.1).
-Whether read protection also stops the firmware itself from writing the first pages is a
-separate question, not tested yet (0.3.2).</p>
+Read protection doesn't stop the firmware itself from writing the first pages either
+(tested, 0.3.2).</p>
 <h3 id="35-removing-read-protection-mass-erase">3.5 Removing read protection (mass erase)</h3>
 <pre><code>openocd … -c 'init; halt; stm32f1x unlock 0; shutdown'
 </code></pre>
@@ -3646,7 +3666,7 @@ unverified claims, and what is actually true:</p>
 </tr>
 <tr>
 <td style="text-align: left;">read protection may be why Veikk's updater refuses the first 12 KB</td>
-<td style="text-align: left;">it is the updater's own address check (0.3.1). Whether read protection also locks pages against the firmware is a separate, open question (0.3.2)</td>
+<td style="text-align: left;">it is the updater's own address check (0.3.1). Read protection doesn't lock pages against the firmware either (tested, 0.3.2)</td>
 </tr>
 <tr>
 <td style="text-align: left;">in September only the part from <code>0x3000</code> up landed, so an old first 12 KB runs with 251022's upper part</td>
@@ -3977,8 +3997,7 @@ hashes in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/ma
 <li>Whether a tablet with a different board than <code>HK1102 VER02b</code> exists at all (2.6).</li>
 <li>Which HC4051 each enable line (PA8, PB11 to PB15) drives.</li>
 <li>What sets the receive floor (about 80 counts in 6.7), and whether the 30 µs ring-down
-  changes with pressure or between pens.</li>
-<li>Whether read protection stops the firmware itself from writing the first pages (0.3.2).
+  changes with pressure or between pens.
   That decides whether the bootloader idea in 0.3 can work.</li>
 <li>The S640 bootloader at <code>0x0800D800</code>: it is not in Veikk's update file. It matches
   GigaDevice's DFU example (0.3.1); a flash dump from a working tablet would confirm that and
