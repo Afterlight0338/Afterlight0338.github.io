@@ -148,6 +148,9 @@ including per-unit data that this document cannot give back to you (section 3.6)
 <ul>
 <li>0.3.2 tested: read protection doesn't lock any page against the firmware, page 0
   included. Also how to reset a protected chip without replugging.</li>
+<li>New 0.3.5: an open DFU bootloader at <code>0x0800D800</code>, built and tested on the owner's
+  tablet. Flashes complete images with plain <code>dfu-util</code>, reports errors, protects itself
+  and the factory tags.</li>
 </ul>
 <p><strong>2026-10-08</strong></p>
 <ul>
@@ -376,7 +379,7 @@ then rewrite just two pages: <code>0x08006800</code> to <code>0x08006BFF</code> 
 <code>0x0800C7FF</code> (image tail plus the hook). Everything in "why it is ultra mega risky" above
 still applies.</p>
 <h3 id="03-your-own-bootloader-over-usb-idea-untested">0.3 Your own bootloader over USB (idea, untested)</h3>
-<p><strong>Only 0.3.2 has been tested; nothing else here has been built.</strong> Another user suggested it: get a small
+<p><strong>0.3.2 and 0.3.5 are tested; the USB route onto an untouched tablet (0.3.3) is not built.</strong> Another user suggested it: get a small
 program onto the tablet through Veikk's updater, let that program overwrite the first 12 KB
 with an open bootloader, and flash complete images over USB from then on. Looking into it on
 2026-10-08 changed what this document says about the 12 KB lock (3.1, 3.4).</p>
@@ -481,6 +484,58 @@ would have to identify the firmware first, the same problem as in 0.2.</p>
 <p>Either way the starting point is the same GigaDevice example, with the app start and the
 protected range set for where it lives. Veikk's build fits below the factory tags at
 <code>0x0800FC60</code>, so in under 9.1 KB.</p>
+<h4 id="035-built-an-open-bootloader-at-0x0800d800-tested-2026-10-28">0.3.5 Built: an open bootloader at <code>0x0800D800</code> (tested 2026-10-28)</h4>
+<p>The right-hand column of 0.3.4, built and running on the owner's tablet, whose own updater
+was gone (3.6). It was installed over SWD. Getting it onto an untouched tablet over USB is
+still the 0.3.3 problem.</p>
+<p>It is GigaDevice's example (GD32F1x0 library V3.8.0, BSD-3-Clause), 8480 bytes, with:</p>
+<ul>
+<li>no key check: the firmware's "enter update" command jumps to it (3.1)</li>
+<li>first thing, interrupts off, then NVIC, SysTick and the APB peripherals the firmware left
+  running are reset</li>
+<li>12 MHz crystal x6 = 72 MHz, USB D+ pull-up on <strong>PF6</strong> (high = connected; the firmware
+  switches it at <code>0x0800A358</code>)</li>
+<li>writable <code>0x08000000</code> to <code>0x0800D7FF</code>, everything from <code>0x0800D800</code> up refused (itself,
+  the factory tags page, the option bytes, so read protection can't be set over USB)</li>
+<li>erase and write failures come back as DFU errors, every block is read back and compared</li>
+<li>DfuSe (<code>bcdDFUVersion 0x011A</code>), so plain <code>dfu-util</code> works; reading flash back is allowed</li>
+</ul>
+<p>Tested with <code>dfu-util</code> 0.11, each step checked over SWD:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Step</th>
+<th style="text-align: left;">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>send_dfu_reset</code> on the interface-2 hidraw node</td>
+<td style="text-align: left;">re-enumerates as <code>28e9:0189</code> "S640 open DFU"</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-U</code> all 64 KB</td>
+<td style="text-align: left;">identical to the SWD dump</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-s 0x08000000:leave -D S640-251022.bin</code></td>
+<td style="text-align: left;">SWD readback = stock 251022, first 12 KB included, rest of the last page erased, settings, bootloader and tags unchanged; the tablet boots it</td>
+</tr>
+<tr>
+<td style="text-align: left;">raw DfuSe ERASE of <code>0x0800D800</code> and <code>0x0800FC00</code> (pyusb, bypassing dfu-util's layout check)</td>
+<td style="text-align: left;"><code>errERASE</code>, <code>dfuERROR</code>, flash unchanged</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>nosmooth-hook</code> back on the same way</td>
+<td style="text-align: left;">SWD readback correct</td>
+</tr>
+</tbody>
+</table></div>
+<pre><code>dfu-util -d 28e9:0189 -a 0 -s 0x08000000:0x10000 -U backup.bin
+dfu-util -d 28e9:0189 -a 0 -s 0x08000000:leave -D image.bin
+</code></pre>
+<p>Same weakness as Veikk's: it is only reachable through working firmware, so a flash that dies
+halfway needs SWD. The source isn't in this repo yet.</p>
 <hr />
 <h2 id="1-quick-facts"><span class="h-num">01</span>Quick facts</h2>
 <div class="table-wrap"><table>
@@ -1086,7 +1141,7 @@ that <code>FMC_OBSTAT = 0xFFFFFF00</code> and the whole flash read <code>0xFFFFF
 <tr>
 <td style="text-align: left;"><code>0x0800D800</code> up to <code>0x0800FC5F</code></td>
 <td style="text-align: left;"><strong>Veikk's DFU bootloader</strong> (3.1)</td>
-<td style="text-align: left;"><strong>no</strong>. It is not in any public file we have. Consequence: the "enter DFU" command and Veikk's USB updater no longer work on this tablet; the firmware checks for a valid vector table at <code>0x0800D800</code> first, so the command just does nothing now. Update over SWD instead</td>
+<td style="text-align: left;"><strong>no</strong>. It is not in any public file we have. Consequence: the "enter DFU" command and Veikk's USB updater no longer work on this tablet; the firmware checks for a valid vector table at <code>0x0800D800</code> first, so the command just does nothing now. Update over SWD instead. Since 2026-10-28 the open bootloader from 0.3.5 sits there, so the command works again</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>0x0800FC60</code> to <code>0x0800FC7F</code></td>
