@@ -108,6 +108,48 @@ async function fetchUserProfile(userId, token) {
   };
 }
 
+/**
+ * One osu! API score, cut down to what the site's Top plays table shows.
+ * Mods come as strings (legacy API version) or { acronym } objects.
+ */
+function toScore(s, i) {
+  const set = s.beatmapset || {};
+  const map = s.beatmap || {};
+  return {
+    rank_index: i + 1,
+    title: set.title || "",
+    artist: set.artist || "",
+    difficulty: map.version || "",
+    pp: s.pp ? parseFloat(s.pp.toFixed(1)) : 0,
+    accuracy: parseFloat(((s.accuracy || 0) * 100).toFixed(2)),
+    rank: s.rank || "",
+    mods: (s.mods || []).map((m) => (typeof m === "string" ? m : m.acronym)).filter((m) => m && m !== "CL"),
+    max_combo: s.max_combo || 0,
+    beatmap_id: map.id || 0,
+    beatmapset_id: set.id || map.beatmapset_id || 0,
+  };
+}
+
+/**
+ * Top 50 plays. Returns null on failure so the profile still goes out
+ * and the site keeps its data/osu.json snapshot for the table.
+ */
+async function fetchTopScores(userId, token) {
+  try {
+    const resp = await fetch(`https://osu.ppy.sh/api/v2/users/${encodeURIComponent(userId)}/scores/best?mode=osu&limit=50`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json",
+        "User-Agent": USER_AGENT,
+      },
+    });
+    if (!resp.ok) return null;
+    return (await resp.json()).map(toScore);
+  } catch (err) {
+    return null;
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     // Handle CORS preflight
@@ -127,7 +169,11 @@ export default {
 
     try {
       const token = await getOsuToken(env);
-      const profile = await fetchUserProfile(userId, token);
+      const [profile, topScores] = await Promise.all([
+        fetchUserProfile(userId, token),
+        fetchTopScores(userId, token),
+      ]);
+      if (topScores) profile.top_scores = topScores;
 
       return new Response(JSON.stringify({ success: true, data: profile }), {
         status: 200,
