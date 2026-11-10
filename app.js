@@ -407,7 +407,8 @@
   }
 
   // ------------------------------------------------------------
-  // osu!, live stats from the Worker proxy, scores from osu.json
+  // osu!, live stats + top plays from the Worker proxy; osu.json is the
+  // snapshot shown first and kept if the proxy is down
   // ------------------------------------------------------------
   // osu!lazer ModType: difficulty increase / reduction / automation
   const MOD_TYPE = {
@@ -484,7 +485,13 @@
     try {
       const res = await fetch(OSU_PROXY, { signal: AbortSignal.timeout(4000) });
       const json = await res.json();
-      if (json.success) renderStats(json.data, true);
+      if (!json.success) return;
+      renderStats(json.data, true);
+      // Worker also sends the current top 50; an older deploy without it keeps the snapshot
+      if (json.data.top_scores?.length) {
+        allScores = json.data.top_scores;
+        renderScoreTable();
+      }
     } catch (err) {
       // proxy down: keep the osu.json snapshot
     }
