@@ -40,22 +40,25 @@
 
   --accent: var(--osu-blue);
 
-  --bg-canvas: #080b12;
-  --bg-surface: #0e1422;
-  --bg-surface-elevated: #141c2e;
+  /* Neutrals: osu!lazer OverlayColourProvider, Blue scheme (hue 200).
+     Background6/5/4, Content2, Light2, Foreground1, Content1 */
+  --bg-canvas: hsl(200 10% 10%);
+  --bg-surface: hsl(200 10% 15%);
+  --bg-surface-elevated: hsl(200 10% 20%);
 
   --border-hairline: rgba(255, 255, 255, 0.08);
   --border-medium: rgba(255, 255, 255, 0.16);
 
-  --text-main: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-dim: #64748b;
+  --text-main: hsl(200 40% 90%);
+  --text-secondary: hsl(200 40% 75%);
+  --text-dim: hsl(200 10% 60%);
   --text-bright: #ffffff;
 
-  /* Discord status (semantic, not accents) */
-  --status-online: #10b981;
-  --status-idle: #fbbf24;
-  --status-dnd: #f43f5e;
+  /* Discord and Spotify brand colours (semantic, not accents) */
+  --status-online: #23a55a;
+  --status-idle: #f0b232;
+  --status-dnd: #f23f43;
+  --spotify: #1db954;
 
   --font-sans: 'Torus Pro', 'Zen Kaku Gothic New', system-ui, sans-serif;
   --font-mono: 'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -201,7 +204,7 @@ code {
 }
 
 .presence.glass {
-  background: rgba(14, 20, 34, 0.6);
+  background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
   -webkit-backdrop-filter: blur(16px) saturate(1.5);
   backdrop-filter: blur(16px) saturate(1.5);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -376,7 +379,7 @@ code {
 .spotify-bar-fill {
   height: 100%;
   width: 0%;
-  background: var(--status-online);
+  background: var(--spotify);
 }
 
 /* ============================================================
@@ -435,12 +438,6 @@ code {
   color: var(--tab);
 }
 
-.tab-kanji {
-  font-size: 0.72rem;
-  font-weight: 400;
-  color: var(--text-dim);
-}
-
 .tab-lens {
   position: absolute;
   top: 0;
@@ -457,9 +454,7 @@ code {
 .lg-on > .tab-lens {
   z-index: 2;
   background: none;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--accent) 60%, transparent),
-    0 6px 20px -6px color-mix(in oklab, var(--accent) 80%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 60%, transparent);
 }
 
 .archive-nav:has(.nav-tab[aria-current]:focus-visible) .tab-lens {
@@ -507,13 +502,6 @@ code {
 /* ============================================================
    00 PROFILE
    ============================================================ */
-.narrative-grid {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 48px;
-  align-items: start;
-}
-
 .narrative-prose {
   display: flex;
   flex-direction: column;
@@ -554,23 +542,6 @@ code {
 }
 
 .link-btn:hover { color: var(--text-bright); }
-
-.data-pair-list {
-  border-left: 2px solid var(--accent);
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 0.9rem;
-}
-
-.data-pair dt {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-}
-
-.data-pair dd { color: var(--text-main); }
 
 /* ============================================================
    01 PROJECTS
@@ -960,6 +931,43 @@ code {
 }
 
 /* ============================================================
+   05 BLOG: a dated list, the write-ups carry the story
+   ============================================================ */
+.blog-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  max-width: 860px;
+}
+
+.blog-list li {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 4px 20px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.blog-list li:first-child { border-top: none; padding-top: 0; }
+
+.blog-list time,
+.blog-repo {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.blog-list time { color: var(--text-dim); }
+
+.blog-list a:not(.blog-repo) {
+  font-weight: 700;
+  color: var(--text-bright);
+  text-decoration: none;
+}
+
+.blog-list a:not(.blog-repo):hover { color: var(--accent); }
+
+/* ============================================================
    FOOTER & TOAST
    ============================================================ */
 .site-footer {
@@ -1051,14 +1059,13 @@ code {
 /* ============================================================
    RESPONSIVE
    ============================================================ */
-/* Six tabs need the whole 1032px row; narrower, two rows of three (kanji kept) */
+/* Six tabs need the whole 1032px row; narrower, two rows of three */
 @media (max-width: 1020px) {
   .archive-nav { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 900px) {
   .site-masthead,
-  .narrative-grid,
   .specs-composite-grid,
   .lore-grid {
     grid-template-columns: 1fr;
@@ -1080,15 +1087,6 @@ code {
     height: 260px;
   }
 
-  .data-pair-list {
-    border-left: none;
-    padding-left: 0;
-    border-top: 2px solid var(--accent);
-    padding-top: 16px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
   .project-entry {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -1100,6 +1098,8 @@ code {
     gap: 4px 16px;
     align-items: baseline;
   }
+
+  .blog-list li { grid-template-columns: 1fr; }
 
   .editorial-plate { max-width: 260px; }
 }
@@ -1114,7 +1114,7 @@ code {
 
   /* 3 + 3 grid; the lens moves in both axes */
   .archive-nav { grid-template-columns: repeat(3, 1fr); }
-  .tab-kanji, .tab-num { display: none; }
+  .tab-num { display: none; }
 
   /* Drop low-value columns instead of scrolling a 600px table */
   .col-combo, .td-combo,
