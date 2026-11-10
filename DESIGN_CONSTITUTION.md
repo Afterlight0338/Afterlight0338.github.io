@@ -327,6 +327,18 @@ do not add it.
 
 ---
 
+# 13a. Repetition and Authorship
+
+These three were added after an audit found the site obeying every ban above and still reading as generated.
+
+* **The owner writes the copy.** The agent fixes typos and broken facts, nothing else. If new text is needed, leave a plain placeholder and ask. Do not draft in the owner's voice.
+* **No structure more than three times without variation.** If every entry has the same labels, the same block order and the same length, it is a template, whatever the section is called. Let entries differ when their content differs.
+* **Say a fact once.** One place for the OS, one place for a project's numbers. A fact repeated in a status bar, a sidebar and a table is filler.
+
+Decoration that only signals "personal dev site" (clocks, numbering, labels in a second language, glows) counts as a visual effect under rule 13: it needs a purpose.
+
+---
+
 # 14. Existing Design Takes Priority
 
 When modifying an existing website:
