@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Afterlight, vivlos.dev</title>
   <meta name="description" content="I build random tools for my stupidly niche issues, break things that were already working fine, and spend a questionable amount of time playing rhythm games.">
-  <meta name="theme-color" content="#080b12">
+  <meta name="theme-color" content="#171a1c">
   <link rel="canonical" href="https://vivlos.dev/">
 
   <!-- Link previews (Discord, X, etc.). og.jpg is a screenshot of this page's header -->
@@ -28,7 +28,7 @@
   <!-- Zen Kaku only covers the Japanese text Torus lacks. text=%0A%20%28%29%2C-.24%3B%3C%3D%3EAJSabcdefghiklmnopqrstuvwxy%E6%9E%90%E8%A7%A3"https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap&text=%E3%81%84%E3%81%A4%E3%81%A6%E3%81%AB%E3%82%A2%E3%82%A3%E3%82%A4%E3%82%B2%E3%82%B9%E3%82%BF%E3%83%88%E3%83%95%E3%83%96%E3%83%A9%E3%83%AD%E3%83%B4%E3%83%BC%E4%BB%8B%E4%BD%99%E4%BD%9C%E5%88%B6%E5%99%A8%E5%B7%B1%E6%88%90%E6%A7%8B%E6%A9%9F%E7%89%A9%E7%99%BD%E7%B4%B9%E8%87%AA%E8%A8%98%E9%8C%B2%E9%9F%B3" rel="stylesheet">
 
   <!-- vivlos.dev is served with a 4h browser cache: bump ?v= whenever style.css or app.js change -->
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 
@@ -36,8 +36,7 @@
 
   <div class="top-status-bar">
     <span>vivlos.dev</span>
-    <span><span class="mono-dim">running</span> NixOS 26.05 / Hyprland</span>
-    <span><span class="mono-dim">local time</span> <span id="clock-display">--:--:--</span> UTC+8</span>
+    <span>Malaysia, UTC+8</span>
     <button type="button" class="motion-switch" id="motion-switch" role="switch" aria-checked="false">
       <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
       Animations
@@ -81,12 +80,12 @@
 
   <nav class="archive-nav" id="archive-nav" aria-label="Sections">
     <div class="glass-backing" aria-hidden="true"></div>
-    <a href="#about" class="nav-tab"><span class="tab-num">00</span> Profile <span class="tab-kanji">自己紹介</span></a>
-    <a href="#projects" class="nav-tab"><span class="tab-num">01</span> Projects <span class="tab-kanji">制作物</span></a>
-    <a href="#workstation" class="nav-tab"><span class="tab-num">02</span> Workstation <span class="tab-kanji">機器構成</span></a>
-    <a href="#rhythm" class="nav-tab"><span class="tab-num">03</span> Rhythm <span class="tab-kanji">音ゲー</span></a>
-    <a href="#lore" class="nav-tab"><span class="tab-num">04</span> Lore <span class="tab-kanji">余白</span></a>
-    <a href="#blog" class="nav-tab"><span class="tab-num">05</span> Blog <span class="tab-kanji">解析記録</span></a>
+    <a href="#about" class="nav-tab"><span class="tab-num">00</span> Profile</a>
+    <a href="#projects" class="nav-tab"><span class="tab-num">01</span> Projects</a>
+    <a href="#workstation" class="nav-tab"><span class="tab-num">02</span> Workstation</a>
+    <a href="#rhythm" class="nav-tab"><span class="tab-num">03</span> Rhythm</a>
+    <a href="#lore" class="nav-tab"><span class="tab-num">04</span> Lore</a>
+    <a href="#blog" class="nav-tab"><span class="tab-num">05</span> Blog</a>
     <span class="tab-lens glass" id="tab-lens" aria-hidden="true"></span>
   </nav>
 
@@ -96,34 +95,24 @@
     <section class="archive-section" id="about">
       <h2 class="section-heading">Profile <span class="kanji-sub">自己紹介</span></h2>
 
-      <div class="narrative-grid">
-        <div class="narrative-prose">
-          <p class="lead-text">
-            Hey, I'm <strong>Afterlight</strong>. Most of the stuff I write starts with a very specific irritation: <em>"ts so ahh"</em>, or realizing that no one made the exact tool that solves a hyper-specific annoyance.
-          </p>
-          <p>
-            My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because the Nix logo got me, but it became a permanent home because declarative config sounds cool. It also lets me do random things without worrying about breaking anything.
-          </p>
-          <p>
-            Outside of that, I spend a borderline degenerate amount of time playing rhythm games, mostly <strong>osu!</strong> standard, plus <strong>maimai (I'm 12K!)</strong>.
-          </p>
+      <div class="narrative-prose">
+        <p class="lead-text">
+          Hey, I'm <strong>Afterlight</strong>. Most of the stuff I write starts with a very specific irritation: <em>"ts so ahh"</em>, or realizing that no one made the exact tool that solves a hyper-specific annoyance.
+        </p>
+        <p>
+          My daily workstation runs <strong>NixOS</strong> with <strong>Hyprland</strong>. It started mostly because the Nix logo got me, but it became a permanent home because declarative config sounds cool. It also lets me do random things without worrying about breaking anything.
+        </p>
+        <p>
+          Outside of that, I spend a borderline degenerate amount of time playing rhythm games, mostly <strong>osu!</strong> standard, plus <strong>maimai (I'm 12K!)</strong>.
+        </p>
 
-          <p class="links-row">
-            <a href="https://github.com/Afterlight0338" target="_blank" rel="noopener">GitHub ↗</a>
-            <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">osu! ↗</a>
-            <a href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener">Twitch ↗</a>
-            <a href="https://www.tiktok.com/@afterlight_1337" target="_blank" rel="noopener">TikTok ↗</a>
-            <button type="button" class="link-btn" onclick="copyDiscord()">Discord @afterlight_hd <span class="mono-dim">(copy)</span></button>
-          </p>
-        </div>
-
-        <dl class="data-pair-list">
-          <div class="data-pair"><dt>Handle</dt><dd>Afterlight / RyoYamada</dd></div>
-          <div class="data-pair"><dt>Based in</dt><dd>Malaysia, UTC+8</dd></div>
-          <div class="data-pair"><dt>OS</dt><dd>NixOS 26.05 + Hyprland (Caelestia shell)</dd></div>
-          <div class="data-pair"><dt>Writes</dt><dd>C++, TypeScript</dd></div>
-          <div class="data-pair"><dt>Into</dt><dd>osu!, maimai, anime, eh idk really</dd></div>
-        </dl>
+        <p class="links-row">
+          <a href="https://github.com/Afterlight0338" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://osu.ppy.sh/users/14671577" target="_blank" rel="noopener">osu! ↗</a>
+          <a href="https://www.twitch.tv/afterlight_" target="_blank" rel="noopener">Twitch ↗</a>
+          <a href="https://www.tiktok.com/@afterlight_1337" target="_blank" rel="noopener">TikTok ↗</a>
+          <button type="button" class="link-btn" onclick="copyDiscord()">Discord @afterlight_hd <span class="mono-dim">(copy)</span></button>
+        </p>
       </div>
     </section>
 
@@ -330,77 +319,27 @@
       </div>
     </section>
 
-    <!-- 05 BLOG: write-ups, newest first. Each links to its own page + docs repo -->
+    <!-- 05 BLOG: write-ups, newest first, as a plain list. The stories live on the pages themselves -->
     <section class="archive-section" id="blog">
       <h2 class="section-heading">Blog <span class="kanji-sub">解析記録</span></h2>
 
-      <div class="projects-dossier">
-        <article class="project-entry">
-          <div class="entry-meta-col">
-            <span class="entry-num">2026-10-22</span>
-            <span class="entry-status" data-state="live">Fixed</span>
-            <span class="entry-stack">CH32X035 · RISC-V · WebHID</span>
-            <a href="/8bitdo-u2/">Read it</a>
-            <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude" target="_blank" rel="noopener">Repository ↗</a>
-          </div>
-          <div class="entry-body-col">
-            <h3 class="entry-title">8BitDo Ultimate 2: the phantom trigger was the ADC clock</h3>
-            <p class="entry-tagline">My controller started pressing its own triggers. It wasn't the hall sensors.</p>
-            <div class="story-block">
-              <h4 class="story-label">The problem</h4>
-              <p>LT, then RT, sat at 20 to 70% with nothing touching them, so games saw real presses. Recalibrating, turning the lighting off, downgrading the firmware and poking every part of the opened board all changed nothing, and 8BitDo's own updater even left it stuck in the bootloader.</p>
-            </div>
-            <div class="story-block">
-              <h4 class="story-label">What it was</h4>
-              <p>I turned the firmware's lighting-mode reply into a telemetry stream to get raw ADC samples out, no soldering. About 2% of them read exactly 2048: the co-processor's ADC runs at 12&nbsp;MHz and this chip gets the top bit wrong. An 8-byte patch halves the clock: 0 bad samples in 14,080, 0 phantom presses in 5 minutes. On the way: a local flasher, and the bootloader's checksums reversed.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="project-entry">
-          <div class="entry-meta-col">
-            <span class="entry-num">2026-10-06</span>
-            <span class="entry-status" data-state="live">Unbricked</span>
-            <span class="entry-stack">GD32F150 · SWD · Pi Pico</span>
-            <a href="/s640/">Read it</a>
-            <a href="https://github.com/Afterlight0338/s640-fw-docs-claude" target="_blank" rel="noopener">Repository ↗</a>
-          </div>
-          <div class="entry-body-col">
-            <h3 class="entry-title">Veikk S640: SWD unbrick and the zero-smoothing patch</h3>
-            <p class="entry-tagline">A drawing tablet bricked by a bad USB flash, brought back with a Raspberry Pi Pico.</p>
-            <div class="story-block">
-              <h4 class="story-label">The problem</h4>
-              <p>A half-finished firmware flash left the tablet dead: no LED, nothing on USB. Its boot pin is tied to ground, so the only way in was SWD through five holes next to the chip.</p>
-            </div>
-            <div class="story-block">
-              <h4 class="story-label">What came out of it</h4>
-              <p>Unbricked over SWD, then the firmware read end to end: how it scans the pen coils, why the report rate is stuck at 250&nbsp;Hz, and where the cursor smoothing lives. The patch removes about 14&nbsp;ms of averaging, and in a blind test the owner (me) picked every version correctly.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="project-entry">
-          <div class="entry-meta-col">
-            <span class="entry-num">2026-09-30</span>
-            <span class="entry-status" data-state="ongoing">In progress</span>
-            <span class="entry-stack">AT32F405 · C · WebHID</span>
-            <a href="/fun60/">Read it</a>
-            <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr" target="_blank" rel="noopener">Repository ↗</a>
-          </div>
-          <div class="entry-body-col">
-            <h3 class="entry-title">FUN60 Ultra TMR: new firmware for a keyboard that typed twice</h3>
-            <p class="entry-tagline">Mechanical switches double typed, so the stock firmware got replaced.</p>
-            <div class="story-block">
-              <h4 class="story-label">The problem</h4>
-              <p>With mechanical switches, hard taps typed the letter twice, and MonsGeek's debounce slider did nothing. The first attempt, a firmware Gemini built and flashed, bricked the board on the wrong USB port, so the case came apart and one pad got bridged to bring it back.</p>
-            </div>
-            <div class="story-block">
-              <h4 class="story-label">What came out of it</h4>
-              <p>Stock v306 decompiled and mapped pin by pin, then new firmware on Artery's BSP: presses go out at once, releases wait 8&nbsp;ms. Stock did 13 to 165 doubles per run, this does 0 in 121 hard taps. Plus per-key RGB, 2.4G through the stock dongle, and a web driver to replace MonsGeek's.</p>
-            </div>
-          </div>
-        </article>
-      </div>
+      <ul class="blog-list">
+        <li>
+          <time datetime="2026-10-22">2026-10-22</time>
+          <a href="/8bitdo-u2/">8BitDo Ultimate 2: the phantom trigger was the ADC clock</a>
+          <a href="https://github.com/Afterlight0338/8bitdo-u2-fw-docs-claude" target="_blank" rel="noopener" class="blog-repo">Repository ↗</a>
+        </li>
+        <li>
+          <time datetime="2026-10-06">2026-10-06</time>
+          <a href="/s640/">Veikk S640: SWD unbrick and the zero-smoothing patch</a>
+          <a href="https://github.com/Afterlight0338/s640-fw-docs-claude" target="_blank" rel="noopener" class="blog-repo">Repository ↗</a>
+        </li>
+        <li>
+          <time datetime="2026-09-30">2026-09-30</time>
+          <a href="/fun60/">FUN60 Ultra TMR: new firmware for a keyboard that typed twice</a>
+          <a href="https://github.com/Afterlight0338/re-fun60-ultra-tmr" target="_blank" rel="noopener" class="blog-repo">Repository ↗</a>
+        </li>
+      </ul>
     </section>
 
   </main>
@@ -411,7 +350,7 @@
 
 <div id="toast" class="toast-indicator" role="status" aria-live="polite"></div>
 
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>
 
