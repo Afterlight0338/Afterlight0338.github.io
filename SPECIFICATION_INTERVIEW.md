@@ -203,7 +203,7 @@ These are the non-obvious things that broke once. Each one has a comment at the 
 
 ### /s640 (generated page)
 * Do not edit `s640/index.html` by hand. Edit `docs/src/*.md` in `Afterlight0338/s640-fw-docs-claude`, then run `python3 tools/build_readme.py` and `python3 tools/build_site_page.py <this repo>/s640` there (python-markdown needed).
-* The page loads `/style.css?v=7` (set in `tools/build_site_page.py`): when the main `?v=` is bumped, update it there and rebuild. `s640/s640.css` has its own `?v=`.
+* The page loads `/style.css?v=9` (set in `tools/build_site_page.py`): when the main `?v=` is bumped, update it there and rebuild. `s640/s640.css` has its own `?v=`.
 * Repository paths in the text link to GitHub; only the two images in `s640/images/` are served from here.
 * Two versions on one page: the long one from `README.md` and the short one ("i aint reading allat" switch in the status rail, the main site's `.motion-switch` component) from `docs/short.md`. `#allat` or any `#tldr-…` link opens the short one.
 * A disclaimer gate covers the page until "I get it, let me in" is clicked (requested 2026-10-06). Remembered per browser in `localStorage["vivlos-s640-ack"]`; the chosen version in `localStorage["vivlos-s640-view"]`. Without JS there is no gate, the disclaimer shows inline and the long version is shown.
@@ -212,3 +212,13 @@ These are the non-obvious things that broke once. Each one has a comment at the 
 ### Writing
 * **No em dashes** in site copy or docs (Afterlight's preference). Use commas, colons or parentheses.
 
+
+### De-slop pass (2026-11-10)
+Afterlight asked what still read as AI-made, then approved these:
+* **Blog is a plain dated list** (`.blog-list`: date, title, repository link). The stories live on the write-up pages only, so FUN60's numbers are no longer on the home page twice.
+* **Profile fact box removed**, and the status rail's OS line and ticking clock with it. The rail now says "Malaysia, UTC+8" once. The OS lives in Profile prose and the Workstation table.
+* **Kanji on section headings only**, not in the nav tabs. The tab lens keeps its ring but lost the accent glow.
+* **Neutrals come from osu!lazer** `OverlayColourProvider`, Blue scheme (hue 200): Background6/5/4, Content2, Light2, Foreground1. They were Tailwind slate before. Discord status dots and the Spotify bar use those brands' own colours. `theme-color` is `#171a1c`.
+* **Constitution section 13a** added: owner writes the copy, no structure more than three times without variation, say a fact once.
+* Still open, Afterlight's job: rewrite Projects copy and the three Blog titles in their own voice. `assets/og.jpg` still shows the old colours.
+* `style.css` / `app.js` are `?v=9`; the three `build_site_page.py` generators (s640, 8bitdo-u2, fun60) have `STYLE_V = 9` and the new theme colour.
