@@ -222,3 +222,8 @@ Afterlight asked what still read as AI-made, then approved these:
 * **Constitution section 13a** added: owner writes the copy, no structure more than three times without variation, say a fact once.
 * Still open, Afterlight's job: rewrite Projects copy and the three Blog titles in their own voice. `assets/og.jpg` still shows the old colours.
 * `style.css` / `app.js` are `?v=9`; the three `build_site_page.py` generators (s640, 8bitdo-u2, fun60) have `STYLE_V = 9` and the new theme colour.
+
+### Status rail removed, live top plays (2026-11-10)
+* **The home page has no status rail any more** (Afterlight: "probably didnt need this header"). The Animations switch sits in the footer, right side, next to "© Afterlight · Malaysia, UTC+8". The footer is the settings spot: the planned theme switcher goes beside the switch. The write-up pages keep their own `.top-status-bar`. This supersedes the "Status rail" notes above.
+* **Top plays are live.** They used to come only from `data/osu.json`, a hand-made snapshot from August. The Worker now also returns `top_scores` (top 50, same shape as the snapshot) and `app.js` swaps them in after the snapshot renders. If the Worker fails, or is an older deploy without the field, the snapshot stays. The Worker must be redeployed for this (`cd worker && npx wrangler deploy`).
+* `data/osu.json` refreshed 2026-11-10 from the osu! API. `style.css` / `app.js` are `?v=10`, generators `STYLE_V = 10`.
