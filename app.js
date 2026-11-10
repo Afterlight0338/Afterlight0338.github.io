@@ -1,5 +1,5 @@
 // vivlos.dev, Direction D prototype
-// Tabs, motion switch, glass (liquidglass), UTC+8 clock, Lanyard presence,
+// Tabs, motion switch, glass (liquidglass), Lanyard presence,
 // osu! stats + scores, audio previews.
 
 (function () {
@@ -120,7 +120,7 @@
   }
 
   // Stagger the new tab's blocks in from the direction of travel
-  const RISE_ITEMS = ':scope > h2, .narrative-prose > *, .data-pair, .project-entry, .spec-table, ' +
+  const RISE_ITEMS = ':scope > h2, .narrative-prose > *, .project-entry, .blog-list li, .spec-table, ' +
     '.rhythm-profile-strip, .table-container, .lore-narrative, .editorial-plate';
 
   function enter(section, dir, sel = RISE_ITEMS, from = 0) {
@@ -274,19 +274,6 @@
       startGlass(LiquidGlass, $('masthead'), $('lanyard-panel'), PRESENCE_GLASS),
       startGlass(LiquidGlass, $('archive-nav'), $('tab-lens'), LENS_GLASS),
     ]);
-  }
-
-  // ------------------------------------------------------------
-  // UTC+8 clock
-  // ------------------------------------------------------------
-  function initClock() {
-    const el = $('clock-display');
-    const fmt = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Asia/Kuala_Lumpur', hour: '2-digit', minute: '2-digit', second: '2-digit'
-    });
-    const update = () => { el.textContent = fmt.format(new Date()); };
-    update();
-    setInterval(update, 1000);
   }
 
   // ------------------------------------------------------------
@@ -596,7 +583,6 @@
     initMotionSwitch();
     initTabs();
     initArtHop();
-    initClock();
     initLanyard();
     loadOsuData();
   });
