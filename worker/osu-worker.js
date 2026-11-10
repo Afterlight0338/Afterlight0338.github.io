@@ -138,6 +138,9 @@ async function fetchTopScores(userId, token) {
   try {
     const resp = await fetch(`https://osu.ppy.sh/api/v2/users/${encodeURIComponent(userId)}/scores/best?mode=osu&limit=50`, {
       headers: {
+        // New score format: accuracy and mod order match what the osu! website shows
+        // (the legacy format gave 96.21% where the profile page says 96.48%)
+        "x-api-version": "20220705",
         "Authorization": `Bearer ${token}`,
         "Accept": "application/json",
         "User-Agent": USER_AGENT,
