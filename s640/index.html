@@ -99,6 +99,7 @@ manual.</p>
       <details open>
         <summary>Contents</summary>
         <ol class="view-long">
+<li><a href="#-3-web-flasher"><span class="toc-num">-3</span>Web flasher</a></li>
 <li><a href="#-2-changelog"><span class="toc-num">-2</span>Changelog</a></li>
 <li><a href="#-1-what"><span class="toc-num">-1</span>What?</a></li>
 <li><a href="#0-how-to-flash"><span class="toc-num">00</span>How to flash</a></li>
@@ -116,16 +117,17 @@ manual.</p>
 <li><a href="#12-annotated-listings"><span class="toc-num">12</span>Annotated listings</a></li>
         </ol>
         <ol class="view-short">
-<li><a href="#tldr-what-this-is"><span class="toc-num">01</span>What this is</a></li>
-<li><a href="#tldr-is-this-your-tablet"><span class="toc-num">02</span>Is this your tablet?</a></li>
-<li><a href="#tldr-what-you-need"><span class="toc-num">03</span>What you need</a></li>
-<li><a href="#tldr-wiring"><span class="toc-num">04</span>Wiring</a></li>
-<li><a href="#tldr-steps"><span class="toc-num">05</span>Steps</a></li>
-<li><a href="#tldr-do"><span class="toc-num">06</span>Do</a></li>
-<li><a href="#tldr-dont"><span class="toc-num">07</span>Don't</a></li>
-<li><a href="#tldr-what-you-get"><span class="toc-num">08</span>What you get</a></li>
-<li><a href="#tldr-1000-hz-with-a-wacom-pen"><span class="toc-num">09</span>1000 Hz with a Wacom pen</a></li>
-<li><a href="#tldr-if-something-goes-wrong"><span class="toc-num">10</span>If something goes wrong</a></li>
+<li><a href="#tldr-easiest-way-the-web-flasher"><span class="toc-num">01</span>Easiest way: the web flasher</a></li>
+<li><a href="#tldr-what-this-is"><span class="toc-num">02</span>What this is</a></li>
+<li><a href="#tldr-is-this-your-tablet"><span class="toc-num">03</span>Is this your tablet?</a></li>
+<li><a href="#tldr-what-you-need"><span class="toc-num">04</span>What you need</a></li>
+<li><a href="#tldr-wiring"><span class="toc-num">05</span>Wiring</a></li>
+<li><a href="#tldr-steps"><span class="toc-num">06</span>Steps</a></li>
+<li><a href="#tldr-do"><span class="toc-num">07</span>Do</a></li>
+<li><a href="#tldr-dont"><span class="toc-num">08</span>Don't</a></li>
+<li><a href="#tldr-what-you-get"><span class="toc-num">09</span>What you get</a></li>
+<li><a href="#tldr-1000-hz-with-a-wacom-pen"><span class="toc-num">10</span>1000 Hz with a Wacom pen</a></li>
+<li><a href="#tldr-if-something-goes-wrong"><span class="toc-num">11</span>If something goes wrong</a></li>
         </ol>
       </details>
     </nav>
@@ -143,8 +145,33 @@ SHA-256 <code>150fbc8b…287b45</code>).</p>
 SWD access requires removing the chip's read protection, and that <strong>erases the whole flash</strong>,
 including per-unit data that this document cannot give back to you (section 3.6).</p>
 </blockquote>
+<h2 id="-3-web-flasher"><span class="h-num">-3</span>Web flasher</h2>
+<p><strong><a href="https://vivlos.dev/s640/flash/">vivlos.dev/s640/flash</a></strong>: flash the tablet over USB from
+Chrome, Edge or Brave. No Pico, no opening the tablet. If your tablet works and you just want
+the smoothing gone (or stock back), use this and skip the rest.</p>
+<ul>
+<li><strong>How:</strong> it uses Veikk's own updater at <code>0x0800D800</code>. The running firmware jumps into it when
+  it gets HID report <code>09 04 2F EB 00 00 00 00 C0</code> on interface 2. The updater then shows up as
+  <code>28e9:0189</code> and takes 1 KB DFU blocks (erase each page first, data from block 2). Found by
+  pcb, whose <code>flash.py</code> the page follows step for step.</li>
+<li><strong>Safe area:</strong> the updater refuses anything at or above <code>0x0800D800</code>, so it can't touch
+  itself, the settings or the factory tags.</li>
+<li><strong>Images:</strong> stock <code>S640-251022</code>, <code>nosmooth-hook</code> (7.9) and the LP-170E 1000 Hz build (6.8,
+  Wacom pen only, tuned on one tablet). All three keep the HID switch, so you can always get
+  back to stock over USB. A firmware without it leaves you with SWD only.</li>
+<li><strong>Tested:</strong> stock and the LP-170E build flashed back and forth over USB with <code>flash.py</code> on the
+  owner's tablet, each checked over SWD (2026-11-19). The web page itself hasn't flashed a
+  tablet yet.</li>
+<li><strong>Corrects 0.2 and 0.3:</strong> this updater writes from <code>0x08000000</code>, the first 12 KB included
+  (the stock app written this way read back identical over SWD). The 12 KB limit described
+  there doesn't apply to it.</li>
+</ul>
 <h2 id="-2-changelog"><span class="h-num">-2</span>Changelog</h2>
 <p>Newest first. Small wording fixes are not listed.</p>
+<p><strong>2026-11-20</strong></p>
+<ul>
+<li>New -3: the web flasher. Flashing over USB works through Veikk's own updater, no Pico.</li>
+</ul>
 <p><strong>2026-11-02</strong></p>
 <ul>
 <li>New 6.8: a Wacom LP-170E on this tablet at a steady 1000 Hz, with a custom position-only
@@ -208,8 +235,8 @@ lags behind and creeps into place when the pen slows down. This project gets rid
 <li><strong>Report rate:</strong> with the Veikk pen and the stock scan, about 3.9 ms per report, so 250 Hz
   is the ceiling (6). A Wacom LP-170E with a custom position-only firmware reaches a steady
   1000 Hz, without pressure (6.8).</li>
-<li><strong>Still open:</strong> pressure smoothing (5.7), and a way to do all this over USB without opening
-  the tablet (0.2, 0.3).</li>
+<li><strong>Over USB:</strong> done, see the web flasher (-3).</li>
+<li><strong>Still open:</strong> pressure smoothing (5.7).</li>
 </ul>
 <h2 id="0-how-to-flash"><span class="h-num">00</span>How to flash</h2>
 <p>The short path. Section 3 explains every step, and <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/docs/short.md"><code>docs/short.md</code></a> has the
@@ -6707,11 +6734,17 @@ as stored in flash.</p>
 <p><em>Measured, read and written on 2026-10-06. Corrections welcome as issues or pull requests.</em></p>
       </article>
       <article class="view-short">
-<h2 id="tldr-what-this-is"><span class="h-num">01</span>What this is</h2>
+<h2 id="tldr-easiest-way-the-web-flasher"><span class="h-num">01</span>Easiest way: the web flasher</h2>
+<p>Tablet still works and you just want the smoothing gone (or stock back)? Use
+<strong><a href="https://vivlos.dev/s640/flash/">vivlos.dev/s640/flash</a></strong>. Chrome, Edge or Brave, a USB cable,
+three steps. No Pico, nothing to open. It uses Veikk's own updater, so you can always flash
+stock again the same way.</p>
+<p>Everything below is for a bricked tablet, or for doing it by hand over SWD.</p>
+<h2 id="tldr-what-this-is"><span class="h-num">02</span>What this is</h2>
 <p>A Veikk S640 bricked by a bad USB flash, revived over SWD with a Raspberry Pi Pico, then
 patched so the firmware stops smoothing the cursor. This is the short version: what you need,
 what to run, what not to do. The long version has the why, the proof and every byte.</p>
-<h2 id="tldr-is-this-your-tablet"><span class="h-num">02</span>Is this your tablet?</h2>
+<h2 id="tldr-is-this-your-tablet"><span class="h-num">03</span>Is this your tablet?</h2>
 <p>Only go on if all of these match. If anything differs, stop.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -6739,7 +6772,7 @@ what to run, what not to do. The long version has the why, the proof and every b
 </tr>
 </tbody>
 </table></div>
-<h2 id="tldr-what-you-need"><span class="h-num">03</span>What you need</h2>
+<h2 id="tldr-what-you-need"><span class="h-num">04</span>What you need</h2>
 <ul>
 <li>Raspberry Pi Pico (RP2040) and a USB cable that carries <strong>data</strong></li>
 <li><code>debugprobe_on_pico.uf2</code> (Raspberry Pi's official debugprobe firmware)</li>
@@ -6749,7 +6782,7 @@ what to run, what not to do. The long version has the why, the proof and every b
 <li><code>S640-251022.bin</code>, Veikk's firmware update. If you're reading this repo, you probably already know where to obtain the firmware. SHA-256 starts with <code>150fbc8b</code>. From the <code>.hex</code>: <code>objcopy -I ihex -O binary --gap-fill 0xff S640-251022.hex S640-251022.bin</code></li>
 <li>from the GitHub repo: <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/patches/nosmooth.py"><code>patches/nosmooth.py</code></a> and <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/blob/main/patches/factory_tags_fc60.bin"><code>patches/factory_tags_fc60.bin</code></a></li>
 </ul>
-<h2 id="tldr-wiring"><span class="h-num">04</span>Wiring</h2>
+<h2 id="tldr-wiring"><span class="h-num">05</span>Wiring</h2>
 <p>Hold the board so the chip text <code>VK1801</code> reads upright. J1 is the column of 5 holes left of
 the chip. <strong>Pad 1 is the bottom one.</strong></p>
 <div class="table-wrap"><table>
@@ -6792,7 +6825,7 @@ the chip. <strong>Pad 1 is the bottom one.</strong></p>
 <p>Then <strong>beep-test every wire from the Pico pin to the chip pin</strong>: GP2 to chip pin 49, GP3 to
 chip pin 46, GND to pad 5. GP2 and GP3 must <strong>not</strong> beep to each other. Most "it doesn't
 connect" problems are a wire that isn't touching or one that touches two holes.</p>
-<h2 id="tldr-steps"><span class="h-num">05</span>Steps</h2>
+<h2 id="tldr-steps"><span class="h-num">06</span>Steps</h2>
 <p><strong>1. Pico.</strong> Hold BOOTSEL, plug it in, copy <code>debugprobe_on_pico.uf2</code> onto the <code>RPI-RP2</code> drive.</p>
 <p><strong>2. Plug in the tablet first</strong>, then the Pico.</p>
 <p><strong>3. Connect.</strong></p>
@@ -6817,7 +6850,7 @@ again does no harm):</p>
 </code></pre>
 <p>Look for <code>** Verified OK **</code> twice. The tablet restarts on its own.</p>
 <p>To go back to stock, flash <code>S640-251022.bin</code> the same way.</p>
-<h2 id="tldr-do"><span class="h-num">06</span>Do</h2>
+<h2 id="tldr-do"><span class="h-num">07</span>Do</h2>
 <ul>
 <li>Beep-test Pico pin to <strong>chip pin</strong>, not just to the J1 hole.</li>
 <li>Put <code>adapter speed</code> <strong>after</strong> <code>target/stm32f1x.cfg</code> (the target file overrides it otherwise).</li>
@@ -6825,7 +6858,7 @@ again does no harm):</p>
 <li>Write the factory tags after any unlock. Without them the pen is never detected.</li>
 <li>Lift the pen away and bring it back after flashing anything, to check it is picked up again.</li>
 </ul>
-<h2 id="tldr-dont"><span class="h-num">07</span>Don't</h2>
+<h2 id="tldr-dont"><span class="h-num">08</span>Don't</h2>
 <ul>
 <li><strong>Don't bridge BOOT0 (pin 60) to 3.3 V.</strong> BOOT0 is wired straight to ground; that is a short.</li>
 <li><strong>Don't connect J1 pad 1</strong> (3V3) to the Pico. The tablet powers itself from USB.</li>
@@ -6838,7 +6871,7 @@ again does no harm):</p>
 <li><strong>Don't try the speed hacks</strong>: skipping the pressure measurement kills pen detection, and
   shrinking the coil window loses the pen for good once you lift it.</li>
 </ul>
-<h2 id="tldr-what-you-get"><span class="h-num">08</span>What you get</h2>
+<h2 id="tldr-what-you-get"><span class="h-num">09</span>What you get</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -6880,13 +6913,13 @@ again does no harm):</p>
 </tr>
 </tbody>
 </table></div>
-<h2 id="tldr-1000-hz-with-a-wacom-pen"><span class="h-num">09</span>1000 Hz with a Wacom pen</h2>
+<h2 id="tldr-1000-hz-with-a-wacom-pen"><span class="h-num">10</span>1000 Hz with a Wacom pen</h2>
 <p>A Wacom LP-170E (CTH-670 pen) with a custom firmware reports at a steady 1000 Hz, about 0.02 mm
 of still-pen noise. Position only: no pressure, no pen buttons, and the Veikk pen isn't expected to
 work on it. So far it has only been measured with the pen lying still, on one tablet. Dead coils
 are hardcoded for that tablet, so change them for yours. Section 6.8 of the long version has the
 details, the source is in <a href="https://github.com/Afterlight0338/s640-fw-docs-claude/tree/main/wacom/lp170e"><code>wacom/lp170e/</code></a>.</p>
-<h2 id="tldr-if-something-goes-wrong"><span class="h-num">10</span>If something goes wrong</h2>
+<h2 id="tldr-if-something-goes-wrong"><span class="h-num">11</span>If something goes wrong</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
