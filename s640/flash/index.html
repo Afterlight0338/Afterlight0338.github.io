@@ -1,230 +1,373 @@
-<!doctype html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>S640 web flasher</title>
-<style>
-  body { font: 15px/1.5 system-ui, sans-serif; max-width: 48rem; margin: 2rem auto; padding: 0 1rem; }
-  button, select { font: inherit; padding: .4rem .7rem; margin: .2rem 0; }
-  select { max-width: 100%; }
-  pre { background: #111; color: #ddd; padding: .8rem; min-height: 12rem; white-space: pre-wrap; }
-  .warn { background: #fff3cd; color: #222; padding: .6rem .8rem; border-left: 4px solid #e0a800; }
-  #note { min-height: 3em; }
-</style>
-<h1>Veikk S640 web flasher</h1>
-<p class="warn">Flashes over USB through the stock Veikk updater at 0x0800D800. Only the app area is
-written; the updater, settings and tags pages are never touched. To flash again later, the running firmware
-has to answer the updater trigger (<code>09 04 2F EB 00 00 00 00 C0</code>). Stock and every patched build
-here do. Chromium browsers only (Chrome, Brave, Edge). On Windows the updater (28e9:0189) needs the WinUSB
-driver once (Zadig). <a href="../">Docs</a> · <a href="fw/SHA256SUMS">SHA256SUMS</a></p>
+<!DOCTYPE html>
+<html lang="en" data-tab="blog">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veikk S640 web flasher, vivlos.dev</title>
+  <meta name="description" content="Flash the Veikk S640 over USB from the browser: stock, no-smoothing, or the 1 kHz LP-170E build.">
+  <meta name="theme-color" content="#171a1c">
+  <link rel="icon" type="image/webp" href="/assets/vivlos/racing.webp">
+  <!-- Hand-written, not generated. Reuses the /s640/ page's stylesheet (gate, status rail, headings, table).
+       Bump ?v= together with /s640/index.html -->
+  <link rel="stylesheet" href="/style.css?v=10">
+  <link rel="stylesheet" href="/s640/s640.css?v=2">
+  <style>
+    /* one column: no contents rail on a three-step page */
+    .flash-body { grid-column: 1 / -1; max-width: 780px; }
+    .flash-body .h-num { font-size: 1rem; }
+    .step[aria-disabled="true"] { opacity: .45; }
+    .step[aria-disabled="true"] button { pointer-events: none; }
 
-<p><label>Firmware:
-  <select id="fw"></select></label><br>
-  <span id="other" hidden>File: <input type="file" id="file" accept=".bin"></span></p>
-<p id="note"></p>
-<p><button id="trigger">1. Enter updater (pick the S640)</button><br>
-   <button id="flash">2. Flash (pick "28e9:0189")</button></p>
-<pre id="log"></pre>
+    .fw-table tr { cursor: pointer; }
+    .fw-table input { accent-color: var(--accent); margin: 0; }
+    .fw-table tr:has(input:checked) td { color: var(--text-bright); }
+    .fw-table td:first-child { width: 28px; }
+    .fw-table .pen { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); white-space: nowrap; }
 
-<script>
-// warn = needs a confirm before flashing
-const FIRMWARE = [
-  ['Stock', [
-    ['stock-251022.bin', 'Veikk official update 251022', 'Base of every patched build below.'],
-    ['stock-factory.bin', 'Factory stock (dumped from a 2026 unit)', 'The app that shipped on pcb\'s tablet, a different build from 251022. Trimmed at 0xC468 so it never overwrites your settings page.'],
-  ]],
-  ['Veikk pen (patches of 251022)', [
-    ['nosmooth-hook.bin', 'No smoothing, hook version (recommended)', 'Removes the 8-sample average and the last-position hold. Best Veikk-pen build.'],
-    ['nosmooth-nohold.bin', 'No smoothing + no hold', 'Same effect as the hook version, older patch style.'],
-    ['nosmooth.bin', 'No smoothing', 'Removes the 8-sample average only.'],
-    ['500hz.bin', '500 Hz bInterval', 'Only the USB poll interval changed. Behaves like stock: the scan limits it to ~250 Hz.'],
-    ['t80.bin', 't80 (integration window 80)', 'Tuning experiment, not kept.'],
-  ]],
-  ['Wacom LP-170E pen (1 kHz tracker, Veikk pen does NOT work)', [
-    ['lp170e-v14.bin', 'v14, 1000 Hz (recommended)', 'Built for one unit with dead X coils (mask 0x210400). Untested on other tablets.', 1],
-    ['lp170e-v13.bin', 'v13, ~981 Hz', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v12.bin', 'v12, 1000 Hz, noisier', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v11.bin', 'v11, 994 Hz', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v10.bin', 'v10, 995 Hz, uneven spacing', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v9.bin', 'v9, 999 Hz, some gaps', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v7.bin', 'v7, 954 Hz', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v6.bin', 'v6, 942 Hz', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v5.bin', 'v5, 269 Hz', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-    ['lp170e-v2.bin', 'v2, 458 Hz', 'Dead-coil mask of one unit, untested on other tablets.', 1],
-  ]],
-  ['pcb\'s custom firmware (from scratch)', [
-    ['pcb-cfw-20261119.bin', '"S640 testing" 2026-11-19', 'Configure at pcb1631.github.io/S640-cfw-webconfig. Whether it answers the updater trigger is UNTESTED: you may need SWD (Pico on J1) to flash anything else afterwards.', 1],
-    ['pcb-cfw-20261104.bin', '"S640 testing" 2026-11-04', 'Has NO updater trigger: after this, only SWD (Pico on J1, tablet opened) can flash it again.', 1],
-  ]],
-  ['Other', [['', 'Your own .bin file…', 'Must be an app linked at 0x08000000 that keeps the updater trigger.', 1]]],
-];
+    .step-btn {
+      align-self: start;
+      font: inherit; font-weight: 700;
+      padding: 10px 18px;
+      border: none; border-radius: var(--radius-sm);
+      background: var(--accent); color: var(--bg-canvas);
+      cursor: pointer;
+    }
+    .step-btn:hover { background: var(--text-bright); }
+    .step-btn:disabled { background: var(--bg-surface-elevated); color: var(--text-dim); cursor: default; }
 
-const APP_VID = 0x2feb, UPD_VID = 0x28e9, UPD_PID = 0x0189;
-const BASE = 0x08000000, LIMIT = 0x0800d800, XFER = 1024, PAGE = 1024;
-const DETACH = 0, DNLOAD = 1, UPLOAD = 2, GETSTATUS = 3, CLRSTATUS = 4, GETSTATE = 5, ABORT = 6;
-const S_IDLE = 2, S_DNLOAD_SYNC = 3, S_DNBUSY = 4, S_DNLOAD_IDLE = 5, S_MANIFEST_SYNC = 6,
-      S_MANIFEST = 7, S_MANIFEST_WAIT_RESET = 8, S_UPLOAD_IDLE = 9, S_ERROR = 10;
-const CMD_SET_ADDR = 0x21, CMD_ERASE = 0x41;
+    .say { max-width: 74ch; padding: 2px 0 2px 16px; border-left: 2px solid var(--border-medium); color: var(--text-secondary); }
+    .say:empty { display: none; }
+    .say.ok { border-left-color: var(--status-online); color: var(--text-main); }
+    .say.bad { border-left-color: var(--status-dnd); color: var(--text-bright); }
+    progress { width: 100%; max-width: 480px; accent-color: var(--accent); }
+    progress[hidden] { display: none; }
+    #log { max-height: 260px; }
+  </style>
+  <script>
+    (function () {
+      var h = document.documentElement;
+      function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+      var m = get('vivlos-motion');
+      h.dataset.motion = m ? m : (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'off' : 'on');
+      if (get('vivlos-s640-ack') !== 'yes') h.classList.add('gated');
+    })();
+  </script>
+</head>
+<body id="top">
 
-const $ = id => document.getElementById(id);
-const log = s => { $('log').textContent += s + '\n'; $('log').scrollTop = 1e9; };
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-const hex = (n, w = 8) => '0x' + n.toString(16).padStart(w, '0');
+  <section class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate-text">
+      <span class="gate-kicker">read this first</span>
+      <h1 id="gate-title">You're on your own.</h1>
+<p><strong>This entire write-up was written by Claude Opus 5.5 on xHigh reasoning.</strong>
+I did not check every byte of it, and I am <strong>not responsible for anything in here that
+turns out to be wrong.</strong> Some of it probably is.</p>
+<p>Flash something because a web page told you to, turn your tablet into a very expensive
+coaster, and that is on you. Not me, not Claude, you.</p>
+<p>Read the code yourself. Measure with your own multimeter. Check every address and every
+command before you run it. Better yet, do the shi yourself and use this as a map, not a
+manual.</p>
+      <p class="gate-warned">You have been warned.</p>
+      <div class="gate-actions">
+        <button type="button" class="gate-accept" id="gate-accept">I get it, let me in</button>
+        <a class="gate-leave" href="/s640/">nah, take me back</a>
+      </div>
+      <span class="gate-note">remembered in this browser</span>
+    </div>
+    <img class="gate-art" src="/assets/vivlos/racing.webp" alt="Vivlos, not responsible either">
+  </section>
 
-const entries = [];
-for (const [group, list] of FIRMWARE) {
-  const og = document.createElement('optgroup'); og.label = group;
-  for (const [file, name, note, warn] of list) {
-    og.append(new Option(name, entries.length));
-    entries.push({ file, name, note, warn });
-  }
-  $('fw').append(og);
-}
-const pick = () => entries[$('fw').value];
-$('fw').onchange = () => { $('note').textContent = pick().note; $('other').hidden = !!pick().file; };
-$('fw').onchange();
+  <div class="doc-canvas">
+    <div class="top-status-bar">
+      <a href="/s640/" class="status-home">vivlos.dev / s640 / flash</a>
+      <span><span class="mono-dim">needs</span> Chrome, Edge or Brave, USB cable</span>
+    </div>
 
-if (!navigator.hid || !navigator.usb) log('error: this browser has no WebHID/WebUSB, use Chrome/Brave/Edge.');
+    <header class="doc-head">
+      <div class="doc-head-text">
+        <span class="doc-kicker">web flasher</span>
+        <h1>Flash a Veikk S640 from the browser</h1>
+        <p class="doc-meta">No Pico, no screwdriver. Uses Veikk's own updater &middot; <a href="/s640/">how it works</a> &middot; <a href="fw/SHA256SUMS">SHA256SUMS</a></p>
+      </div>
+      <img class="doc-art" src="/assets/vivlos/racing.webp" alt="">
+    </header>
 
-async function readFirmware() {
-  const e = pick();
-  let fw, name = e.file;
-  if (e.file) {
-    const r = await fetch('fw/' + e.file);
-    if (!r.ok) throw new Error(`download of ${e.file} failed (${r.status})`);
-    fw = new Uint8Array(await r.arrayBuffer());
-  } else {
-    const f = $('file').files[0];
-    if (!f) throw new Error('pick a .bin file first');
-    fw = new Uint8Array(await f.arrayBuffer()); name = f.name;
-  }
-  if (!fw.length) throw new Error('firmware is empty');
-  if (BASE + fw.length > LIMIT) throw new Error(`image ends at ${hex(BASE + fw.length)}, past the updater at ${hex(LIMIT)}`);
-  // a Cortex-M vector table: SP in SRAM, Thumb reset vector inside the image
-  const v = new DataView(fw.buffer);
-  const sp = v.getUint32(0, true), rv = v.getUint32(4, true);
-  if ((sp & 0xfff00000) !== 0x20000000 || !(rv & 1) || rv < BASE || rv >= BASE + fw.length)
-    throw new Error(`doesn't look like an app linked at 0x08000000 (SP ${hex(sp)}, reset ${hex(rv)})`);
-  const sha = [...new Uint8Array(await crypto.subtle.digest('SHA-256', fw))].map(b => b.toString(16).padStart(2, '0')).join('');
-  log(`firmware: ${name}, ${fw.length} bytes, sha256 ${sha}`);
-  if (e.warn && !confirm(`${e.name}\n\n${e.note}\n\nFlash it?`)) throw new Error('cancelled');
-  return fw;
-}
+    <main class="doc-body flash-body">
+      <article>
+        <p class="say bad" id="nobrowser" hidden>This browser can't talk to USB devices. Open this page in
+        Chrome, Edge or Brave on a computer (not a phone, not Firefox, not Safari).</p>
 
-$('trigger').onclick = () => run(async () => {
-  const devs = await navigator.hid.requestDevice({ filters: [{ vendorId: APP_VID }] });
-  const dev = devs.find(d => d.collections.some(c => c.outputReports?.some(r => r.reportId === 9)));
-  if (!dev) throw new Error('no interface with output report 9 (is the tablet on stock or a patched build?)');
-  if (!dev.opened) await dev.open();
-  await dev.sendReport(9, new Uint8Array([0x04, 0x2f, 0xeb, 0, 0, 0, 0, 0xc0]));
-  log('trigger sent, the tablet should come back as 28e9:0189 in a second. Now press 2.');
-});
+        <section class="step" id="step1">
+          <h2><span class="h-num">1</span>Pick the firmware</h2>
+          <div class="table-wrap">
+            <table class="fw-table">
+              <thead><tr><th></th><th>firmware</th><th>pen</th><th>what it does</th></tr></thead>
+              <tbody id="fw-rows"></tbody>
+            </table>
+          </div>
+        </section>
 
-$('flash').onclick = () => run(async () => {
-  const fw = await readFirmware();
-  let dev = (await navigator.usb.getDevices()).find(d => d.vendorId === UPD_VID && d.productId === UPD_PID);
-  dev ??= await navigator.usb.requestDevice({ filters: [{ vendorId: UPD_VID, productId: UPD_PID }] });
-  await dev.open();
-  if (!dev.configuration) await dev.selectConfiguration(1);
-  await dev.claimInterface(0);
-  await flash(dev, fw);
-});
+        <section class="step" id="step2" aria-disabled="true">
+          <h2><span class="h-num">2</span>Put the tablet in update mode</h2>
+          <ul>
+            <li>Plug the tablet straight into the computer, not through a hub.</li>
+            <li>Quit OpenTabletDriver, the Veikk driver and any other tab using the tablet.</li>
+            <li>Press the button, pick <strong>S640</strong> in the box that pops up, press Connect.</li>
+          </ul>
+          <button type="button" class="step-btn" id="trigger">Find my tablet</button>
+          <p class="say" id="say2"></p>
+          <p class="doc-meta">Tablet already shows up as <code>28e9:0189</code> (left in update mode)? <a href="#step3" id="skip2">Skip to step 3.</a></p>
+        </section>
 
-async function run(fn) {
-  $('trigger').disabled = $('flash').disabled = true;
-  try { await fn(); } catch (e) { log('error: ' + e.message); }
-  $('trigger').disabled = $('flash').disabled = false;
-}
+        <section class="step" id="step3" aria-disabled="true">
+          <h2><span class="h-num">3</span>Flash it</h2>
+          <p>Press the button and pick <strong>28e9:0189</strong>. Takes about 30 seconds.
+          <strong>Don't unplug the tablet or close this tab until it says done.</strong></p>
+          <button type="button" class="step-btn" id="flash">Flash</button>
+          <progress id="bar" max="1" value="0" hidden></progress>
+          <p class="say" id="say3"></p>
+        </section>
 
-// --- DFU, same sequence as pcb's flash.py ---
-const setup = (request, value = 0) => ({ requestType: 'class', recipient: 'interface', request, value, index: 0 });
-const out = (dev, req, value, data = new Uint8Array(0)) => dev.controlTransferOut(setup(req, value), data);
-const bytesIn = async (dev, req, len) => new Uint8Array((await dev.controlTransferIn(setup(req), len)).data.buffer);
+        <details>
+          <summary>Nothing shows up in the box / "access denied"</summary>
+          <p><strong>Linux:</strong> your user needs access to the tablet. Add this as
+          <code>/etc/udev/rules.d/70-veikk-s640.rules</code>, then unplug and replug:</p>
+          <pre><code>SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2feb", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="28e9", ATTRS{idProduct}=="0189", TAG+="uaccess"</code></pre>
+          <p><strong>Windows:</strong> step 3 needs the WinUSB driver on the updater once. After step 2, run
+          <a href="https://zadig.akeo.ie/">Zadig</a>, Options &rarr; List All Devices, pick the device with ID
+          <code>28E9 0189</code>, driver WinUSB, Install Driver. Then step 3.</p>
+        </details>
 
-async function getStatus(dev) {
-  const d = await bytesIn(dev, GETSTATUS, 6);
-  if (d.length !== 6) throw new Error('short GETSTATUS reply');
-  return { status: d[0], poll: d[1] | d[2] << 8 | d[3] << 16, state: d[4] };
-}
+        <details>
+          <summary>Technical log</summary>
+          <pre id="log"></pre>
+        </details>
+      </article>
 
-async function getState(dev) {
-  const d = await bytesIn(dev, GETSTATE, 1);
-  if (d.length !== 1) throw new Error('bad GETSTATE reply');
-  return d[0];
-}
+      <footer class="doc-foot">
+        <a href="/s640/">back to the S640 notes</a>
+        <span>vivlos.dev &middot; flashing protocol from pcb's flash.py</span>
+      </footer>
+    </main>
+  </div>
 
-// GETSTATUS can advance a pending download/manifest, so look with GETSTATE first
-async function ensureIdle(dev) {
-  const s = await getState(dev);
-  if (s === S_IDLE) return;
-  if ([S_DNBUSY, S_MANIFEST, S_MANIFEST_WAIT_RESET].includes(s))
-    throw new Error(`updater is still busy (DFU state ${s}), wait and retry`);
-  if (s === S_ERROR) { log('updater: clearing error'); await out(dev, CLRSTATUS, 0); }
-  else if ([S_DNLOAD_SYNC, S_DNLOAD_IDLE, S_MANIFEST_SYNC, S_UPLOAD_IDLE].includes(s)) {
-    log(`updater: aborting previous transfer (state ${s})`); await out(dev, ABORT, 0);
-  } else throw new Error(`can't safely return the updater to idle from state ${s}`);
-  if (await getState(dev) !== S_IDLE) throw new Error('could not return the updater to DFU_IDLE');
-}
+  <script>
+  (function () {
+    var h = document.documentElement;
+    document.getElementById('gate-accept').addEventListener('click', function () {
+      try { localStorage.setItem('vivlos-s640-ack', 'yes'); } catch (e) {}
+      h.classList.remove('gated');
+      window.scrollTo(0, 0);
+    });
+  })();
+  </script>
 
-async function waitState(dev, target, timeout = 10000) {
-  const end = Date.now() + timeout;
-  let last;
-  while (Date.now() < end) {
-    const s = await getStatus(dev);
-    last = s.state;
-    if (s.status !== 0) { await out(dev, CLRSTATUS, 0); return false; }
-    if (s.state === target) return true;
-    await sleep(Math.max(s.poll, 10));
-  }
-  log(`expected DFU state ${target}, last ${last}`);
-  return false;
-}
+  <script>
+  const FIRMWARE = [
+    { file: 'stock-251022.bin', name: 'Stock (251022)', pen: 'Veikk pen',
+      what: 'Veikk\'s official firmware. Pick this to undo everything.' },
+    { file: 'nosmooth-hook.bin', name: 'No smoothing', pen: 'Veikk pen',
+      what: 'Stock with the cursor smoothing and lag removed. Same pen, same driver.' },
+    { file: 'lp170e-v14.bin', name: 'LP-170E 1000 Hz', pen: 'Wacom LP-170E',
+      what: 'For the Wacom LP-170E pen only, the Veikk pen stops working. Built and measured on one tablet; may track worse on yours. Flash stock to go back.',
+      warn: 'This one only works with a Wacom LP-170E pen. Your Veikk pen will stop working until you flash Stock again.\n\nIt was tuned on one tablet and is untested on others.' },
+  ];
 
-async function checkUpdater(dev) {
-  const fd = await dev.controlTransferIn({ requestType: 'standard', recipient: 'interface', request: 6, value: 0x21 << 8, index: 0 }, 9);
-  const d = new Uint8Array(fd.data.buffer);
-  if (d.length < 7 || d[0] !== 9 || d[1] !== 0x21) throw new Error('unexpected DFU functional descriptor');
-  const xfer = d[5] | d[6] << 8;
-  if (xfer !== XFER) throw new Error(`updater advertises ${xfer}-byte transfers, expected ${XFER}`);
-  await ensureIdle(dev);
-  const c = [...await bytesIn(dev, UPLOAD, 4)];
-  if (!c.includes(CMD_SET_ADDR) || !c.includes(CMD_ERASE))
-    throw new Error('updater lacks the expected commands: ' + c.map(x => x.toString(16)).join(' '));
-  log('updater: 1 KiB transfers, commands ' + c.map(x => x.toString(16).padStart(2, '0')).join(' '));
-}
+  const APP_VID = 0x2feb, UPD_VID = 0x28e9, UPD_PID = 0x0189;
+  const BASE = 0x08000000, LIMIT = 0x0800d800, XFER = 1024, PAGE = 1024;
+  const DETACH = 0, DNLOAD = 1, UPLOAD = 2, GETSTATUS = 3, CLRSTATUS = 4, GETSTATE = 5, ABORT = 6;
+  const S_IDLE = 2, S_DNLOAD_SYNC = 3, S_DNBUSY = 4, S_DNLOAD_IDLE = 5, S_MANIFEST_SYNC = 6,
+        S_MANIFEST = 7, S_MANIFEST_WAIT_RESET = 8, S_UPLOAD_IDLE = 9, S_ERROR = 10;
+  const CMD_SET_ADDR = 0x21, CMD_ERASE = 0x41;
 
-async function command(dev, cmd, addr) {
-  const b = new Uint8Array(5); b[0] = cmd; new DataView(b.buffer).setUint32(1, addr, true);
-  await out(dev, DNLOAD, 0, b);
-  if (!await waitState(dev, S_DNLOAD_IDLE)) throw new Error(`command ${hex(cmd, 2)} at ${hex(addr)} failed`);
-}
+  const $ = id => document.getElementById(id);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const hex = (n, w = 8) => '0x' + n.toString(16).padStart(w, '0');
+  const log = s => { $('log').textContent += s + '\n'; };
+  const say = (id, text, kind = '') => { $(id).textContent = text; $(id).className = 'say ' + kind; };
+  const enable = (id, on) => $(id).setAttribute('aria-disabled', on ? 'false' : 'true');
 
-async function flash(dev, fw) {
-  await checkUpdater(dev);
-  await ensureIdle(dev);
-
-  // the updater only programs words, so erase every page the image covers first
-  const pages = Math.ceil(fw.length / PAGE);
-  log(`erasing ${pages} pages ${hex(BASE)}..${hex(BASE + (pages - 1) * PAGE)}`);
-  for (let i = 0; i < pages; i++) await command(dev, CMD_ERASE, BASE + i * PAGE);
-
-  // the last erase leaves the base on that page: back to idle, set the base again
-  await out(dev, ABORT, 0);
-  if (!await waitState(dev, S_IDLE, 2000)) throw new Error('could not return to DFU_IDLE after erase');
-  await command(dev, CMD_SET_ADDR, BASE);
-
-  const total = Math.ceil(fw.length / XFER);
-  for (let i = 0; i < total; i++) {
-    await out(dev, DNLOAD, i + 2, fw.subarray(i * XFER, (i + 1) * XFER));   // data blocks start at 2
-    if (!await waitState(dev, S_DNLOAD_IDLE)) throw new Error(`block ${i + 2} at ${hex(BASE + i * XFER)} failed`);
-    if ((i + 1) % 8 === 0 || i + 1 === total) log(`written ${i + 1}/${total}`);
+  // --- step 1: firmware rows ---
+  let chosen = null;
+  for (const fw of FIRMWARE) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td><input type="radio" name="fw"></td><td></td><td class="pen"></td><td></td>';
+    tr.cells[1].textContent = fw.name; tr.cells[2].textContent = fw.pen; tr.cells[3].textContent = fw.what;
+    const radio = tr.querySelector('input');
+    radio.setAttribute('aria-label', fw.name);
+    tr.onclick = () => { radio.checked = true; chosen = fw; enable('step2', true); enable('step3', true); };
+    $('fw-rows').append(tr);
   }
 
-  // zero-length DNLOAD = manifest; the updater resets into the app after a GETSTATUS
-  await out(dev, DNLOAD, total + 2);
-  await sleep(100);
-  try { for (let i = 0; i < 20; i++) { const s = await getStatus(dev); if (s.status) break; await sleep(Math.max(s.poll, 10)); } } catch {}
-  await sleep(500);
-  try { await out(dev, DETACH, 1000); } catch {}
-  log('done. The tablet should come back as 2feb:0001 running the new firmware.');
-}
-</script>
+  if (!navigator.hid || !navigator.usb) {
+    $('nobrowser').hidden = false;
+    enable('step1', false);
+  }
+
+  // plain-language versions of what the browser throws
+  function explain(e) {
+    log('error: ' + e.name + ': ' + e.message);
+    if (e.name === 'NotFoundError') return 'Nothing was picked. If the box was empty, see "Nothing shows up" below.';
+    if (e.name === 'SecurityError' || /access denied/i.test(e.message))
+      return 'The computer blocked access to the tablet. See "Nothing shows up" below.';
+    if (e.name === 'NetworkError' || e.name === 'InvalidStateError')
+      return 'Something else is using the tablet (OpenTabletDriver, the Veikk driver, another tab), or it was unplugged. Close those, replug, try again.';
+    return e.message;
+  }
+
+  // --- step 2: HID trigger into the updater ---
+  $('trigger').onclick = async () => {
+    say('say2', 'Waiting for you to pick the tablet...');
+    try {
+      const devs = await navigator.hid.requestDevice({ filters: [{ vendorId: APP_VID }] });
+      if (!devs.length) throw Object.assign(new Error('none'), { name: 'NotFoundError' });
+      const dev = devs.find(d => d.collections.some(c => c.outputReports?.some(r => r.reportId === 9)));
+      if (!dev) throw new Error('This tablet\'s firmware has no update mode switch. It is running something other than stock or a build from this page, so it needs an SWD flash (see the notes).');
+      if (!dev.opened) await dev.open();
+      await dev.sendReport(9, new Uint8Array([0x04, 0x2f, 0xeb, 0, 0, 0, 0, 0xc0]));
+      log('trigger sent');
+      await sleep(1500);
+      say('say2', 'Done, the tablet is in update mode (the cursor won\'t move now, that\'s normal). Go to step 3.', 'ok');
+    } catch (e) { say('say2', explain(e), 'bad'); }
+  };
+  $('skip2').onclick = () => { if (chosen) enable('step3', true); };
+
+  // --- step 3: flash over WebUSB ---
+  let busy = false;
+  addEventListener('beforeunload', e => { if (busy) e.preventDefault(); });
+
+  $('flash').onclick = async () => {
+    if (!chosen) return say('say3', 'Pick a firmware in step 1 first.', 'bad');
+    if (chosen.warn && !confirm(chosen.warn + '\n\nFlash it?')) return;
+    let dev;
+    try {
+      const fw = await download(chosen);
+      say('say3', 'Pick 28e9:0189 in the box.');
+      dev = (await navigator.usb.getDevices()).find(d => d.vendorId === UPD_VID && d.productId === UPD_PID);
+      dev ??= await navigator.usb.requestDevice({ filters: [{ vendorId: UPD_VID, productId: UPD_PID }] });
+      await dev.open();
+      if (!dev.configuration) await dev.selectConfiguration(1);
+      await dev.claimInterface(0);
+      busy = true; $('flash').disabled = $('trigger').disabled = true; $('bar').hidden = false;
+      say('say3', 'Flashing. Don\'t unplug.');
+      await flash(dev, fw);
+      say('say3', `Done. ${chosen.name} is on the tablet. If it doesn't show up in a few seconds, unplug and replug it.`, 'ok');
+    } catch (e) {
+      let msg = explain(e);
+      if (busy) msg += ' The old firmware may be half-erased: leave the tablet plugged in and press Flash again (the update mode is still there).';
+      if (e.name === 'NotFoundError' && /Win/.test(navigator.platform)) msg += ' On Windows this usually means the WinUSB driver is missing.';
+      say('say3', msg, 'bad');
+    } finally {
+      busy = false; $('flash').disabled = $('trigger').disabled = false;
+      try { await dev?.close(); } catch {}
+    }
+  };
+
+  async function download(e) {
+    const r = await fetch('fw/' + e.file, { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`Couldn't download the firmware (${r.status}). Check your connection and reload.`);
+    const fw = new Uint8Array(await r.arrayBuffer());
+    // sanity: Cortex-M vector table for an app at 0x08000000 that stays below the updater
+    const v = new DataView(fw.buffer), sp = v.getUint32(0, true), rv = v.getUint32(4, true);
+    if (BASE + fw.length > LIMIT || (sp & 0xfff00000) !== 0x20000000 || !(rv & 1) || rv < BASE || rv >= BASE + fw.length)
+      throw new Error('The downloaded file is damaged. Reload the page and try again.');
+    const sha = [...new Uint8Array(await crypto.subtle.digest('SHA-256', fw))].map(b => b.toString(16).padStart(2, '0')).join('');
+    log(`firmware ${e.file}, ${fw.length} bytes, sha256 ${sha}`);
+    return fw;
+  }
+
+  // --- DFU, same sequence as pcb's flash.py ---
+  const setup = (request, value = 0) => ({ requestType: 'class', recipient: 'interface', request, value, index: 0 });
+  const out = (dev, req, value, data = new Uint8Array(0)) => dev.controlTransferOut(setup(req, value), data);
+  const bytesIn = async (dev, req, len) => new Uint8Array((await dev.controlTransferIn(setup(req), len)).data.buffer);
+
+  async function getStatus(dev) {
+    const d = await bytesIn(dev, GETSTATUS, 6);
+    if (d.length !== 6) throw new Error('short GETSTATUS reply');
+    return { status: d[0], poll: d[1] | d[2] << 8 | d[3] << 16, state: d[4] };
+  }
+
+  async function getState(dev) {
+    const d = await bytesIn(dev, GETSTATE, 1);
+    if (d.length !== 1) throw new Error('bad GETSTATE reply');
+    return d[0];
+  }
+
+  // GETSTATUS can advance a pending download/manifest, so look with GETSTATE first
+  async function ensureIdle(dev) {
+    const s = await getState(dev);
+    if (s === S_IDLE) return;
+    if ([S_DNBUSY, S_MANIFEST, S_MANIFEST_WAIT_RESET].includes(s))
+      throw new Error('The tablet is still busy. Wait 10 seconds and press Flash again.');
+    if (s === S_ERROR) { log('updater: clearing error'); await out(dev, CLRSTATUS, 0); }
+    else if ([S_DNLOAD_SYNC, S_DNLOAD_IDLE, S_MANIFEST_SYNC, S_UPLOAD_IDLE].includes(s)) {
+      log(`updater: aborting previous transfer (state ${s})`); await out(dev, ABORT, 0);
+    } else throw new Error(`updater in unexpected DFU state ${s}`);
+    if (await getState(dev) !== S_IDLE) throw new Error('could not return the updater to DFU_IDLE');
+  }
+
+  async function waitState(dev, target, timeout = 10000) {
+    const end = Date.now() + timeout;
+    let last;
+    while (Date.now() < end) {
+      const s = await getStatus(dev);
+      last = s.state;
+      if (s.status !== 0) { await out(dev, CLRSTATUS, 0); return false; }
+      if (s.state === target) return true;
+      await sleep(Math.max(s.poll, 10));
+    }
+    log(`expected DFU state ${target}, last ${last}`);
+    return false;
+  }
+
+  async function checkUpdater(dev) {
+    const fd = await dev.controlTransferIn({ requestType: 'standard', recipient: 'interface', request: 6, value: 0x21 << 8, index: 0 }, 9);
+    const d = new Uint8Array(fd.data.buffer);
+    const notOurs = 'This isn\'t the S640 updater this page knows. Stopped before writing anything.';
+    if (d.length < 7 || d[0] !== 9 || d[1] !== 0x21 || (d[5] | d[6] << 8) !== XFER) throw new Error(notOurs);
+    await ensureIdle(dev);
+    const c = [...await bytesIn(dev, UPLOAD, 4)];
+    log('updater commands ' + c.map(x => x.toString(16).padStart(2, '0')).join(' '));
+    if (!c.includes(CMD_SET_ADDR) || !c.includes(CMD_ERASE)) throw new Error(notOurs);
+  }
+
+  async function command(dev, cmd, addr) {
+    const b = new Uint8Array(5); b[0] = cmd; new DataView(b.buffer).setUint32(1, addr, true);
+    await out(dev, DNLOAD, 0, b);
+    if (!await waitState(dev, S_DNLOAD_IDLE)) throw new Error(`command ${hex(cmd, 2)} at ${hex(addr)} failed`);
+  }
+
+  async function flash(dev, fw) {
+    await checkUpdater(dev);
+    await ensureIdle(dev);
+
+    // the updater only programs words, so erase every page the image covers first
+    const pages = Math.ceil(fw.length / PAGE), total = Math.ceil(fw.length / XFER);
+    $('bar').max = pages + total; $('bar').value = 0;
+    log(`erasing ${pages} pages from ${hex(BASE)}`);
+    for (let i = 0; i < pages; i++) { await command(dev, CMD_ERASE, BASE + i * PAGE); $('bar').value++; }
+
+    // the last erase leaves the base on that page: back to idle, set the base again
+    await out(dev, ABORT, 0);
+    if (!await waitState(dev, S_IDLE, 2000)) throw new Error('could not return to DFU_IDLE after erase');
+    await command(dev, CMD_SET_ADDR, BASE);
+
+    for (let i = 0; i < total; i++) {
+      await out(dev, DNLOAD, i + 2, fw.subarray(i * XFER, (i + 1) * XFER));   // data blocks start at 2
+      if (!await waitState(dev, S_DNLOAD_IDLE)) throw new Error(`block ${i + 2} at ${hex(BASE + i * XFER)} failed`);
+      $('bar').value++;
+    }
+    log(`wrote ${total} blocks`);
+
+    // zero-length DNLOAD = manifest; the updater resets into the app after a GETSTATUS
+    await out(dev, DNLOAD, total + 2);
+    await sleep(100);
+    try { for (let i = 0; i < 20; i++) { const s = await getStatus(dev); if (s.status) break; await sleep(Math.max(s.poll, 10)); } } catch {}
+    await sleep(500);
+    try { await out(dev, DETACH, 1000); } catch {}
+    log('manifest + detach sent');
+  }
+  </script>
+</body>
+</html>
