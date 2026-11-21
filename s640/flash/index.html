@@ -100,6 +100,7 @@ manual.</p>
         <section class="step" id="before">
           <h2><span class="h-num">!</span>Before you flash</h2>
           <ul>
+            <li><strong>I won't bear any responsibility, nor be able to help, if something goes wrong.</strong></li>
             <li><strong>None of this is perfect.</strong> It was built and tested on a couple of tablets. Results
             vary between units, and between V1 and V2 tablets and pens. Yours may behave differently.</li>
             <li><strong>No smoothing isn't perfect either.</strong> It removes the lag, so you also see the raw
@@ -193,7 +194,7 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="28e9", ATTRS{idProduct}=="0189", TAG+="uacce
       what: 'For the Wacom LP-170E pen only, the Veikk pen stops working. Built and measured on one tablet; may track worse on yours. Flash stock to go back.',
       warn: 'This one only works with a Wacom LP-170E pen. Your Veikk pen will stop working until you flash Stock again.\n\nIt was tuned on one tablet and is untested on others.' },
     { custom: true, name: 'Your own .bin', pen: 'depends',
-      what: 'A raw image for 0x08000000, under 54 KB. Nothing checks what it does.',
+      what: 'Speak to your local firmware dealer for their bin files. Raw image for 0x08000000, under 54 KB, nothing checks what it does.',
       warn: 'Custom image: only flash a .bin you trust, built for the S640 at 0x08000000.\n\nIf it doesn\'t have the update mode switch from step 2, this page can never reach the tablet again. A bad image bricks it until you open it up with an SWD probe.' },
   ];
 
