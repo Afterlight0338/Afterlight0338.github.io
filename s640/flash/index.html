@@ -22,7 +22,7 @@
     .fw-table input { accent-color: var(--accent); margin: 0; }
     .fw-table tr:has(input:checked) td { color: var(--text-bright); }
     .fw-table td:first-child { width: 28px; }
-    .fw-table .pen { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); white-space: nowrap; }
+    .fw-table .pen, .fw-count { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); white-space: nowrap; }
 
     .step-btn {
       align-self: start;
@@ -87,7 +87,7 @@ manual.</p>
       <div class="doc-head-text">
         <span class="doc-kicker">web flasher</span>
         <h1>Flash a Veikk S640 from the browser</h1>
-        <p class="doc-meta">No Pico, no screwdriver. Uses Veikk's own updater &middot; <a href="/s640/">how it works</a> &middot; <a href="fw/SHA256SUMS">SHA256SUMS</a></p>
+        <p class="doc-meta">No Pico, no screwdriver. Uses Veikk's own updater &middot; <a href="/s640/">how it works</a> &middot; <a href="fw/SHA256SUMS">SHA256SUMS</a><span id="flash-total" hidden></span></p>
       </div>
       <img class="doc-art" src="/assets/vivlos/racing.webp" alt="">
     </header>
@@ -185,15 +185,15 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="28e9", ATTRS{idProduct}=="0189", TAG+="uacce
 
   <script>
   const FIRMWARE = [
-    { file: 'stock-251022.bin', name: 'Stock (251022)', pen: 'Veikk pen',
+    { key: 'stock', file: 'stock-251022.bin', name: 'Stock (251022)', pen: 'Veikk pen',
       what: 'Veikk\'s official firmware. Pick this to undo everything.' },
-    { file: 'nosmooth-hook.bin', name: 'No smoothing', pen: 'Veikk pen',
+    { key: 'nosmooth', file: 'nosmooth-hook.bin', name: 'No smoothing', pen: 'Veikk pen',
       what: 'Stock with the cursor smoothing and lag removed. Same pen, same driver. Pressure untested: with a V2 pen it was reported to show pressure while hovering (not yet checked if stock does the same).',
       warn: 'Pressure is untested on this one. With a V2 pen it was reported to show pressure while hovering.\n\nFine for osu! with keyboard taps. If you draw, it may not work for you: flash Stock to go back.' },
-    { file: 'lp170e-v14.bin', name: 'LP-170E 1000 Hz', pen: 'Wacom LP-170E',
+    { key: 'lp170e', file: 'lp170e-v14.bin', name: 'LP-170E 1000 Hz', pen: 'Wacom LP-170E',
       what: 'For the Wacom LP-170E pen only, the Veikk pen stops working. Built and measured on one tablet; may track worse on yours. Flash stock to go back.',
       warn: 'This one only works with a Wacom LP-170E pen. Your Veikk pen will stop working until you flash Stock again.\n\nIt was tuned on one tablet and is untested on others.' },
-    { custom: true, name: 'Your own .bin', pen: 'depends',
+    { key: 'custom', custom: true, name: 'Your own .bin', pen: 'depends',
       what: 'Speak to your local firmware dealer for their bin files. Raw image for 0x08000000, under 54 KB, nothing checks what it does.',
       warn: 'Custom image: only flash a .bin you trust, built for the S640 at 0x08000000.\n\nIf it doesn\'t have the update mode switch from step 2, this page can never reach the tablet again. A bad image bricks it until you open it up with an SWD probe.' },
   ];
@@ -218,6 +218,8 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="28e9", ATTRS{idProduct}=="0189", TAG+="uacce
     const tr = document.createElement('tr');
     tr.innerHTML = '<td><input type="radio" name="fw"></td><td></td><td class="pen"></td><td></td>';
     tr.cells[1].textContent = fw.name; tr.cells[2].textContent = fw.pen; tr.cells[3].textContent = fw.what;
+    fw.countEl = Object.assign(document.createElement('span'), { className: 'fw-count', hidden: true });
+    tr.cells[1].append(document.createElement('br'), fw.countEl);
     const radio = tr.querySelector('input');
     radio.setAttribute('aria-label', fw.name);
     if (fw.custom) {
@@ -228,6 +230,20 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="28e9", ATTRS{idProduct}=="0189", TAG+="uacce
     tr.onclick = () => { radio.checked = true; chosen = fw; enable('step2', true); enable('step3', true); };
     $('fw-rows').append(tr);
   }
+
+  // flash counter, lives in the osu Worker (worker/osu-worker.js). Fails silently.
+  const COUNTER = 'https://osu-api-proxy.mfarrishahk.workers.dev/s640/flashes';
+  const counts = {};
+  function showCounts() {
+    let total = 0;
+    for (const fw of FIRMWARE) {
+      const n = counts[fw.key] || 0; total += n;
+      fw.countEl.textContent = n + (n === 1 ? ' flash' : ' flashes'); fw.countEl.hidden = false;
+    }
+    $('flash-total').textContent = ' · flashed ' + total + (total === 1 ? ' time' : ' times');
+    $('flash-total').hidden = false;
+  }
+  fetch(COUNTER).then(r => r.json()).then(c => { Object.assign(counts, c); showCounts(); }).catch(() => {});
 
   if (!navigator.hid || !navigator.usb) {
     $('nobrowser').hidden = false;
@@ -281,6 +297,8 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="28e9", ATTRS{idProduct}=="0189", TAG+="uacce
       busy = true; $('flash').disabled = $('trigger').disabled = true; $('bar').hidden = false;
       say('say3', 'Flashing. Don\'t unplug.');
       await flash(dev, fw);
+      navigator.sendBeacon(COUNTER, chosen.key);
+      counts[chosen.key] = (counts[chosen.key] || 0) + 1; if (!$('flash-total').hidden) showCounts();
       say('say3', `Done. ${chosen.name} is on the tablet. If it doesn't show up in a few seconds, unplug and replug it.`, 'ok');
     } catch (e) {
       let msg = explain(e);
