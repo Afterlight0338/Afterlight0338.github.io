@@ -13,4 +13,4 @@ DEFAULT_USER_ID = "14671577"
 #   CLOUDFLARE_ACCOUNT_ID=c063436f2994b1b91f195cbd4374b087 npx wrangler kv namespace create FLASHES
 [[kv_namespaces]]
 binding = "FLASHES"
-id = "PASTE_ID_HERE"
+id = "2c8929235f0045e7bb7c72288a394f72"
