@@ -8,3 +8,9 @@ DEFAULT_USER_ID = "14671577"
 # Required Secrets (set with `wrangler secret put <KEY>`):
 # OSU_CLIENT_ID
 # OSU_CLIENT_SECRET
+
+# S640 web flasher counter (/s640/flashes). Create with:
+#   CLOUDFLARE_ACCOUNT_ID=c063436f2994b1b91f195cbd4374b087 npx wrangler kv namespace create FLASHES
+[[kv_namespaces]]
+binding = "FLASHES"
+id = "PASTE_ID_HERE"

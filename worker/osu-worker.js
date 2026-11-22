@@ -14,9 +14,11 @@
 let cachedToken = null;
 let tokenExpiresAt = 0;
 
+const FLASH_KEYS = ["stock", "nosmooth", "lp170e", "custom"];
+
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Cache-Control",
   "Access-Control-Max-Age": "86400",
 };
@@ -160,6 +162,24 @@ export default {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
 
+    const url = new URL(request.url);
+
+    // S640 web flasher counter: POST body = firmware key, GET = counts.
+    // ponytail: KV read-modify-write, two flashes in the same second can lose one count; Durable Object if it ever matters
+    if (url.pathname === "/s640/flashes") {
+      const counts = (await env.FLASHES.get("s640", "json")) || {};
+      if (request.method === "POST") {
+        const key = (await request.text()).trim();
+        if (!FLASH_KEYS.includes(key)) return new Response("bad key", { status: 400, headers: CORS_HEADERS });
+        counts[key] = (counts[key] || 0) + 1;
+        await env.FLASHES.put("s640", JSON.stringify(counts));
+        return new Response(null, { status: 204, headers: CORS_HEADERS });
+      }
+      return new Response(JSON.stringify(counts), {
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json", "Cache-Control": "no-store" },
+      });
+    }
+
     if (request.method !== "GET") {
       return new Response(JSON.stringify({ error: "Method not allowed" }), {
         status: 405,
@@ -167,7 +187,6 @@ export default {
       });
     }
 
-    const url = new URL(request.url);
     const userId = url.searchParams.get("user") || env.DEFAULT_USER_ID || "14671577";
 
     try {
